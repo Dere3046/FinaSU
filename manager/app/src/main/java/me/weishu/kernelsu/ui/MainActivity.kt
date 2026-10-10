@@ -228,6 +228,8 @@ class MainActivity : ComponentActivity() {
             ) {
                 KernelSUTheme(appSettings = appSettings) {
                     IntentDispatcher(intentChannel = intentChannel)
+                    val flashRoute = navigator.current() as? Route.Flash
+                    var flashBackEnabled by remember(flashRoute) { mutableStateOf(false) }
                     val mainScreenEntry = @Composable {
                         MainScreen(
                             initialPage = selectedMainPage,
@@ -240,6 +242,7 @@ class MainActivity : ComponentActivity() {
                             backStack = navigator.backStack,
                             onBack = {
                                 when (val top = navigator.current()) {
+                                    is Route.Flash -> if (flashBackEnabled) navigator.pop()
                                     is Route.TemplateEditor -> {
                                         if (!top.readOnly) {
                                             navigator.setResult("template_edit", true)
@@ -263,7 +266,14 @@ class MainActivity : ComponentActivity() {
                                 entry<Route.ModuleRepo> { ModuleRepoScreen() }
                                 entry<Route.ModuleRepoDetail> { key -> ModuleRepoDetailScreen(key.module) }
                                 entry<Route.Install> { InstallScreen() }
-                                entry<Route.Flash> { key -> FlashScreen(key.flashIt) }
+                                entry<Route.Flash> { key ->
+                                    FlashScreen(
+                                        key.flashIt,
+                                        onBackEnabledChange = { enabled ->
+                                            if (navigator.current() == key) flashBackEnabled = enabled
+                                        },
+                                    )
+                                }
                                 entry<Route.ExecuteModuleAction> { key ->
                                     ExecuteModuleActionScreen(
                                         key.moduleId,
