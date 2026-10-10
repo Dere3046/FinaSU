@@ -8,6 +8,23 @@
  * mapping, because it lives beyond the link-time _end.
  */
 
+.macro ksu_capsule_virt dst, tmp
+    adrp \dst, ksu_image_base
+    add \dst, \dst, :lo12:ksu_image_base
+    adrp \tmp, ksu_ext_kimage_voffset
+    add \tmp, \tmp, :lo12:ksu_ext_kimage_voffset
+    ldr \tmp, [\tmp]
+    sub \dst, \dst, \tmp
+    ldr \tmp, =ksu_capsule_image_offset
+    add \dst, \dst, \tmp
+    adrp \tmp, ksu_ext_memstart_addr
+    add \tmp, \tmp, :lo12:ksu_ext_memstart_addr
+    ldr \tmp, [\tmp]
+    sub \dst, \dst, \tmp
+    ldr \tmp, =ksu_page_offset
+    orr \dst, \dst, \tmp
+.endm
+
     .section .text.ksu_bootstrap, "ax"
     .balign 16
     .global ksu_bootstrap
@@ -28,20 +45,7 @@ ksu_bootstrap:
      * capsule_phys = __pa_symbol(_text) + capsule_image_offset
      * capsule_virt = (capsule_phys - memstart_addr) | PAGE_OFFSET
      */
-    adrp x23, ksu_image_base
-    add x23, x23, :lo12:ksu_image_base
-    adrp x8, ksu_ext_kimage_voffset
-    add x8, x8, :lo12:ksu_ext_kimage_voffset
-    ldr x8, [x8]
-    sub x23, x23, x8
-    ldr x8, =ksu_capsule_image_offset
-    add x23, x23, x8
-    adrp x8, ksu_ext_memstart_addr
-    add x8, x8, :lo12:ksu_ext_memstart_addr
-    ldr x8, [x8]
-    sub x23, x23, x8
-    ldr x8, =ksu_page_offset
-    orr x23, x23, x8
+    ksu_capsule_virt x23, x8
 
     /* Reject a missing/truncated/wrong capsule before touching its module. */
     ldr x8, [x23, #0]
@@ -74,6 +78,14 @@ ksu_bootstrap:
     b.ne .Lbootstrap_out
     ldr x8, [x23, #48]
     ldr x9, =ksu_fixup_count
+    cmp x8, x9
+    b.ne .Lbootstrap_out
+    ldr x8, [x23, #96]
+    ldr x9, =ksu_args_capsule_offset
+    cmp x8, x9
+    b.ne .Lbootstrap_out
+    ldr x8, [x23, #104]
+    ldr x9, =ksu_args_size
     cmp x8, x9
     b.ne .Lbootstrap_out
 
@@ -125,8 +137,8 @@ ksu_bootstrap:
     ldr x9, =ksu_load_info_len_offset
     str x8, [sp, x9]
     mov x0, sp
-    adrp x1, ksu_empty_args
-    add x1, x1, :lo12:ksu_empty_args
+    ldr x8, =ksu_args_capsule_offset
+    add x1, x23, x8
     mov x2, xzr
     bl ksu_ext_load_module
     add sp, sp, x20
@@ -166,8 +178,10 @@ ksu_memblock_reserve_wrapper:
     .type ksu_strndup_user_adapter, %function
 ksu_strndup_user_adapter:
     .inst 0xd503245f              /* BTI c */
-    adrp x9, ksu_empty_args
-    add x9, x9, :lo12:ksu_empty_args
+    // Only the exact capsule address may bypass the user-pointer check.
+    ksu_capsule_virt x9, x10
+    ldr x10, =ksu_args_capsule_offset
+    add x9, x9, x10
     cmp x0, x9
     b.eq .Lduplicate_kernel_args
     b ksu_ext_strndup_user
@@ -184,8 +198,3 @@ ksu_strndup_user_adapter:
     .size ksu_strndup_user_adapter, . - ksu_strndup_user_adapter
 
     .ltorg
-
-    .section .rodata.ksu_bootstrap, "a"
-    .balign 8
-ksu_empty_args:
-    .asciz ""

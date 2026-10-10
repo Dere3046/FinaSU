@@ -338,6 +338,9 @@ private fun SulogStatusSection(
     actions: SulogActions,
 ) {
     when (state.sulogStatus) {
+        "forced" -> {
+            WarningCard(text = stringResource(R.string.feature_status_forced_summary))
+        }
         "unsupported" -> {
             WarningCard(text = stringResource(R.string.sulog_unsupported_title))
         }

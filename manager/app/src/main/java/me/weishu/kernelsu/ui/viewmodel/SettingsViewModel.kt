@@ -57,7 +57,12 @@ class SettingsViewModel(
             val suCompatPersistValue = repo.getSuCompatPersistValue()
             val isSuEnabled = repo.isSuEnabled()
 
-            val suCompatMode = if (suCompatPersistValue == 0L) 2 else if (!isSuEnabled) 1 else 0
+            val suCompatMode = when {
+                suCompatStatus == "forced" -> if (isSuEnabled) 0 else 2
+                suCompatPersistValue == 0L -> 2
+                !isSuEnabled -> 1
+                else -> 0
+            }
 
             val kernelUmountStatus = repo.getKernelUmountStatus()
             val isKernelUmountEnabled = repo.isKernelUmountEnabled()
@@ -66,9 +71,11 @@ class SettingsViewModel(
             val sulogStatus = repo.getSulogStatus()
             val avcSpoofStatus = repo.getAvcSpoofStatus()
             val isAvcSpoofEnabled = repo.isAvcSpoofEnabled()
-            val isSulogEnabled = repo.getSulogPersistValue() == 1L
+            val isSulogEnabled = if (sulogStatus == "forced") repo.getSulogValue()?.let { it != 0L } == true
+                else repo.getSulogPersistValue() == 1L
             val adbRootStatus = repo.getAdbRootStatus()
-            val isAdbRootEnabled = repo.getAdbRootPersistValue() == 1L
+            val isAdbRootEnabled = if (adbRootStatus == "forced") repo.getAdbRootValue()?.let { it != 0L } == true
+                else repo.getAdbRootPersistValue() == 1L
             val isDefaultUmountModules = repo.isDefaultUmountModules()
             val autoJailbreak = repo.autoJailbreak
             val useSoftReboot = repo.useSoftReboot

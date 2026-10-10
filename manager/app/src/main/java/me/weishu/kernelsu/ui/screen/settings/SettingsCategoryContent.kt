@@ -192,6 +192,7 @@ fun BehaviorCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
             content = listOf(
                 {
                     val suSummary = when (uiState.suCompatStatus) {
+                        "forced" -> stringResource(R.string.feature_status_forced_summary)
                         "unsupported" -> stringResource(id = R.string.feature_status_unsupported_summary)
                         "managed" -> stringResource(id = R.string.feature_status_managed_summary)
                         else -> stringResource(id = R.string.settings_sucompat_summary)
@@ -248,6 +249,7 @@ fun FunctionCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
             content = listOf(
                 {
                     val umountSummary = when (uiState.kernelUmountStatus) {
+                        "forced" -> stringResource(R.string.feature_status_forced_summary)
                         "unsupported" -> stringResource(id = R.string.feature_status_unsupported_summary)
                         "managed" -> stringResource(id = R.string.feature_status_managed_summary)
                         else -> stringResource(id = R.string.settings_kernel_umount_summary)
@@ -272,6 +274,7 @@ fun FunctionCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
                 },
                 {
                     val avcSpoofSummary = when (uiState.avcSpoofStatus) {
+                        "forced" -> stringResource(R.string.feature_status_forced_summary)
                         "unsupported" -> stringResource(id = R.string.feature_status_unsupported_summary)
                         "managed" -> stringResource(id = R.string.feature_status_managed_summary)
                         else -> stringResource(id = R.string.settings_avc_spoof_summary)
@@ -287,6 +290,7 @@ fun FunctionCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
                 },
                 {
                     val sulogSummary = when (uiState.sulogStatus) {
+                        "forced" -> stringResource(R.string.feature_status_forced_summary)
                         "unsupported" -> stringResource(id = R.string.feature_status_unsupported_summary)
                         "managed" -> stringResource(id = R.string.feature_status_managed_summary)
                         else -> stringResource(id = R.string.settings_sulog_summary)
@@ -404,6 +408,7 @@ fun SecurityCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
             content = listOf(
                 {
                     val selinuxHideSummary = when (uiState.selinuxHideStatus) {
+                        "forced" -> stringResource(R.string.feature_status_forced_summary)
                         "unsupported" -> stringResource(id = R.string.feature_status_unsupported_summary)
                         "managed" -> stringResource(id = R.string.feature_status_managed_summary)
                         else -> stringResource(id = R.string.settings_selinux_hide_summary)
@@ -419,6 +424,7 @@ fun SecurityCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
                 },
                 {
                     val adbRootSummary = when (uiState.adbRootStatus) {
+                        "forced" -> stringResource(R.string.feature_status_forced_summary)
                         "unsupported" -> stringResource(id = R.string.feature_status_unsupported_summary)
                         "managed" -> stringResource(id = R.string.feature_status_managed_summary)
                         else -> stringResource(id = R.string.settings_adb_root_summary)

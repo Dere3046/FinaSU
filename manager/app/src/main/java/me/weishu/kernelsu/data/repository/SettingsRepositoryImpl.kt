@@ -24,6 +24,7 @@ import me.weishu.kernelsu.magica.BootCompletedReceiver
 import me.weishu.kernelsu.ui.util.execKsud
 import me.weishu.kernelsu.ui.util.execKsudResult
 import me.weishu.kernelsu.ui.util.getFeaturePersistValue
+import me.weishu.kernelsu.ui.util.getFeatureValue
 import me.weishu.kernelsu.ui.util.getFeatureStatus
 import org.json.JSONObject
 import java.security.SecureRandom
@@ -228,6 +229,7 @@ class SettingsRepositoryImpl : SettingsRepository {
     override fun setAvcSpoofEnabled(enabled: Boolean): Boolean = Natives.setAvcSpoofEnabled(enabled)
 
     override suspend fun getSulogPersistValue(): Long? = getFeaturePersistValue("sulog")
+    override suspend fun getSulogValue(): Long? = getFeatureValue("sulog")
 
     override fun setSulogEnabled(enabled: Boolean): Boolean = execKsud("feature set sulog ${if (enabled) 1 else 0}", true)
 
@@ -291,6 +293,7 @@ class SettingsRepositoryImpl : SettingsRepository {
     override suspend fun getAdbRootStatus(): String = getFeatureStatus("adb_root")
 
     override suspend fun getAdbRootPersistValue(): Long? = getFeaturePersistValue("adb_root")
+    override suspend fun getAdbRootValue(): Long? = getFeatureValue("adb_root")
 
     override fun setAdbRootEnabled(enabled: Boolean): Boolean =
         if (execKsud("feature set adb_root ${if (enabled) 1 else 0}", true)) {

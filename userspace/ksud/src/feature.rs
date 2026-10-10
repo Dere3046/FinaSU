@@ -7,93 +7,28 @@ use std::io::{Read, Write};
 use std::path::Path;
 
 use crate::defs;
+use crate::feature_id::{FeatureId, parse_feature_id};
 
 const FEATURE_CONFIG_PATH: &str = concatcp!(defs::WORKING_DIR, ".feature_config");
 #[allow(clippy::unreadable_literal)]
 const FEATURE_MAGIC: u32 = 0x7f4b5355;
 const FEATURE_VERSION: u32 = 1;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[repr(u32)]
-pub enum FeatureId {
-    SuCompat = 0,
-    KernelUmount = 1,
-    Sulog = 2,
-    AdbRoot = 3,
-    SelinuxHide = 4,
-    AvcSpoof = 6,
-}
-
-impl FeatureId {
-    pub const fn from_u32(id: u32) -> Option<Self> {
-        match id {
-            0 => Some(Self::SuCompat),
-            1 => Some(Self::KernelUmount),
-            2 => Some(Self::Sulog),
-            3 => Some(Self::AdbRoot),
-            4 => Some(Self::SelinuxHide),
-            6 => Some(Self::AvcSpoof),
-            _ => None,
-        }
-    }
-
-    pub const fn name(self) -> &'static str {
-        match self {
-            Self::SuCompat => "su_compat",
-            Self::KernelUmount => "kernel_umount",
-            Self::Sulog => "sulog",
-            Self::AdbRoot => "adb_root",
-            Self::SelinuxHide => "selinux_hide",
-            Self::AvcSpoof => "avc_spoof",
-        }
-    }
-
-    pub const fn description(self) -> &'static str {
-        match self {
-            Self::SuCompat => {
-                "SU Compatibility Mode - allows authorized apps to gain root via traditional 'su' command"
-            }
-            Self::KernelUmount => {
-                "Kernel Umount - controls whether kernel automatically unmounts modules when not needed"
-            }
-            Self::Sulog => {
-                "SU Log - streams kernel sulog events to userspace and persists them to disk"
-            }
-            Self::AdbRoot => "ADB Root - Enable adbd root",
-            Self::AvcSpoof => {
-                "AVC log spoofing - mask the KSU target context in SELinux audit logs"
-            }
-            Self::SelinuxHide => {
-                "SELinux Hide - sanitize /sys/fs/selinux access results for app UIDs"
-            }
-        }
-    }
-}
-
-fn parse_feature_id(name: &str) -> Result<FeatureId> {
-    match name {
-        "su_compat" | "0" => Ok(FeatureId::SuCompat),
-        "kernel_umount" | "1" => Ok(FeatureId::KernelUmount),
-        "sulog" | "2" => Ok(FeatureId::Sulog),
-        "adb_root" | "3" => Ok(FeatureId::AdbRoot),
-        "selinux_hide" | "4" => Ok(FeatureId::SelinuxHide),
-        "avc_spoof" | "6" => Ok(FeatureId::AvcSpoof),
-        _ => bail!("Unknown feature: {name}"),
-    }
-}
-
 fn set_kernel_feature(feature_id: FeatureId, value: u64) -> Result<()> {
     crate::ksucalls::set_feature(feature_id as u32, value)
         .with_context(|| format!("Failed to set feature {} to {value}", feature_id.name()))?;
 
+    on_feature_applied(feature_id, value);
+    Ok(())
+}
+
+fn on_feature_applied(feature_id: FeatureId, value: u64) {
     if feature_id == FeatureId::Sulog
         && value != 0
         && let Err(err) = sulog::ensure_sulogd_running()
     {
         log::warn!("failed to ensure sulogd is running after feature init: {err:#}");
     }
-
-    Ok(())
 }
 
 pub fn load_binary_config() -> Result<HashMap<u32, u64>> {
@@ -186,6 +121,10 @@ pub fn apply_config(features: &HashMap<u32, u64>) {
 
     let mut applied = 0;
     for (&id, &value) in features {
+        if crate::ksucalls::get_feature(id).is_ok_and(|state| state.forced) {
+            log::info!("Skip feature {id}: forced by boot config");
+            continue;
+        }
         match FeatureId::from_u32(id) {
             Some(feature_id) => match set_kernel_feature(feature_id, value) {
                 Ok(()) => {
@@ -213,21 +152,28 @@ pub fn apply_config(features: &HashMap<u32, u64>) {
 
 pub fn get_feature(id: &str) -> Result<()> {
     let feature_id = parse_feature_id(id)?;
-    let (value, supported) = crate::ksucalls::get_feature(feature_id as u32)
+    let state = crate::ksucalls::get_feature(feature_id as u32)
         .with_context(|| format!("Failed to get feature {id}"))?;
 
-    if !supported {
+    if !state.supported {
         println!("Feature '{id}' is not supported by kernel");
         return Ok(());
     }
 
     println!("Feature: {} ({})", feature_id.name(), feature_id as u32);
     println!("Description: {}", feature_id.description());
-    println!("Value: {value}");
+    println!("Value: {}", state.value);
     println!(
         "Status: {}",
-        if value != 0 { "enabled" } else { "disabled" }
+        if state.value != 0 {
+            "enabled"
+        } else {
+            "disabled"
+        }
     );
+    if state.forced {
+        println!("Forced: by boot config");
+    }
 
     Ok(())
 }
@@ -256,6 +202,9 @@ pub fn get_feature_config(id: &str) -> Result<()> {
 
 pub fn set_feature(id: &str, value: u64) -> Result<()> {
     let feature_id = parse_feature_id(id)?;
+    if crate::ksucalls::get_feature(feature_id as u32).is_ok_and(|state| state.forced) {
+        bail!("Feature '{}' is forced by boot config", feature_id.name());
+    }
 
     // Check if this feature is managed by any module
     if let Ok(managed_features_map) = crate::module::get_managed_features() {
@@ -329,18 +278,20 @@ pub fn list_features() {
 
     for feature_id in &all_features {
         let id = *feature_id as u32;
-        let (value, supported) = crate::ksucalls::get_feature(id).unwrap_or((0, false));
+        let state = crate::ksucalls::get_feature(id).unwrap_or_default();
 
-        let status = if !supported {
+        let status = if !state.supported {
             "NOT_SUPPORTED".to_string()
-        } else if value != 0 {
-            format!("ENABLED ({value})")
+        } else if state.value != 0 {
+            format!("ENABLED ({})", state.value)
         } else {
             "DISABLED".to_string()
         };
 
         let managed_by = feature_to_modules.get(feature_id.name());
-        let managed_mark = if managed_by.is_some() {
+        let managed_mark = if state.forced {
+            " [FORCED]"
+        } else if managed_by.is_some() {
             " [MODULE_MANAGED]"
         } else {
             ""
@@ -380,7 +331,8 @@ pub fn load_config_and_apply() -> Result<()> {
 }
 
 pub fn save_config() -> Result<()> {
-    let mut features = HashMap::new();
+    // Preserve persisted values while boot config temporarily overrides them.
+    let mut features = load_binary_config()?;
 
     let all_features = [
         FeatureId::SuCompat,
@@ -393,11 +345,12 @@ pub fn save_config() -> Result<()> {
 
     for feature_id in &all_features {
         let id = *feature_id as u32;
-        if let Ok((value, supported)) = crate::ksucalls::get_feature(id)
-            && supported
+        if let Ok(state) = crate::ksucalls::get_feature(id)
+            && state.supported
+            && !state.forced
         {
-            features.insert(id, value);
-            log::info!("Saved feature {} = {value}", feature_id.name());
+            features.insert(id, state.value);
+            log::info!("Saved feature {} = {}", feature_id.name(), state.value);
         }
     }
 
@@ -411,6 +364,10 @@ pub fn save_config() -> Result<()> {
 
 pub fn check_feature(id: &str) -> Result<()> {
     let feature_id = parse_feature_id(id)?;
+    if crate::ksucalls::get_feature(feature_id as u32).is_ok_and(|state| state.forced) {
+        println!("forced");
+        return Ok(());
+    }
 
     // Check if this feature is managed by any module
     let managed_features_map = crate::module::get_managed_features().unwrap_or_default();
@@ -424,16 +381,26 @@ pub fn check_feature(id: &str) -> Result<()> {
     }
 
     // Check if the feature is supported by kernel
-    let (_value, supported) = crate::ksucalls::get_feature(feature_id as u32)
+    let state = crate::ksucalls::get_feature(feature_id as u32)
         .with_context(|| format!("Failed to get feature {id}"))?;
 
-    if supported {
+    if state.supported {
         println!("supported");
     } else {
         println!("unsupported");
     }
 
     Ok(())
+}
+
+pub fn init_forced_features() {
+    for id in FeatureId::ALL {
+        if let Ok(state) = crate::ksucalls::get_feature(id as u32)
+            && state.forced
+        {
+            on_feature_applied(id, state.value);
+        }
+    }
 }
 
 pub fn init_features() -> Result<()> {
@@ -459,6 +426,11 @@ pub fn init_features() -> Result<()> {
                 for feature_name in feature_list {
                     if let Ok(feature_id) = parse_feature_id(feature_name) {
                         let feature_id_u32 = feature_id as u32;
+                        if crate::ksucalls::get_feature(feature_id_u32)
+                            .is_ok_and(|state| state.forced)
+                        {
+                            continue;
+                        }
                         // Remove managed features from config, let modules control them
                         if features.remove(&feature_id_u32).is_some() {
                             log::info!(

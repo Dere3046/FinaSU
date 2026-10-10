@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="feature_status_forced_summary">Forced by boot configuration; cannot be changed here</string>
     <string name="install_anykernel">Flash AnyKernel3 ZIP</string>
     <string name="install_anykernel_summary">Run a trusted kernel installer using the current slot. Root required.</string>
     <string name="install_anykernel_warning">This ZIP runs with root and may modify multiple partitions. The installer controls which partitions and slots are written; FinaSU does not override the slot or refresh ksud. A successful install does not guarantee bootability, and failure may leave partial changes. Existing boot-image backups may not cover these changes. Confirm device compatibility and prepare a recovery image before continuing.</string>

@@ -59,6 +59,7 @@ interface SettingsRepository {
     fun isAvcSpoofEnabled(): Boolean
     fun setAvcSpoofEnabled(enabled: Boolean): Boolean
     suspend fun getSulogPersistValue(): Long?
+    suspend fun getSulogValue(): Long?
     fun setSulogEnabled(enabled: Boolean): Boolean
 
     suspend fun getFolkMountStatus(): Result<FolkMountStatus>
@@ -68,6 +69,7 @@ interface SettingsRepository {
 
     suspend fun getAdbRootStatus(): String
     suspend fun getAdbRootPersistValue(): Long?
+    suspend fun getAdbRootValue(): Long?
     fun setAdbRootEnabled(enabled: Boolean): Boolean
 
     fun isDefaultUmountModules(): Boolean

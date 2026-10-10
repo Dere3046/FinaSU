@@ -94,6 +94,7 @@ pub fn on_post_fs_data() -> Result<()> {
     }
 
     // load feature config
+    crate::feature::init_forced_features();
     if is_safe_mode() {
         warn!("safe mode, skip load feature config");
     } else if let Err(e) = crate::feature::init_features() {
