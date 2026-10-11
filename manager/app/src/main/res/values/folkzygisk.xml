@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_builtin_switch_message">Disable external providers (%1$s) and enable built-in FolkZygisk for the next boot? Current injection will not change until reboot.</string>
+    <string name="folkzygisk_write_failed">FolkZygisk configuration failed. Refresh status and check the engine, provider conflicts and startup protection.</string>
+    <string name="folkzygisk_switch_title">Switch Zygisk provider?</string>
+    <string name="folkzygisk_switch_message">Disable built-in FolkZygisk for the next boot and activate %1$s? The current injection is unchanged until reboot. Other active external providers will block this operation.</string>
+    <string name="folkzygisk_switch_confirm">Switch and activate</string>
+    <string name="folkzygisk_switch_failed">Provider switch failed. Refresh the module list and FolkZygisk status before retrying.</string>
+    <string name="folkzygisk_activation_conflict">%1$s was not activated: it conflicts with built-in FolkZygisk. Disable the built-in provider first; selection changes apply on reboot.</string>
+    <string name="folkzygisk_preflight_failed">Module batch validation failed. No further modules were installed. Check the log.</string>
+    <string name="folkzygisk_install_conflict">Installation cancelled before any module was installed: %1$s conflicts with the enabled built-in FolkZygisk configuration. Disable the built-in provider before installing an external provider; changes require a reboot.</string>
+    <string name="folkzygisk_loading">Reading injection status…</string>
+    <string name="folkzygisk_read_error">Status unavailable. Injection and next-boot configuration could not be verified.</string>
+    <string name="folkzygisk_injected">Injected</string>
+    <string name="folkzygisk_partial">Partially injected</string>
+    <string name="folkzygisk_starting">Starting</string>
+    <string name="folkzygisk_failed">Failed</string>
+    <string name="folkzygisk_unverified">Unverified</string>
+    <string name="folkzygisk_current">Current injection: %1$s</string>
+    <string name="folkzygisk_next_enabled">Next-boot configuration: enabled</string>
+    <string name="folkzygisk_next_disabled">Next-boot configuration: disabled</string>
+    <string name="folkzygisk_reboot_required">Restart required to apply the configuration.</string>
+    <string name="folkzygisk_external">External providers: %1$s</string>
+    <string name="folkzygisk_blockers">Activation unavailable: %1$s</string>
+    <string name="folkzygisk_license_gate">license review pending</string>
+    <string name="folkzygisk_device_gate">device acceptance pending</string>
+    <string name="folkzygisk_engine_missing">engine not installed</string>
+    <string name="folkzygisk_external_conflict">external provider conflict</string>
+    <string name="folkzygisk_startup_protection">startup protection active</string>
+    <string name="folkzygisk_unknown_gate">unrecognized restriction</string>
+</resources>

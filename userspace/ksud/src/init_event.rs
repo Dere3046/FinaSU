@@ -125,6 +125,10 @@ pub fn on_post_fs_data() -> Result<()> {
     crate::susfs::boot("post-mount");
     run_stage("post-mount", wait);
 
+    if let Err(e) = crate::zygisk::post_fs_data(safe_mode) {
+        warn!("FolkZygisk startup skipped/failed: {e:#}");
+    }
+
     std::env::set_current_dir("/").with_context(|| "failed to chdir to /")?;
 
     Ok(())
@@ -179,6 +183,9 @@ pub fn on_services() {
     }
 
     info!("on_services triggered!");
+    if let Err(e) = crate::zygisk::services() {
+        warn!("FolkZygisk health check failed: {e:#}");
+    }
     run_stage("service", ScriptWait::NoWait);
 }
 
@@ -190,6 +197,9 @@ pub fn on_boot_completed() {
 
     ksucalls::report_boot_complete();
     info!("on_boot_completed triggered!");
+    if let Err(e) = crate::zygisk::boot_completed() {
+        warn!("FolkZygisk boot receipt failed: {e:#}");
+    }
 
     run_stage("boot-completed", ScriptWait::NoWait);
 }

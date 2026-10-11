@@ -27,13 +27,16 @@ class SettingsViewModel(
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+    private var refreshGeneration = 0
 
     init {
         refresh()
     }
 
     fun refresh() {
-        _uiState.update { it.copy(isFolkMountLoading = true) }
+        if (_uiState.value.isFolkZygiskWriting) return
+        val generation = ++refreshGeneration
+        _uiState.update { it.copy(isFolkMountLoading = true, isFolkZygiskLoading = true) }
         viewModelScope.launch {
             val checkUpdate = repo.checkUpdate
             val checkModuleUpdate = repo.checkModuleUpdate
@@ -74,7 +77,9 @@ class SettingsViewModel(
             val isLateLoadMode = Natives.isLateLoadMode
 
             val folkMountResult = repo.getFolkMountStatus()
+            val folkZygiskResult = repo.getFolkZygiskStatus()
 
+            if (generation != refreshGeneration) return@launch
             _uiState.update {
                 it.copy(
                     checkUpdate = checkUpdate,
@@ -112,8 +117,28 @@ class SettingsViewModel(
                     folkMountStatus = folkMountResult.getOrNull(),
                     folkMountReadError = folkMountResult.isFailure,
                     isFolkMountLoading = false,
+                    folkZygiskStatus = folkZygiskResult.getOrNull(),
+                    folkZygiskReadError = folkZygiskResult.isFailure,
+                    isFolkZygiskLoading = false,
                 )
             }
+        }
+    }
+
+    fun setFolkZygiskEnabled(enabled: Boolean, disableExternal: Boolean) {
+        if (_uiState.value.isFolkZygiskWriting || _uiState.value.isFolkZygiskLoading) return
+        ++refreshGeneration
+        _uiState.update { it.copy(isFolkZygiskWriting = true) }
+        viewModelScope.launch {
+            val result = repo.setFolkZygiskEnabled(enabled, disableExternal)
+            val status = repo.getFolkZygiskStatus()
+            _uiState.update {
+                it.copy(isFolkZygiskWriting = false, folkZygiskStatus = status.getOrNull(),
+                    folkZygiskReadError = status.isFailure,
+                    folkZygiskRebootPending = it.folkZygiskRebootPending || result.isSuccess)
+            }
+            Toast.makeText(ksuApp, if (result.isSuccess) R.string.folkzygisk_reboot_required
+                else R.string.folkzygisk_write_failed, Toast.LENGTH_LONG).show()
         }
     }
 

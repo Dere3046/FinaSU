@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.weishu.kernelsu.Natives
 import me.weishu.kernelsu.data.model.FolkMountMode
+import me.weishu.kernelsu.data.model.FolkZygiskStatus
 import me.weishu.kernelsu.data.model.FolkMountStatus
 import me.weishu.kernelsu.data.model.HomeLayoutStyle
 import me.weishu.kernelsu.data.model.ModuleCustomOrderStore
@@ -244,6 +245,31 @@ class SettingsRepositoryImpl : SettingsRepository {
             FolkMountStatus.fromJson(json)
         }
     }
+
+    override suspend fun getFolkZygiskStatus(): Result<FolkZygiskStatus> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val result = execKsudResult("zygisk status --json")
+                check(result.isSuccess) { "ksud zygisk status failed (exit ${result.code})" }
+                val payload = result.out.filter { it.isNotBlank() }
+                check(payload.size == 1) { "Invalid ksud zygisk status output" }
+                FolkZygiskStatus.fromJson(JSONObject(payload.single()))
+            }
+        }
+
+    override suspend fun setFolkZygiskEnabled(enabled: Boolean, disableExternal: Boolean): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                if (enabled) {
+                    val status = getFolkZygiskStatus().getOrThrow()
+                    if (!status.engineAvailable) {
+                        check(execKsudResult("zygisk install-engine").isSuccess) { "Engine installation failed" }
+                    }
+                }
+                val command = if (enabled) "enable${if (disableExternal) " --disable-external" else ""}" else "disable"
+                check(execKsudResult("zygisk $command").isSuccess) { "FolkZygisk configuration failed" }
+            }
+        }
 
     override suspend fun setFolkMountMode(mode: FolkMountMode): Result<Unit> = withContext(Dispatchers.IO) {
         runCatching {

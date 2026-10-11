@@ -1,6 +1,7 @@
 package me.weishu.kernelsu.data.repository
 
 import me.weishu.kernelsu.data.model.FolkMountMode
+import me.weishu.kernelsu.data.model.FolkZygiskStatus
 import me.weishu.kernelsu.data.model.FolkMountStatus
 import me.weishu.kernelsu.data.model.ModuleSortGroup
 import me.weishu.kernelsu.data.modulestore.StoreSourceKind
@@ -61,6 +62,8 @@ interface SettingsRepository {
     fun setSulogEnabled(enabled: Boolean): Boolean
 
     suspend fun getFolkMountStatus(): Result<FolkMountStatus>
+    suspend fun getFolkZygiskStatus(): Result<FolkZygiskStatus>
+    suspend fun setFolkZygiskEnabled(enabled: Boolean, disableExternal: Boolean): Result<Unit>
     suspend fun setFolkMountMode(mode: FolkMountMode): Result<Unit>
 
     suspend fun getAdbRootStatus(): String

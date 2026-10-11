@@ -5,6 +5,7 @@ import com.materialkolor.PaletteStyle
 import com.materialkolor.dynamiccolor.ColorSpec
 import me.weishu.kernelsu.data.model.FolkMountMode
 import me.weishu.kernelsu.data.model.FolkMountStatus
+import me.weishu.kernelsu.data.model.FolkZygiskStatus
 import me.weishu.kernelsu.data.model.HomeLayoutStyle
 
 @Immutable
@@ -47,6 +48,11 @@ data class SettingsUiState(
     val isFolkMountLoading: Boolean = false,
     val isFolkMountWriting: Boolean = false,
     val folkMountReadError: Boolean = false,
+    val folkZygiskStatus: FolkZygiskStatus? = null,
+    val isFolkZygiskLoading: Boolean = true,
+    val folkZygiskReadError: Boolean = false,
+    val isFolkZygiskWriting: Boolean = false,
+    val folkZygiskRebootPending: Boolean = false,
 
     // Umount Modules
     val isDefaultUmountModules: Boolean = false,
@@ -84,6 +90,7 @@ data class SettingsScreenActions(
     val onSetSulogEnabled: (Boolean) -> Unit,
     val onSetAvcSpoofEnabled: (Boolean) -> Unit,
     val onSetFolkMountMode: (FolkMountMode) -> Unit,
+    val onSetFolkZygiskEnabled: (Boolean, Boolean) -> Unit,
     val onSetAdbRootEnabled: (Boolean) -> Unit,
     val onSetDefaultUmountModules: (Boolean) -> Unit,
     val onSetEnableWebDebugging: (Boolean) -> Unit,

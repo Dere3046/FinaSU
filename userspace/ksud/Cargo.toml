@@ -60,6 +60,9 @@ prop-rs-android = { git = "https://github.com/KernelSU2/ksu_props", rev = "ddb6e
 
 [dev-dependencies]
 zip = { version = "8", features = ["deflate"], default-features = false }
+zip-extensions = { version = "0.14", features = ["deflate", "lzma", "xz"], default-features = false }
+java-properties = { git = "https://github.com/KernelSU2/java-properties.git", branch = "master", default-features = false }
+encoding_rs = "0.8"
 
 [build-dependencies]
 cc = "1"

@@ -46,8 +46,7 @@ import okhttp3.Request
 import java.text.Collator
 import java.util.Locale
 import kotlin.time.Duration.Companion.milliseconds
-import me.weishu.kernelsu.ui.util.toggleModule as toggleModuleUtil
-import me.weishu.kernelsu.ui.util.undoUninstallModule as undoUninstallModuleUtil
+import me.weishu.kernelsu.ui.util.mutateModuleActivation
 import me.weishu.kernelsu.ui.util.uninstallModule as uninstallModuleUtil
 
 class ModuleViewModel(
@@ -415,12 +414,14 @@ class ModuleViewModel(
     fun toggleModule(module: Module) {
         viewModelScope.launch {
             val res = ksuApp.resources
-            val success = withContext(Dispatchers.IO) {
-                toggleModuleUtil(module.id, !module.enabled)
+            val result = withContext(Dispatchers.IO) {
+                mutateModuleActivation(module.id, enable = !module.enabled)
             }
-            if (success) {
+            if (result.success) {
                 fetchModuleList(checkUpdate = true, resort = false)
                 emitEffect(ModuleEffect.SnackBar(res.getString(R.string.reboot_to_apply)))
+            } else if (result.zygiskConflict) {
+                requestExternalSwitch(module, undoUninstall = false)
             } else {
                 val message = if (module.enabled) R.string.module_failed_to_disable else R.string.module_failed_to_enable
                 emitEffect(ModuleEffect.SnackBar(res.getString(message).format(module.name)))
@@ -451,19 +452,54 @@ class ModuleViewModel(
     fun undoUninstallModule(module: Module) {
         viewModelScope.launch {
             val res = ksuApp.resources
-            val success = withContext(Dispatchers.IO) {
-                undoUninstallModuleUtil(module.id)
+            val result = withContext(Dispatchers.IO) {
+                mutateModuleActivation(module.id, undoUninstall = true)
             }
-            if (success) {
+            if (result.success) {
                 fetchModuleList(checkUpdate = true, resort = false)
+            }
+            if (result.zygiskConflict) {
+                requestExternalSwitch(module, undoUninstall = true)
+                return@launch
             }
             emitEffect(
                 ModuleEffect.SnackBar(
                     res.getString(
-                        if (success) R.string.module_undo_uninstall_success else R.string.module_undo_uninstall_failed
+                        if (result.success) R.string.module_undo_uninstall_success else R.string.module_undo_uninstall_failed
                     ).format(module.name)
                 )
             )
+        }
+    }
+
+    private fun requestExternalSwitch(module: Module, undoUninstall: Boolean) {
+        val res = ksuApp.resources
+        _uiState.update {
+            it.copy(confirmDialogState = ModuleConfirmDialogState(
+                request = ModuleConfirmRequest.SwitchExternal(module, undoUninstall),
+                title = res.getString(R.string.folkzygisk_switch_title),
+                content = res.getString(R.string.folkzygisk_switch_message, module.name),
+                confirm = res.getString(R.string.folkzygisk_switch_confirm),
+                dismiss = res.getString(android.R.string.cancel),
+            ))
+        }
+    }
+
+    fun confirmSwitchExternal(request: ModuleConfirmRequest.SwitchExternal) {
+        // Consume the request before launching: repeated confirmation cannot run it twice.
+        if (_uiState.value.confirmDialogState?.request != request) return
+        dismissConfirmRequest()
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                mutateModuleActivation(request.module.id, undoUninstall = request.undoUninstall, switchExternal = true)
+            }
+            if (result.success) fetchModuleList(checkUpdate = true, resort = false)
+            val message = if (result.success) {
+                ksuApp.getString(R.string.reboot_to_apply)
+            } else {
+                ksuApp.getString(R.string.folkzygisk_switch_failed)
+            }
+            emitEffect(ModuleEffect.SnackBar(message))
         }
     }
 

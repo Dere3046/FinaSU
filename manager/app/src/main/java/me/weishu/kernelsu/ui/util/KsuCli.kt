@@ -23,6 +23,7 @@ import me.weishu.kernelsu.core.tasks.BootKernelVersion
 import me.weishu.kernelsu.core.tasks.ExtractImage
 import me.weishu.kernelsu.core.tasks.ProbeResult
 import me.weishu.kernelsu.core.utils.DataSourceChannel
+import me.weishu.kernelsu.data.model.ModuleMutationResult
 import me.weishu.kernelsu.ksuApp
 import okhttp3.OkHttpClient
 import org.json.JSONArray
@@ -256,6 +257,27 @@ fun toggleModule(id: String, enable: Boolean): Boolean {
     return result
 }
 
+fun mutateModuleActivation(
+    id: String,
+    undoUninstall: Boolean = false,
+    enable: Boolean = true,
+    switchExternal: Boolean = false,
+): ModuleMutationResult {
+    val action = if (undoUninstall) "undo-uninstall" else if (enable) "enable" else "disable"
+    val quotedId = "'" + id.replace("'", "'\"'\"'") + "'"
+    val output = ArrayList<String>()
+    val errors = ArrayList<String>()
+    val result = withNewRootShell {
+        val command = if (switchExternal) {
+            "zygisk switch-external $quotedId" + if (undoUninstall) " --undo-uninstall" else ""
+        } else {
+            "module $action $quotedId"
+        }
+        newJob().add("${getKsuDaemonPath()} $command").to(output, errors).exec()
+    }
+    return ModuleMutationResult.fromOutput(result.isSuccess, output + errors)
+}
+
 fun undoUninstallModule(id: String): Boolean {
     val cmd = "module undo-uninstall $id"
     val result = execKsud(cmd, true)
@@ -323,19 +345,55 @@ fun flashModule(
     onStdout: (String) -> Unit,
     onStderr: (String) -> Unit
 ): FlashResult {
-    val resolver = ksuApp.contentResolver
-    with(resolver.openInputStream(uri)) {
-        val file = File(ksuApp.cacheDir, "module.zip")
-        file.outputStream().use { output ->
-            this?.copyTo(output)
+    return flashModuleBatch(listOf(uri), onStdout, onStderr)
+}
+
+/** Stage the entire batch before preflight; install the exact staged archives. */
+fun flashModuleBatch(
+    uris: List<Uri>,
+    onStdout: (String) -> Unit,
+    onStderr: (String) -> Unit,
+): FlashResult {
+    val files = mutableListOf<File>()
+    var installed = false
+    fun quote(value: String) = "'" + value.replace("'", "'\"'\"'") + "'"
+    return try {
+        require(uris.isNotEmpty()) { "No module archives selected" }
+        for (uri in uris) {
+            val file = File.createTempFile("module-batch-", ".zip", ksuApp.cacheDir)
+            files.add(file)
+            requireNotNull(ksuApp.contentResolver.openInputStream(uri)) { "Cannot read module archive" }
+                .use { source -> file.outputStream().use { source.copyTo(it) } }
         }
-        val cmd = "module install ${file.absolutePath}"
-        val result = flashWithIO("${getKsuDaemonPath()} $cmd", onStdout, onStderr)
-        Log.i("KernelSU", "install module $uri result: $result")
-
-        file.delete()
-
-        return FlashResult(result)
+        val output = mutableListOf<String>()
+        val result = flashWithIO(
+            "${quote(getKsuDaemonPath())} zygisk preflight ${files.joinToString(" ") { quote(it.absolutePath) }}",
+            { output.add(it) }, onStderr,
+        )
+        check(result.isSuccess) { ksuApp.getString(R.string.folkzygisk_preflight_failed) }
+        val lines = output.filter { it.isNotBlank() }
+        check(lines.size == 1) { ksuApp.getString(R.string.folkzygisk_preflight_failed) }
+        val status = me.weishu.kernelsu.data.model.FolkZygiskPreflight.fromJson(JSONObject(lines.single()))
+        if (status.conflict) {
+            val message = ksuApp.getString(R.string.folkzygisk_install_conflict, status.providerIds.joinToString(", "))
+            onStdout(message)
+            FlashResult(-1, message, false)
+        } else {
+            for (file in files) {
+                val install = flashWithIO(
+                    "${quote(getKsuDaemonPath())} module install ${quote(file.absolutePath)}", onStdout, onStderr,
+                )
+                if (!install.isSuccess) return FlashResult(install, installed)
+                installed = true
+            }
+            FlashResult(0, "", true)
+        }
+    } catch (error: Exception) {
+        val message = ksuApp.getString(R.string.folkzygisk_preflight_failed)
+        onStderr(error.toString())
+        FlashResult(-1, message, installed)
+    } finally {
+        files.forEach { it.delete() }
     }
 }
 

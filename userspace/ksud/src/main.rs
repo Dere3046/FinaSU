@@ -60,6 +60,12 @@ mod soft_reboot;
 mod su;
 #[cfg(target_os = "android")]
 mod sulog;
+#[cfg(any(target_os = "android", test))]
+#[cfg_attr(not(target_os = "android"), allow(dead_code))]
+mod zygisk;
+#[cfg(any(target_os = "android", test))]
+#[cfg_attr(not(target_os = "android"), allow(dead_code))]
+mod zygisk_assets;
 // SUSFS is an Android control interface; Linux hosts only compile it for tests.
 #[cfg(any(target_os = "android", all(test, target_os = "linux")))]
 mod susfs;

@@ -21,7 +21,10 @@ fun AboutScreen() {
         title = stringResource(R.string.about),
         appName = stringResource(R.string.app_name),
         versionName = BuildConfig.VERSION_NAME,
-        links = extractLinks(htmlString),
+        links = extractLinks(htmlString) + listOf(
+            LinkInfo("FolkZygisk · ReZygisk / PerformanC / ThePedroo", "https://github.com/PerformanC/ReZygisk"),
+            LinkInfo("FolkZygisk · GPLv3 / AGPLv3 / BSD-3-Clause · Source & notices", "https://github.com/LyraVoid/FolkSU/tree/main/userspace/folkzygisk"),
+        ),
     )
     val actions = AboutScreenActions(
         onBack = dropUnlessResumed { navigator.pop() },

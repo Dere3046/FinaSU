@@ -9,6 +9,7 @@ import me.weishu.kernelsu.data.model.ModuleUpdateInfo
 import me.weishu.kernelsu.ui.component.SearchStatus
 
 sealed interface ModuleConfirmRequest {
+    data class SwitchExternal(val module: Module, val undoUninstall: Boolean) : ModuleConfirmRequest
     data class Update(
         val module: Module,
         val downloadUrl: String,
@@ -72,6 +73,7 @@ data class ModuleActions(
     val onRequestUninstallConfirmation: (Module) -> Unit,
     val onDismissConfirmRequest: () -> Unit,
     val onConfirmUpdate: (ModuleConfirmRequest.Update) -> Unit,
+    val onConfirmSwitchExternal: (ModuleConfirmRequest.SwitchExternal) -> Unit,
     val onOpenRepo: () -> Unit,
     val onSetSortGroup: (ModuleSortGroup, Boolean) -> Unit,
     val onSetSortEnabledFirst: (Boolean) -> Unit,

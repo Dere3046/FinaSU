@@ -324,6 +324,9 @@ fun FunctionCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
             modifier = GroupModifier,
             content = listOf(
                 {
+                    FolkZygiskStatusItem(uiState, actions)
+                },
+                {
                     val folkMountStatus = uiState.folkMountStatus
                     val available = folkMountStatus != null && !uiState.folkMountReadError
                     val mode = folkMountStatus?.configuredMode

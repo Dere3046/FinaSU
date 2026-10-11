@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_builtin_switch_message">停用外置提供者（%1$s），并为下次启动启用内置 FolkZygisk？当前注入状态不会改变，重启后生效。</string>
+    <string name="folkzygisk_write_failed">FolkZygisk 配置失败，请刷新状态并检查引擎、提供者冲突与启动保护。</string>
+    <string name="folkzygisk_switch_title">切换 Zygisk 提供者？</string>
+    <string name="folkzygisk_switch_message">关闭下次启动的内置 FolkZygisk 并启用 %1$s？当前注入状态在重启前不会改变。存在其他已启用的外部提供者时，操作将被拒绝。</string>
+    <string name="folkzygisk_switch_confirm">切换并启用</string>
+    <string name="folkzygisk_switch_failed">提供者切换失败，请刷新模块列表与 FolkZygisk 状态后再试。</string>
+    <string name="folkzygisk_activation_conflict">未启用 %1$s：它与内置 FolkZygisk 冲突。请先关闭内置提供者，选择变更将在重启后生效。</string>
+    <string name="folkzygisk_preflight_failed">模块批次校验失败，未继续安装模块，请查看日志。</string>
+    <string name="folkzygisk_install_conflict">已在安装任何模块之前取消：%1$s 与已开启的内置 FolkZygisk 配置冲突。请先关闭内置提供者再安装外部提供者，配置变更需要重启。</string>
+    <string name="folkzygisk_loading">正在读取注入状态…</string>
+    <string name="folkzygisk_read_error">状态不可用，无法确认注入状态及下次启动配置。</string>
+    <string name="folkzygisk_injected">已注入</string>
+    <string name="folkzygisk_partial">部分架构已注入</string>
+    <string name="folkzygisk_starting">正在启动</string>
+    <string name="folkzygisk_failed">失败</string>
+    <string name="folkzygisk_unverified">未验证</string>
+    <string name="folkzygisk_current">当前注入：%1$s</string>
+    <string name="folkzygisk_next_enabled">下次启动配置：开启</string>
+    <string name="folkzygisk_next_disabled">下次启动配置：关闭</string>
+    <string name="folkzygisk_reboot_required">需要重启以应用配置。</string>
+    <string name="folkzygisk_external">外部提供者：%1$s</string>
+    <string name="folkzygisk_blockers">暂不可开启：%1$s</string>
+    <string name="folkzygisk_license_gate">许可证审查待完成</string>
+    <string name="folkzygisk_device_gate">真机验收待完成</string>
+    <string name="folkzygisk_engine_missing">引擎尚未安装</string>
+    <string name="folkzygisk_external_conflict">存在外部提供者冲突</string>
+    <string name="folkzygisk_startup_protection">启动保护已触发</string>
+    <string name="folkzygisk_unknown_gate">未知限制</string>
+</resources>

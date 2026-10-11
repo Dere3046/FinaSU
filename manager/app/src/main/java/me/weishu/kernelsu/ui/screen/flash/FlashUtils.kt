@@ -32,7 +32,7 @@ import me.weishu.kernelsu.ui.component.material.FolkTextButton
 import me.weishu.kernelsu.ui.util.FlashResult
 import me.weishu.kernelsu.ui.util.LkmSelection
 import me.weishu.kernelsu.ui.util.downloadBoot
-import me.weishu.kernelsu.ui.util.flashModule
+import me.weishu.kernelsu.ui.util.flashModuleBatch
 import me.weishu.kernelsu.ui.util.installBoot
 import me.weishu.kernelsu.ui.util.restoreBoot
 import me.weishu.kernelsu.ui.util.uninstallPermanently
@@ -107,14 +107,7 @@ fun flashModulesSequentially(
     onStdout: (String) -> Unit,
     onStderr: (String) -> Unit
 ): FlashResult {
-    for (uri in uris) {
-        flashModule(uri, onStdout, onStderr).apply {
-            if (code != 0) {
-                return FlashResult(code, err, showReboot)
-            }
-        }
-    }
-    return FlashResult(0, "", true)
+    return flashModuleBatch(uris, onStdout, onStderr)
 }
 
 fun flashIt(

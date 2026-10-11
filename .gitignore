@@ -12,3 +12,4 @@ __pycache__
 /.research
 /design
 /userspace/ksud/bin/*/mkbootfs
+/userspace/ksud/bin/*/folkzygisk/

@@ -136,6 +136,7 @@ fun ModulePager(
             viewModel.dismissConfirmRequest()
         },
         onOpenRepo = { navigator.push(Route.ModuleRepo) },
+        onConfirmSwitchExternal = { viewModel.confirmSwitchExternal(it) },
         onSetSortGroup = { group, selected ->
             viewModel.setSortGroup(group, selected)
         },

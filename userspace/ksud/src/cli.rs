@@ -23,6 +23,11 @@ struct Args {
 
 #[derive(clap::Subcommand, Debug)]
 enum Commands {
+    /// Manage the built-in FolkZygisk provider
+    Zygisk {
+        #[command(subcommand)]
+        command: crate::zygisk::Command,
+    },
     /// Flash an AnyKernel3 ZIP to the current slot (requires root)
     Anykernel3 { zip: PathBuf },
     /// Manage existing SUSFS implementations (does not load modules)
@@ -603,6 +608,7 @@ pub fn run() -> Result<()> {
     let result = match cli.command {
         Commands::Anykernel3 { zip } => crate::anykernel3::flash(&zip),
         Commands::Susfs { command } => crate::susfs::run(command),
+        Commands::Zygisk { command } => crate::zygisk::run(command),
         Commands::PostFsData => init_event::on_post_fs_data(),
         Commands::BootCompleted => {
             init_event::on_boot_completed();

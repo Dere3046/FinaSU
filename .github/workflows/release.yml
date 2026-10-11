@@ -71,3 +71,4 @@ jobs:
             lkm/lkm-*_kernelsu.ko
             ksud/ksud-*
             ksuinit/*
+            folkzygisk-source-*/folkzygisk-source-*.tar.gz
