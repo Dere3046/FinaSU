@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">确认引进门面</string>
+    <string name="fpt_resources">家伙什：%1$d 样</string>
+    <string name="fpt_compatibility">缺的设置就按照旧的或眼下的值来。不认识的字段、撑不住的家什都留着，好再送出去。开张动静和颤悠还是照灶具的来。</string>
+    <string name="fpt_type_value">灶具门类：%1$s</string>
+    <string name="fpt_name">名儿</string>
+    <string name="fpt_version">版本</string>
+    <string name="fpt_author">大厨</string>
+    <string name="fpt_description">说明</string>
+</resources>

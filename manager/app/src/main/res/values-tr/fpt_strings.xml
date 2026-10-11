@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">Tema içe aktarımını onayla</string>
+    <string name="fpt_resources">Kaynaklar: %1$d</string>
+    <string name="fpt_compatibility">Eksik ayarlar varsayılanları veya geçerli değerleri korur. Bilinmeyen alanlar ve desteklenmeyen kaynaklar dışa aktarma için saklanır. Başlangıç sesi ve titreşim cihaz ayarı olarak kalır.</string>
+    <string name="fpt_type_value">Cihaz türü: %1$s</string>
+    <string name="fpt_name">Ad</string>
+    <string name="fpt_version">Sürüm</string>
+    <string name="fpt_author">Yazar</string>
+    <string name="fpt_description">Açıklama</string>
+</resources>

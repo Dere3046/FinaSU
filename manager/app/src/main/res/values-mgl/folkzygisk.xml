@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">确认后 Zygisk 配置已变化，未结下任何魔法阵；请刷新状态后重新选择安装包。</string>
+    <string name="folkzygisk_install_switch_message">封印下次觉醒的内置 FolkZygisk，并结下外置提供者 %1$s？取消不会结下任何魔法阵。当前注入不会改变，重新觉醒后生效。安装器的涟漪无法完全回滚；若变身失败，会先停用残留提供者，再尝试恢复原配置。</string>
+    <string name="folkzygisk_switch_install">切换并结下</string>
+    <string name="folkzygisk_install_canceled">已取消，未结下任何魔法阵，也未改动 Zygisk 配置。</string>
+    <string name="folkzygisk_multiple_external">无法继续：存在多个外置 Zygisk 提供者（%1$s）。请先封印其他提供者，仅留其一。</string>
+    <string name="folkzygisk_builtin_switch_message">封印外置提供者（%1$s），并为下次觉醒点亮内置 FolkZygisk？当前注入状态不会改变，重新觉醒后生效。</string>
+    <string name="folkzygisk_write_failed">FolkZygisk 配置变身失败，请刷新状态并检查引擎、提供者冲突与启动守护。</string>
+    <string name="folkzygisk_switch_title">切换 Zygisk 提供者？</string>
+    <string name="folkzygisk_switch_message">封印下次觉醒的内置 FolkZygisk 并点亮 %1$s？当前注入状态在重新觉醒前不会改变。若存在其他已点亮的外部提供者，此魔法将被拒绝。</string>
+    <string name="folkzygisk_switch_confirm">切换并点亮</string>
+    <string name="folkzygisk_switch_failed">提供者切换变身失败，请刷新魔法阵列表与 FolkZygisk 状态后再试。</string>
+    <string name="folkzygisk_activation_conflict">未点亮 %1$s：它与内置 FolkZygisk 冲突。请先封印内置提供者，选择变更将在重新觉醒后生效。</string>
+    <string name="folkzygisk_preflight_failed">魔法阵批次校验变身失败，未继续结下魔法阵，请查看魔法记录。</string>
+    <string name="folkzygisk_install_conflict">已在结下任何魔法阵之前取消：%1$s 与已点亮的内置 FolkZygisk 配置冲突。请先封印内置提供者，再结下外部提供者；配置变更需要重新觉醒。</string>
+    <string name="folkzygisk_loading">正在读取注入状态…</string>
+    <string name="folkzygisk_read_error">状态不可用，无法确认注入状态与下次觉醒配置。</string>
+    <string name="folkzygisk_injected">已注入</string>
+    <string name="folkzygisk_partial">部分架构已注入</string>
+    <string name="folkzygisk_starting">正在觉醒</string>
+    <string name="folkzygisk_failed">变身失败</string>
+    <string name="folkzygisk_unverified">未验证</string>
+    <string name="folkzygisk_current">当前注入：%1$s</string>
+    <string name="folkzygisk_next_enabled">下次觉醒配置：点亮</string>
+    <string name="folkzygisk_next_disabled">下次觉醒配置：封印</string>
+    <string name="folkzygisk_reboot_required">需要重新觉醒以应用配置。</string>
+    <string name="folkzygisk_external">外部提供者：%1$s</string>
+    <string name="folkzygisk_blockers">暂不可点亮：%1$s</string>
+    <string name="folkzygisk_license_gate">契约许可审查待完成</string>
+    <string name="folkzygisk_device_gate">真机验收待完成</string>
+    <string name="folkzygisk_engine_missing">引擎尚未结下</string>
+    <string name="folkzygisk_external_conflict">存在外部提供者冲突</string>
+    <string name="folkzygisk_startup_protection">启动守护已触发</string>
+    <string name="folkzygisk_unknown_gate">未知限制</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">تأكيد استيراد المظهر</string>
+    <string name="fpt_resources">الموارد: %1$d</string>
+    <string name="fpt_compatibility">تحتفظ الإعدادات المفقودة بالقيم الافتراضية أو الحالية. تُحفظ الحقول غير المعروفة والموارد غير المدعومة لإعادة التصدير. يبقى صوت بدء التشغيل والاهتزاز من إعدادات الجهاز.</string>
+    <string name="fpt_type_value">نوع الجهاز: %1$s</string>
+    <string name="fpt_name">الاسم</string>
+    <string name="fpt_version">الإصدار</string>
+    <string name="fpt_author">المؤلف</string>
+    <string name="fpt_description">الوصف</string>
+</resources>

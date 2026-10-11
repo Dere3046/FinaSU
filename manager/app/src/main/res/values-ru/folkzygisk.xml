@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">Выбор Zygisk изменился после подтверждения. Ничего не установлено; обновите состояние и снова выберите архивы.</string>
+    <string name="folkzygisk_install_switch_message">Отключить встроенный FolkZygisk для следующей загрузки и установить внешний провайдер %1$s? Отмена ничего не устанавливает. Текущая инъекция не изменится до перезагрузки. Побочные эффекты установщика невозможно полностью откатить; при сбое частичные провайдеры будут отключены перед попыткой восстановить предыдущий выбор.</string>
+    <string name="folkzygisk_switch_install">Переключить и установить</string>
+    <string name="folkzygisk_install_canceled">Отменено. Модули не установлены, конфигурация Zygisk не изменена.</string>
+    <string name="folkzygisk_multiple_external">Невозможно продолжить: несколько внешних провайдеров Zygisk (%1$s). Отключите остальные и оставьте только один.</string>
+    <string name="folkzygisk_builtin_switch_message">Отключить внешние провайдеры (%1$s) и включить встроенный FolkZygisk для следующей загрузки? Текущая инъекция не изменится до перезагрузки.</string>
+    <string name="folkzygisk_write_failed">Не удалось сохранить конфигурацию FolkZygisk. Обновите состояние и проверьте движок, конфликты провайдеров и защиту при запуске.</string>
+    <string name="folkzygisk_switch_title">Переключить провайдер Zygisk?</string>
+    <string name="folkzygisk_switch_message">Отключить встроенный FolkZygisk для следующей загрузки и активировать %1$s? Текущая инъекция не изменится до перезагрузки. Другие активные внешние провайдеры заблокируют эту операцию.</string>
+    <string name="folkzygisk_switch_confirm">Переключить и активировать</string>
+    <string name="folkzygisk_switch_failed">Не удалось переключить провайдер. Обновите список модулей и состояние FolkZygisk перед повторной попыткой.</string>
+    <string name="folkzygisk_activation_conflict">%1$s не активирован: конфликт со встроенным FolkZygisk. Сначала отключите встроенный провайдер; изменения выбора вступят в силу после перезагрузки.</string>
+    <string name="folkzygisk_preflight_failed">Не удалось проверить пакет модулей. Дальнейшие модули не устанавливались. Проверьте журнал.</string>
+    <string name="folkzygisk_install_conflict">Установка отменена до установки каких-либо модулей: %1$s конфликтует с включённой конфигурацией встроенного FolkZygisk. Отключите встроенный провайдер перед установкой внешнего; изменения требуют перезагрузки.</string>
+    <string name="folkzygisk_loading">Чтение состояния инъекции…</string>
+    <string name="folkzygisk_read_error">Состояние недоступно. Не удалось проверить инъекцию и конфигурацию следующей загрузки.</string>
+    <string name="folkzygisk_injected">Внедрено</string>
+    <string name="folkzygisk_partial">Частично внедрено</string>
+    <string name="folkzygisk_starting">Запуск</string>
+    <string name="folkzygisk_failed">Сбой</string>
+    <string name="folkzygisk_unverified">Не проверено</string>
+    <string name="folkzygisk_current">Текущая инъекция: %1$s</string>
+    <string name="folkzygisk_next_enabled">Конфигурация следующей загрузки: включена</string>
+    <string name="folkzygisk_next_disabled">Конфигурация следующей загрузки: отключена</string>
+    <string name="folkzygisk_reboot_required">Для применения конфигурации требуется перезагрузка.</string>
+    <string name="folkzygisk_external">Внешние провайдеры: %1$s</string>
+    <string name="folkzygisk_blockers">Активация недоступна: %1$s</string>
+    <string name="folkzygisk_license_gate">ожидается проверка лицензии</string>
+    <string name="folkzygisk_device_gate">ожидается приёмка устройства</string>
+    <string name="folkzygisk_engine_missing">движок не установлен</string>
+    <string name="folkzygisk_external_conflict">конфликт внешнего провайдера</string>
+    <string name="folkzygisk_startup_protection">активна защита при запуске</string>
+    <string name="folkzygisk_unknown_gate">нераспознанное ограничение</string>
+</resources>

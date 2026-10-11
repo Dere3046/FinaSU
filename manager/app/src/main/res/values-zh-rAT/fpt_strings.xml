@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">神谕确认唤醒圣光主题</string>
+    <string name="fpt_resources">圣物：%1$d 项</string>
+    <string name="fpt_compatibility">缺失之设定将留天意默认或当前之值。未知之字段与不蒙神恩之圣物将留存以供再封印。启圣之音与圣颤仍属圣器之设。</string>
+    <string name="fpt_type_value">圣器圣类：%1$s</string>
+    <string name="fpt_name">圣名</string>
+    <string name="fpt_version">神恩等级</string>
+    <string name="fpt_author">创造者</string>
+    <string name="fpt_description">圣光描述</string>
+</resources>

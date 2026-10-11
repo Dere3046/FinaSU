@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">Wybór Zygisk zmienił się po potwierdzeniu. Niczego nie zainstalowano; odśwież stan i ponownie wybierz archiwa.</string>
+    <string name="folkzygisk_install_switch_message">Wyłączyć wbudowany FolkZygisk na następne uruchomienie i zainstalować zewnętrznego dostawcę %1$s? Anulowanie nic nie instaluje. Bieżąca iniekcja pozostaje niezmieniona do ponownego uruchomienia. Skutków ubocznych instalatora nie można w pełni cofnąć; w razie niepowodzenia częściowi dostawcy zostaną wyłączeni przed próbą przywrócenia poprzedniego wyboru.</string>
+    <string name="folkzygisk_switch_install">Przełącz i zainstaluj</string>
+    <string name="folkzygisk_install_canceled">Anulowano. Nie zainstalowano żadnych modułów ani nie zmieniono konfiguracji Zygisk.</string>
+    <string name="folkzygisk_multiple_external">Nie można kontynuować: wielu zewnętrznych dostawców Zygisk (%1$s). Wyłącz pozostałych dostawców i pozostaw tylko jednego.</string>
+    <string name="folkzygisk_builtin_switch_message">Wyłączyć zewnętrznych dostawców (%1$s) i włączyć wbudowany FolkZygisk na następne uruchomienie? Bieżąca iniekcja nie zmieni się do ponownego uruchomienia.</string>
+    <string name="folkzygisk_write_failed">Konfiguracja FolkZygisk nie powiodła się. Odśwież stan i sprawdź silnik, konflikty dostawców oraz ochronę rozruchu.</string>
+    <string name="folkzygisk_switch_title">Przełączyć dostawcę Zygisk?</string>
+    <string name="folkzygisk_switch_message">Wyłączyć wbudowany FolkZygisk na następne uruchomienie i aktywować %1$s? Bieżąca iniekcja pozostaje niezmieniona do ponownego uruchomienia. Inni aktywni zewnętrzni dostawcy zablokują tę operację.</string>
+    <string name="folkzygisk_switch_confirm">Przełącz i aktywuj</string>
+    <string name="folkzygisk_switch_failed">Przełączenie dostawcy nie powiodło się. Odśwież listę modułów i stan FolkZygisk przed ponowną próbą.</string>
+    <string name="folkzygisk_activation_conflict">Nie aktywowano %1$s: koliduje z wbudowanym FolkZygisk. Najpierw wyłącz wbudowanego dostawcę; zmiany wyboru zaczną działać po ponownym uruchomieniu.</string>
+    <string name="folkzygisk_preflight_failed">Walidacja partii modułów nie powiodła się. Nie zainstalowano już żadnych modułów. Sprawdź dziennik.</string>
+    <string name="folkzygisk_install_conflict">Instalację anulowano, zanim zainstalowano jakikolwiek moduł: %1$s koliduje z włączoną wbudowaną konfiguracją FolkZygisk. Wyłącz wbudowanego dostawcę przed zainstalowaniem zewnętrznego dostawcy; zmiany wymagają ponownego uruchomienia.</string>
+    <string name="folkzygisk_loading">Odczytywanie stanu iniekcji…</string>
+    <string name="folkzygisk_read_error">Stan niedostępny. Nie można zweryfikować iniekcji ani konfiguracji na następne uruchomienie.</string>
+    <string name="folkzygisk_injected">Wstrzyknięto</string>
+    <string name="folkzygisk_partial">Częściowo wstrzyknięto</string>
+    <string name="folkzygisk_starting">Uruchamianie</string>
+    <string name="folkzygisk_failed">Niepowodzenie</string>
+    <string name="folkzygisk_unverified">Niezweryfikowano</string>
+    <string name="folkzygisk_current">Bieżąca iniekcja: %1$s</string>
+    <string name="folkzygisk_next_enabled">Konfiguracja na następne uruchomienie: włączona</string>
+    <string name="folkzygisk_next_disabled">Konfiguracja na następne uruchomienie: wyłączona</string>
+    <string name="folkzygisk_reboot_required">Wymagane jest ponowne uruchomienie, aby zastosować konfigurację.</string>
+    <string name="folkzygisk_external">Zewnętrzni dostawcy: %1$s</string>
+    <string name="folkzygisk_blockers">Aktywacja niedostępna: %1$s</string>
+    <string name="folkzygisk_license_gate">oczekuje weryfikacji licencji</string>
+    <string name="folkzygisk_device_gate">oczekuje akceptacji urządzenia</string>
+    <string name="folkzygisk_engine_missing">silnik nie jest zainstalowany</string>
+    <string name="folkzygisk_external_conflict">konflikt zewnętrznego dostawcy</string>
+    <string name="folkzygisk_startup_protection">ochrona rozruchu aktywna</string>
+    <string name="folkzygisk_unknown_gate">nierozpoznane ograniczenie</string>
+</resources>

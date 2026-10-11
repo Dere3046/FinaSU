@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">تغيّر اختيار Zygisk بعد التأكيد. لم يتم تثبيت أي شيء؛ حدّث الحالة واختر الأرشيفات مرة أخرى.</string>
+    <string name="folkzygisk_install_switch_message">تعطيل FolkZygisk المدمج للإقلاع التالي وتثبيت المزوّد الخارجي %1$s؟ الإلغاء لا يثبّت شيئًا. لن يتغيّر الحقن الحالي حتى إعادة التشغيل. لا يمكن التراجع بالكامل عن الآثار الجانبية للمثبّت؛ عند الفشل ستُعطَّل المزوّدات الجزئية قبل محاولة استعادة الاختيار السابق.</string>
+    <string name="folkzygisk_switch_install">التبديل والتثبيت</string>
+    <string name="folkzygisk_install_canceled">تم الإلغاء. لم تُثبَّت أي وحدات ولم يتغيّر إعداد Zygisk.</string>
+    <string name="folkzygisk_multiple_external">تعذّر المتابعة: يوجد عدة مزوّدي Zygisk خارجيين (%1$s). عطّل المزوّدات الأخرى واترك واحدًا فقط.</string>
+    <string name="folkzygisk_builtin_switch_message">تعطيل المزوّدات الخارجية (%1$s) وتفعيل FolkZygisk المدمج للإقلاع التالي؟ لن يتغيّر الحقن الحالي حتى إعادة التشغيل.</string>
+    <string name="folkzygisk_write_failed">فشل إعداد FolkZygisk. حدّث الحالة وتحقق من المحرّك وتعارضات المزوّدات وحماية الإقلاع.</string>
+    <string name="folkzygisk_switch_title">تبديل مزوّد Zygisk؟</string>
+    <string name="folkzygisk_switch_message">تعطيل FolkZygisk المدمج للإقلاع التالي وتفعيل %1$s؟ يبقى الحقن الحالي دون تغيير حتى إعادة التشغيل. ستمنع المزوّدات الخارجية النشطة الأخرى هذه العملية.</string>
+    <string name="folkzygisk_switch_confirm">التبديل والتفعيل</string>
+    <string name="folkzygisk_switch_failed">فشل تبديل المزوّد. حدّث قائمة الوحدات وحالة FolkZygisk قبل إعادة المحاولة.</string>
+    <string name="folkzygisk_activation_conflict">لم يُفعَّل %1$s: يتعارض مع FolkZygisk المدمج. عطّل المزوّد المدمج أولًا؛ تُطبَّق تغييرات الاختيار عند إعادة التشغيل.</string>
+    <string name="folkzygisk_preflight_failed">فشل التحقق من دفعة الوحدات. لم تُثبَّت وحدات أخرى. راجع السجل.</string>
+    <string name="folkzygisk_install_conflict">أُلغي التثبيت قبل تثبيت أي وحدة: يتعارض %1$s مع إعداد FolkZygisk المدمج المفعّل. عطّل المزوّد المدمج قبل تثبيت مزوّد خارجي؛ تتطلب التغييرات إعادة التشغيل.</string>
+    <string name="folkzygisk_loading">جارٍ قراءة حالة الحقن…</string>
+    <string name="folkzygisk_read_error">الحالة غير متاحة. تعذّر التحقق من الحقن وإعداد الإقلاع التالي.</string>
+    <string name="folkzygisk_injected">محقون</string>
+    <string name="folkzygisk_partial">محقون جزئيًا</string>
+    <string name="folkzygisk_starting">جارٍ البدء</string>
+    <string name="folkzygisk_failed">فشل</string>
+    <string name="folkzygisk_unverified">غير مُتحقَّق منه</string>
+    <string name="folkzygisk_current">الحقن الحالي: %1$s</string>
+    <string name="folkzygisk_next_enabled">إعداد الإقلاع التالي: مفعّل</string>
+    <string name="folkzygisk_next_disabled">إعداد الإقلاع التالي: معطّل</string>
+    <string name="folkzygisk_reboot_required">يلزم إعادة التشغيل لتطبيق الإعداد.</string>
+    <string name="folkzygisk_external">المزوّدات الخارجية: %1$s</string>
+    <string name="folkzygisk_blockers">التفعيل غير متاح: %1$s</string>
+    <string name="folkzygisk_license_gate">مراجعة الترخيص معلّقة</string>
+    <string name="folkzygisk_device_gate">قبول الجهاز معلّق</string>
+    <string name="folkzygisk_engine_missing">المحرّك غير مثبّت</string>
+    <string name="folkzygisk_external_conflict">تعارض في المزوّد الخارجي</string>
+    <string name="folkzygisk_startup_protection">حماية الإقلاع مفعّلة</string>
+    <string name="folkzygisk_unknown_gate">قيد غير معروف</string>
+</resources>

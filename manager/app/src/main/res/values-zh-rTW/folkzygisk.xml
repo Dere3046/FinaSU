@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">確認後 Zygisk 選項已變更。未安裝任何項目；請重新整理狀態並重新選擇封存檔。</string>
+    <string name="folkzygisk_install_switch_message">要為下次開機停用內建 FolkZygisk 並安裝外部提供者 %1$s 嗎？取消則不會安裝任何項目。重新啟動前，目前的注入維持不變。安裝程式的副作用無法完全復原；若失敗，會先停用部分提供者，再嘗試還原先前的選項。</string>
+    <string name="folkzygisk_switch_install">切換並安裝</string>
+    <string name="folkzygisk_install_canceled">已取消。未安裝任何模組，也未變更 Zygisk 設定。</string>
+    <string name="folkzygisk_multiple_external">無法繼續：有多個外部 Zygisk 提供者（%1$s）。請停用其他提供者，僅保留一個。</string>
+    <string name="folkzygisk_builtin_switch_message">要為下次開機停用外部提供者（%1$s）並啟用內建 FolkZygisk 嗎？重新啟動前，目前的注入不會改變。</string>
+    <string name="folkzygisk_write_failed">FolkZygisk 設定失敗。請重新整理狀態，並檢查引擎、提供者衝突與啟動保護。</string>
+    <string name="folkzygisk_switch_title">要切換 Zygisk 提供者嗎？</string>
+    <string name="folkzygisk_switch_message">要為下次開機停用內建 FolkZygisk 並啟用 %1$s 嗎？重新啟動前，目前的注入維持不變。其他啟用中的外部提供者會阻擋此操作。</string>
+    <string name="folkzygisk_switch_confirm">切換並啟用</string>
+    <string name="folkzygisk_switch_failed">提供者切換失敗。重試前請重新整理模組清單與 FolkZygisk 狀態。</string>
+    <string name="folkzygisk_activation_conflict">未啟用 %1$s：它與內建 FolkZygisk 衝突。請先停用內建提供者；選項變更於重新啟動後生效。</string>
+    <string name="folkzygisk_preflight_failed">模組批次驗證失敗。未再安裝其他模組。請檢查日誌。</string>
+    <string name="folkzygisk_install_conflict">在任何模組安裝前已取消安裝：%1$s 與已啟用的內建 FolkZygisk 設定衝突。安裝外部提供者前，請先停用內建提供者；變更需要重新啟動。</string>
+    <string name="folkzygisk_loading">正在讀取注入狀態…</string>
+    <string name="folkzygisk_read_error">無法取得狀態。無法驗證注入與下次開機設定。</string>
+    <string name="folkzygisk_injected">已注入</string>
+    <string name="folkzygisk_partial">部分注入</string>
+    <string name="folkzygisk_starting">啟動中</string>
+    <string name="folkzygisk_failed">失敗</string>
+    <string name="folkzygisk_unverified">未驗證</string>
+    <string name="folkzygisk_current">目前注入：%1$s</string>
+    <string name="folkzygisk_next_enabled">下次開機設定：已啟用</string>
+    <string name="folkzygisk_next_disabled">下次開機設定：已停用</string>
+    <string name="folkzygisk_reboot_required">需要重新啟動才能套用設定。</string>
+    <string name="folkzygisk_external">外部提供者：%1$s</string>
+    <string name="folkzygisk_blockers">無法啟用：%1$s</string>
+    <string name="folkzygisk_license_gate">授權審查待處理</string>
+    <string name="folkzygisk_device_gate">裝置驗收待處理</string>
+    <string name="folkzygisk_engine_missing">尚未安裝引擎</string>
+    <string name="folkzygisk_external_conflict">外部提供者衝突</string>
+    <string name="folkzygisk_startup_protection">啟動保護已啟用</string>
+    <string name="folkzygisk_unknown_gate">無法辨識的限制</string>
+</resources>

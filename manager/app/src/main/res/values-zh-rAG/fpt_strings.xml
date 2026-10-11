@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">确认导入主题喵</string>
+    <string name="fpt_resources">资源喵：%1$d 项</string>
+    <string name="fpt_compatibility">缺失的设置会保留默认值或者当前值喵。未知字段和用不了的资源都会留着，方便下次再导出。启动音和振动还是跟着设备设置走哦</string>
+    <string name="fpt_type_value">设备类型喵：%1$s</string>
+    <string name="fpt_name">名称喵</string>
+    <string name="fpt_version">版本喵</string>
+    <string name="fpt_author">作者喵</string>
+    <string name="fpt_description">描述喵</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">Konfirmasi impor tema</string>
+    <string name="fpt_resources">Sumber daya: %1$d</string>
+    <string name="fpt_compatibility">Setelan yang tidak ada akan mempertahankan nilai bawaan atau nilai saat ini. Kolom yang tidak dikenal dan sumber daya yang tidak didukung tetap disimpan untuk ekspor. Suara mulai dan getaran tetap menjadi setelan perangkat.</string>
+    <string name="fpt_type_value">Jenis perangkat: %1$s</string>
+    <string name="fpt_name">Nama</string>
+    <string name="fpt_version">Versi</string>
+    <string name="fpt_author">Penulis</string>
+    <string name="fpt_description">Deskripsi</string>
+</resources>

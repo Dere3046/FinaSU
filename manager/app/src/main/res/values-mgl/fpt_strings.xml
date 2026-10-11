@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">确认导入星幻主题</string>
+    <string name="fpt_resources">资源：%1$d 项</string>
+    <string name="fpt_compatibility">缺失的魔法设定将保留默认值或当前值。未知字段与不受支持的资源会保留，以便再次导出。觉醒音律与震动仍为法器设定。</string>
+    <string name="fpt_type_value">法器类型：%1$s</string>
+    <string name="fpt_name">名称</string>
+    <string name="fpt_version">版本</string>
+    <string name="fpt_author">缔造者</string>
+    <string name="fpt_description">描述</string>
+</resources>

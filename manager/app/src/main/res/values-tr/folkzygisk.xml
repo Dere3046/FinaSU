@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">Zygisk seçimi onaydan sonra değişti. Hiçbir şey kurulmadı; durumu yenileyin ve arşivleri tekrar seçin.</string>
+    <string name="folkzygisk_install_switch_message">Sonraki önyükleme için yerleşik FolkZygisk devre dışı bırakılıp harici sağlayıcı %1$s kurlsun mu? İptal hiçbir şey kurmaz. Yeniden başlatana kadar geçerli enjeksiyon değişmez. Yükleyicinin yan etkileri tamamen geri alınamaz; başarısızlık durumunda, önceki seçim geri yüklenmeye çalışılmadan önce kısmi sağlayıcılar devre dışı bırakılır.</string>
+    <string name="folkzygisk_switch_install">Değiştir ve kur</string>
+    <string name="folkzygisk_install_canceled">İptal edildi. Hiçbir modül kurulmadı veya Zygisk yapılandırması değiştirilmedi.</string>
+    <string name="folkzygisk_multiple_external">Devam edilemiyor: birden fazla harici Zygisk sağlayıcısı (%1$s). Diğer sağlayıcıları devre dışı bırakın ve yalnızca birini tutun.</string>
+    <string name="folkzygisk_builtin_switch_message">Harici sağlayıcılar (%1$s) devre dışı bırakılıp sonraki önyükleme için yerleşik FolkZygisk etkinleştirilsin mi? Yeniden başlatana kadar geçerli enjeksiyon değişmez.</string>
+    <string name="folkzygisk_write_failed">FolkZygisk yapılandırması başarısız oldu. Durumu yenileyin ve motoru, sağlayıcı çakışmalarını ve başlangıç korumasını kontrol edin.</string>
+    <string name="folkzygisk_switch_title">Zygisk sağlayıcısı değiştirilsin mi?</string>
+    <string name="folkzygisk_switch_message">Sonraki önyükleme için yerleşik FolkZygisk devre dışı bırakılıp %1$s etkinleştirilsin mi? Yeniden başlatana kadar geçerli enjeksiyon değişmez. Diğer etkin harici sağlayıcılar bu işlemi engeller.</string>
+    <string name="folkzygisk_switch_confirm">Değiştir ve etkinleştir</string>
+    <string name="folkzygisk_switch_failed">Sağlayıcı değiştirilemedi. Yeniden denemeden önce modül listesini ve FolkZygisk durumunu yenileyin.</string>
+    <string name="folkzygisk_activation_conflict">%1$s etkinleştirilmedi: yerleşik FolkZygisk ile çakışıyor. Önce yerleşik sağlayıcıyı devre dışı bırakın; seçim değişiklikleri yeniden başlatmada uygulanır.</string>
+    <string name="folkzygisk_preflight_failed">Modül toplu doğrulaması başarısız oldu. Başka modül kurulmadı. Günlüğü kontrol edin.</string>
+    <string name="folkzygisk_install_conflict">Herhangi bir modül kurulmadan önce kurulum iptal edildi: %1$s etkin yerleşik FolkZygisk yapılandırmasıyla çakışıyor. Harici bir sağlayıcı kurmadan önce yerleşik sağlayıcıyı devre dışı bırakın; değişiklikler yeniden başlatma gerektirir.</string>
+    <string name="folkzygisk_loading">Enjeksiyon durumu okunuyor…</string>
+    <string name="folkzygisk_read_error">Durum kullanılamıyor. Enjeksiyon ve sonraki önyükleme yapılandırması doğrulanamadı.</string>
+    <string name="folkzygisk_injected">Enjekte edildi</string>
+    <string name="folkzygisk_partial">Kısmen enjekte edildi</string>
+    <string name="folkzygisk_starting">Başlatılıyor</string>
+    <string name="folkzygisk_failed">Başarısız</string>
+    <string name="folkzygisk_unverified">Doğrulanmadı</string>
+    <string name="folkzygisk_current">Geçerli enjeksiyon: %1$s</string>
+    <string name="folkzygisk_next_enabled">Sonraki önyükleme yapılandırması: etkin</string>
+    <string name="folkzygisk_next_disabled">Sonraki önyükleme yapılandırması: devre dışı</string>
+    <string name="folkzygisk_reboot_required">Yapılandırmayı uygulamak için yeniden başlatma gerekir.</string>
+    <string name="folkzygisk_external">Harici sağlayıcılar: %1$s</string>
+    <string name="folkzygisk_blockers">Etkinleştirme kullanılamıyor: %1$s</string>
+    <string name="folkzygisk_license_gate">lisans incelemesi bekliyor</string>
+    <string name="folkzygisk_device_gate">cihaz kabulü bekliyor</string>
+    <string name="folkzygisk_engine_missing">motor kurulu değil</string>
+    <string name="folkzygisk_external_conflict">harici sağlayıcı çakışması</string>
+    <string name="folkzygisk_startup_protection">başlangıç koruması etkin</string>
+    <string name="folkzygisk_unknown_gate">tanınmayan kısıtlama</string>
+</resources>

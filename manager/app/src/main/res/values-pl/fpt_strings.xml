@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">Potwierdź import motywu</string>
+    <string name="fpt_resources">Zasoby: %1$d</string>
+    <string name="fpt_compatibility">Brakujące ustawienia zachowają wartości domyślne lub bieżące. Nieznane pola i nieobsługiwane zasoby zostaną zachowane na potrzeby eksportu. Dźwięk uruchamiania i wibracje pozostają ustawieniami urządzenia.</string>
+    <string name="fpt_type_value">Typ urządzenia: %1$s</string>
+    <string name="fpt_name">Nazwa</string>
+    <string name="fpt_version">Wersja</string>
+    <string name="fpt_author">Autor</string>
+    <string name="fpt_description">Opis</string>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">神谕确认后 Zygisk 配置已变，未蒙恩任何圣光阵；请更新状态后再遴选圣匣。</string>
+    <string name="folkzygisk_install_switch_message">封印下次圣启之内建 FolkZygisk，并蒙恩外置圣光提供者 %1$s？罢手则不蒙恩任何圣光阵。当前降灵于神翼再生前不变。安装符咒之余波不可尽数归元；若败陨，将先封印残留提供者，再图归元旧选。</string>
+    <string name="folkzygisk_switch_install">切换并蒙恩</string>
+    <string name="folkzygisk_install_canceled">已罢手，未蒙恩任何圣光阵，亦未更改 Zygisk 配置。</string>
+    <string name="folkzygisk_multiple_external">无法续行：存有多位外置 Zygisk 提供者（%1$s）。请先封印其余提供者，唯留其一。</string>
+    <string name="folkzygisk_builtin_switch_message">封印外置提供者（%1$s），并为下次圣启唤醒内建 FolkZygisk？当前降灵之态不变，神翼再生后生效。</string>
+    <string name="folkzygisk_write_failed">FolkZygisk 配置未至，请更新状态并检视圣光引擎、提供者冲突与圣启庇护。</string>
+    <string name="folkzygisk_switch_title">切换 Zygisk 提供者？</string>
+    <string name="folkzygisk_switch_message">封印下次圣启之内建 FolkZygisk 并唤醒 %1$s？当前降灵之态于神翼再生前不变。若存其他已唤醒之外置提供者，此术将被拒斥。</string>
+    <string name="folkzygisk_switch_confirm">切换并唤醒</string>
+    <string name="folkzygisk_switch_failed">提供者切换未至，请更新圣光阵名录与 FolkZygisk 状态后再祈。</string>
+    <string name="folkzygisk_activation_conflict">%1$s 未得唤醒：与内建 FolkZygisk 相冲。请先封印内建提供者，选择之变更将在神翼再生后生效。</string>
+    <string name="folkzygisk_preflight_failed">圣光阵批次校验未至，未续蒙恩圣光阵，请查阅神谕日志。</string>
+    <string name="folkzygisk_install_conflict">已于蒙恩任何圣光阵之前罢手：%1$s 与已开启之内建 FolkZygisk 配置相冲。请先封印内建提供者再蒙恩外置提供者，配置变更需神翼再生。</string>
+    <string name="folkzygisk_loading">正在读取降灵之态…</string>
+    <string name="folkzygisk_read_error">状态不可用，无法确认降灵之态及下次圣启配置。</string>
+    <string name="folkzygisk_injected">已降灵</string>
+    <string name="folkzygisk_partial">部分圣构已降灵</string>
+    <string name="folkzygisk_starting">正在圣启</string>
+    <string name="folkzygisk_failed">神恩未至</string>
+    <string name="folkzygisk_unverified">未得证验</string>
+    <string name="folkzygisk_current">当前降灵：%1$s</string>
+    <string name="folkzygisk_next_enabled">下次圣启配置：开启</string>
+    <string name="folkzygisk_next_disabled">下次圣启配置：封印</string>
+    <string name="folkzygisk_reboot_required">需神翼再生以施展配置。</string>
+    <string name="folkzygisk_external">外置提供者：%1$s</string>
+    <string name="folkzygisk_blockers">暂不可开启：%1$s</string>
+    <string name="folkzygisk_license_gate">圣契审查待成</string>
+    <string name="folkzygisk_device_gate">圣器验收待成</string>
+    <string name="folkzygisk_engine_missing">圣光引擎尚未蒙恩</string>
+    <string name="folkzygisk_external_conflict">存有外置提供者冲突</string>
+    <string name="folkzygisk_startup_protection">圣启庇护已触发</string>
+    <string name="folkzygisk_unknown_gate">不可知之禁锢</string>
+</resources>

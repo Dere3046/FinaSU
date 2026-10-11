@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">确认引入道韵卷宗</string>
+    <string name="fpt_resources">灵材：%1$d 项</string>
+    <string name="fpt_compatibility">缺失之设保留默认或现值。未知字段与不受承之灵材皆留以再拓印。开境仙音与律动仍循仙器之设。</string>
+    <string name="fpt_type_value">仙器品阶：%1$s</string>
+    <string name="fpt_name">名讳</string>
+    <string name="fpt_version">篇次</string>
+    <string name="fpt_author">炼制者</string>
+    <string name="fpt_description">叙略</string>
+</resources>

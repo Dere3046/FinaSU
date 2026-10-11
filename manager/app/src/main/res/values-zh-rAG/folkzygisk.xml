@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">确认之后 Zygisk 配置变啦喵，可没装任何模块哦；刷新一下状态，再重新选安装包嘛</string>
+    <string name="folkzygisk_install_switch_message">关掉下次启动的内置 FolkZygisk，再装外置提供者 %1$s 喵？取消的话就什么都不装。当前注入不会变，重启后才生效。安装器的副作用没法完全回滚喵；失败时会试着停掉残留的提供者，把原配置恢复回来。</string>
+    <string name="folkzygisk_switch_install">切换并安装喵</string>
+    <string name="folkzygisk_install_canceled">已经取消啦喵，没装任何模块，也没动 Zygisk 配置。</string>
+    <string name="folkzygisk_multiple_external">没法继续喵：有好几个外置 Zygisk 提供者（%1$s）。先把其他的停掉，只留一个哦</string>
+    <string name="folkzygisk_builtin_switch_message">停掉外置提供者（%1$s），给下次启动开上内置 FolkZygisk 喵？当前注入状态不会变，重启后生效哦</string>
+    <string name="folkzygisk_write_failed">FolkZygisk 配置失败啦喵，刷新下状态，检查一下引擎、提供者冲突和启动保护嘛</string>
+    <string name="folkzygisk_switch_title">要切换 Zygisk 提供者吗喵？</string>
+    <string name="folkzygisk_switch_message">关掉下次启动的内置 FolkZygisk，改成启用 %1$s 喵？当前注入状态在重启前不会变。要是有别的外置提供者还开着，人家就会拒绝操作哦</string>
+    <string name="folkzygisk_switch_confirm">切换并启用喵</string>
+    <string name="folkzygisk_switch_failed">提供者切换失败啦喵，刷新下模块列表和 FolkZygisk 状态再试嘛</string>
+    <string name="folkzygisk_activation_conflict">没启用 %1$s 喵：它跟内置 FolkZygisk 冲突。先关掉内置提供者嘛，选择变更重启后才生效哦</string>
+    <string name="folkzygisk_preflight_failed">模块批次校验失败了喵，没继续装模块，去看看日志嘛</string>
+    <string name="folkzygisk_install_conflict">还没装任何模块就先取消了喵：%1$s 跟已开启的内置 FolkZygisk 配置冲突。先关掉内置提供者，再装外部提供者啦，配置变更得重启才行哦</string>
+    <string name="folkzygisk_loading">正在读取注入状态喵…</string>
+    <string name="folkzygisk_read_error">状态拿不到喵，没法确认注入状态和下次启动配置…</string>
+    <string name="folkzygisk_injected">已注入喵</string>
+    <string name="folkzygisk_partial">部分架构注入啦喵</string>
+    <string name="folkzygisk_starting">正在启动喵</string>
+    <string name="folkzygisk_failed">失败啦喵</string>
+    <string name="folkzygisk_unverified">还没验证喵</string>
+    <string name="folkzygisk_current">当前注入喵：%1$s</string>
+    <string name="folkzygisk_next_enabled">下次启动配置喵：开启</string>
+    <string name="folkzygisk_next_disabled">下次启动配置喵：关闭</string>
+    <string name="folkzygisk_reboot_required">得重启一下才能应用配置喵</string>
+    <string name="folkzygisk_external">外部提供者喵：%1$s</string>
+    <string name="folkzygisk_blockers">暂时开不了喵：%1$s</string>
+    <string name="folkzygisk_license_gate">许可证审查还没做完喵</string>
+    <string name="folkzygisk_device_gate">真机验收还没做完喵</string>
+    <string name="folkzygisk_engine_missing">引擎还没装喵</string>
+    <string name="folkzygisk_external_conflict">有外部提供者冲突喵</string>
+    <string name="folkzygisk_startup_protection">启动保护触发啦喵</string>
+    <string name="folkzygisk_unknown_gate">不知道是啥限制喵…</string>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">A seleção do Zygisk mudou após a confirmação. Nada foi instalado; atualize o estado e selecione os arquivos novamente.</string>
+    <string name="folkzygisk_install_switch_message">Desativar o FolkZygisk integrado para a próxima inicialização e instalar o provedor externo %1$s? Cancelar não instala nada. A injeção atual permanece inalterada até a reinicialização. Os efeitos colaterais do instalador não podem ser totalmente revertidos; em caso de falha, provedores parciais serão desativados antes de tentar restaurar a seleção anterior.</string>
+    <string name="folkzygisk_switch_install">Alternar e instalar</string>
+    <string name="folkzygisk_install_canceled">Cancelado. Nenhum módulo foi instalado nem a configuração do Zygisk foi alterada.</string>
+    <string name="folkzygisk_multiple_external">Não é possível continuar: vários provedores Zygisk externos (%1$s). Desative os outros provedores e mantenha apenas um.</string>
+    <string name="folkzygisk_builtin_switch_message">Desativar os provedores externos (%1$s) e ativar o FolkZygisk integrado para a próxima inicialização? A injeção atual não mudará até a reinicialização.</string>
+    <string name="folkzygisk_write_failed">Falha na configuração do FolkZygisk. Atualize o status e verifique o mecanismo, os conflitos de provedores e a proteção de inicialização.</string>
+    <string name="folkzygisk_switch_title">Alternar provedor Zygisk?</string>
+    <string name="folkzygisk_switch_message">Desativar o FolkZygisk integrado para a próxima inicialização e ativar %1$s? A injeção atual permanece inalterada até a reinicialização. Outros provedores externos ativos bloquearão esta operação.</string>
+    <string name="folkzygisk_switch_confirm">Alternar e ativar</string>
+    <string name="folkzygisk_switch_failed">Falha ao alternar o provedor. Atualize a lista de módulos e o status do FolkZygisk antes de tentar novamente.</string>
+    <string name="folkzygisk_activation_conflict">%1$s não foi ativado: há conflito com o FolkZygisk integrado. Desative primeiro o provedor integrado; as alterações de seleção serão aplicadas na reinicialização.</string>
+    <string name="folkzygisk_preflight_failed">Falha na validação do lote de módulos. Nenhum outro módulo foi instalado. Verifique o registro.</string>
+    <string name="folkzygisk_install_conflict">Instalação cancelada antes de qualquer módulo ser instalado: %1$s está em conflito com a configuração do FolkZygisk integrado ativada. Desative o provedor integrado antes de instalar um provedor externo; as alterações exigem reinicialização.</string>
+    <string name="folkzygisk_loading">Lendo o status de injeção…</string>
+    <string name="folkzygisk_read_error">Status indisponível. Não foi possível verificar a injeção nem a configuração da próxima inicialização.</string>
+    <string name="folkzygisk_injected">Injetado</string>
+    <string name="folkzygisk_partial">Parcialmente injetado</string>
+    <string name="folkzygisk_starting">Iniciando</string>
+    <string name="folkzygisk_failed">Falhou</string>
+    <string name="folkzygisk_unverified">Não verificado</string>
+    <string name="folkzygisk_current">Injeção atual: %1$s</string>
+    <string name="folkzygisk_next_enabled">Configuração da próxima inicialização: ativada</string>
+    <string name="folkzygisk_next_disabled">Configuração da próxima inicialização: desativada</string>
+    <string name="folkzygisk_reboot_required">É necessário reiniciar para aplicar a configuração.</string>
+    <string name="folkzygisk_external">Provedores externos: %1$s</string>
+    <string name="folkzygisk_blockers">Ativação indisponível: %1$s</string>
+    <string name="folkzygisk_license_gate">revisão de licença pendente</string>
+    <string name="folkzygisk_device_gate">aceitação do dispositivo pendente</string>
+    <string name="folkzygisk_engine_missing">mecanismo não instalado</string>
+    <string name="folkzygisk_external_conflict">conflito de provedor externo</string>
+    <string name="folkzygisk_startup_protection">proteção de inicialização ativa</string>
+    <string name="folkzygisk_unknown_gate">restrição não reconhecida</string>
+</resources>

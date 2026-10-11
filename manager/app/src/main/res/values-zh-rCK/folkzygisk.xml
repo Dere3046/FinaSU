@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">确认后 Zygisk 配置变了，招牌菜一道没挂；刷下状态，重挑安装包。</string>
+    <string name="folkzygisk_install_switch_message">关了下次开火的内建 FolkZygisk，换上外头提供者 %1$s？取消就啥也不挂。眼下注入不变，重新开火才认。安装器的幺蛾子没法全收回；翻车时会先停了残留提供者，再想法恢复原配置。</string>
+    <string name="folkzygisk_switch_install">换了并挂上</string>
+    <string name="folkzygisk_install_canceled">算了，招牌菜一道没挂，Zygisk 配置也没动。</string>
+    <string name="folkzygisk_multiple_external">接着来不了：外头 Zygisk 提供者有好几家（%1$s）。先停了别的，只留一家。</string>
+    <string name="folkzygisk_builtin_switch_message">停了外头提供者（%1$s），下次开火换上内建 FolkZygisk？眼下注入不变，重新开火才认。</string>
+    <string name="folkzygisk_write_failed">FolkZygisk 配置翻车了，刷下状态，瞧瞧家伙、提供者冲突和启动保护。</string>
+    <string name="folkzygisk_switch_title">换家 Zygisk 提供者？</string>
+    <string name="folkzygisk_switch_message">关了下次开火的内建 FolkZygisk，换上 %1$s？眼下注入在重新开火前不变。还有别的外头提供者开着的话，这手儿不给干。</string>
+    <string name="folkzygisk_switch_confirm">换了并开火</string>
+    <string name="folkzygisk_switch_failed">换提供者翻车了，刷刷招牌菜单子和 FolkZygisk 状态再试。</string>
+    <string name="folkzygisk_activation_conflict">%1$s 没开成火：它跟内建 FolkZygisk 撞了。先关了内建提供者，这选择重新开火才认。</string>
+    <string name="folkzygisk_preflight_failed">招牌菜这批没过校验，没往下挂，翻翻账本。</string>
+    <string name="folkzygisk_install_conflict">还没挂任何招牌菜就停了：%1$s 跟开着的内建 FolkZygisk 配置撞了。先关了内建提供者再挂外头提供者，配置得重新开火才认。</string>
+    <string name="folkzygisk_loading">正瞧注入状态…</string>
+    <string name="folkzygisk_read_error">状态用不了，注入情况和下次开火配置都瞧不准。</string>
+    <string name="folkzygisk_injected">注进去了</string>
+    <string name="folkzygisk_partial">有的架构注进去了</string>
+    <string name="folkzygisk_starting">正开火</string>
+    <string name="folkzygisk_failed">翻车了</string>
+    <string name="folkzygisk_unverified">没验过</string>
+    <string name="folkzygisk_current">眼下注入：%1$s</string>
+    <string name="folkzygisk_next_enabled">下次开火配置：开</string>
+    <string name="folkzygisk_next_disabled">下次开火配置：关</string>
+    <string name="folkzygisk_reboot_required">得重新开火才认这配置。</string>
+    <string name="folkzygisk_external">外头提供者：%1$s</string>
+    <string name="folkzygisk_blockers">眼下开不了：%1$s</string>
+    <string name="folkzygisk_license_gate">许可审查还欠着</string>
+    <string name="folkzygisk_device_gate">真机验收还欠着</string>
+    <string name="folkzygisk_engine_missing">家伙还没装上</string>
+    <string name="folkzygisk_external_conflict">外头提供者撞了车</string>
+    <string name="folkzygisk_startup_protection">启动保护被碰响了</string>
+    <string name="folkzygisk_unknown_gate">不知道的拦路虎</string>
+</resources>

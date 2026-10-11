@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">Pilihan Zygisk berubah setelah konfirmasi. Tidak ada yang dipasang; segarkan status dan pilih kembali arsipnya.</string>
+    <string name="folkzygisk_install_switch_message">Nonaktifkan FolkZygisk bawaan untuk boot berikutnya dan pasang penyedia eksternal %1$s? Batal tidak memasang apa pun. Injeksi saat ini tidak berubah hingga mulai ulang. Efek samping pemasang tidak dapat dipulihkan sepenuhnya; jika gagal, penyedia yang terpasang sebagian akan dinonaktifkan sebelum mencoba memulihkan pilihan sebelumnya.</string>
+    <string name="folkzygisk_switch_install">Ganti dan pasang</string>
+    <string name="folkzygisk_install_canceled">Dibatalkan. Tidak ada modul yang dipasang atau konfigurasi Zygisk yang diubah.</string>
+    <string name="folkzygisk_multiple_external">Tidak dapat melanjutkan: ada beberapa penyedia Zygisk eksternal (%1$s). Nonaktifkan penyedia lain dan sisakan hanya satu.</string>
+    <string name="folkzygisk_builtin_switch_message">Nonaktifkan penyedia eksternal (%1$s) dan aktifkan FolkZygisk bawaan untuk boot berikutnya? Injeksi saat ini tidak akan berubah hingga mulai ulang.</string>
+    <string name="folkzygisk_write_failed">Konfigurasi FolkZygisk gagal. Segarkan status dan periksa mesin, konflik penyedia, serta perlindungan saat mulai.</string>
+    <string name="folkzygisk_switch_title">Ganti penyedia Zygisk?</string>
+    <string name="folkzygisk_switch_message">Nonaktifkan FolkZygisk bawaan untuk boot berikutnya dan aktifkan %1$s? Injeksi saat ini tidak berubah hingga mulai ulang. Penyedia eksternal lain yang aktif akan menghalangi operasi ini.</string>
+    <string name="folkzygisk_switch_confirm">Ganti dan aktifkan</string>
+    <string name="folkzygisk_switch_failed">Pergantian penyedia gagal. Segarkan daftar modul dan status FolkZygisk sebelum mencoba lagi.</string>
+    <string name="folkzygisk_activation_conflict">%1$s tidak diaktifkan: bertentangan dengan FolkZygisk bawaan. Nonaktifkan penyedia bawaan terlebih dahulu; perubahan pilihan berlaku setelah mulai ulang.</string>
+    <string name="folkzygisk_preflight_failed">Validasi batch modul gagal. Tidak ada modul lain yang dipasang. Periksa log.</string>
+    <string name="folkzygisk_install_conflict">Pemasangan dibatalkan sebelum ada modul yang dipasang: %1$s bertentangan dengan konfigurasi FolkZygisk bawaan yang aktif. Nonaktifkan penyedia bawaan sebelum memasang penyedia eksternal; perubahan memerlukan mulai ulang.</string>
+    <string name="folkzygisk_loading">Membaca status injeksi…</string>
+    <string name="folkzygisk_read_error">Status tidak tersedia. Injeksi dan konfigurasi boot berikutnya tidak dapat diverifikasi.</string>
+    <string name="folkzygisk_injected">Terinjeksi</string>
+    <string name="folkzygisk_partial">Terinjeksi sebagian</string>
+    <string name="folkzygisk_starting">Memulai</string>
+    <string name="folkzygisk_failed">Gagal</string>
+    <string name="folkzygisk_unverified">Belum diverifikasi</string>
+    <string name="folkzygisk_current">Injeksi saat ini: %1$s</string>
+    <string name="folkzygisk_next_enabled">Konfigurasi boot berikutnya: aktif</string>
+    <string name="folkzygisk_next_disabled">Konfigurasi boot berikutnya: nonaktif</string>
+    <string name="folkzygisk_reboot_required">Mulai ulang diperlukan untuk menerapkan konfigurasi.</string>
+    <string name="folkzygisk_external">Penyedia eksternal: %1$s</string>
+    <string name="folkzygisk_blockers">Aktivasi tidak tersedia: %1$s</string>
+    <string name="folkzygisk_license_gate">peninjauan lisensi tertunda</string>
+    <string name="folkzygisk_device_gate">penerimaan perangkat tertunda</string>
+    <string name="folkzygisk_engine_missing">mesin tidak terpasang</string>
+    <string name="folkzygisk_external_conflict">konflik penyedia eksternal</string>
+    <string name="folkzygisk_startup_protection">perlindungan saat mulai aktif</string>
+    <string name="folkzygisk_unknown_gate">pembatasan tidak dikenal</string>
+</resources>

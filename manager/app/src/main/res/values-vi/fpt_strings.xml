@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">Xác nhận nhập chủ đề</string>
+    <string name="fpt_resources">Tài nguyên: %1$d</string>
+    <string name="fpt_compatibility">Cài đặt còn thiếu sẽ giữ giá trị mặc định hoặc giá trị hiện tại. Các trường không nhận dạng và tài nguyên không được hỗ trợ vẫn được giữ lại để xuất. Âm thanh khởi động và rung vẫn là cài đặt của thiết bị.</string>
+    <string name="fpt_type_value">Loại thiết bị: %1$s</string>
+    <string name="fpt_name">Tên</string>
+    <string name="fpt_version">Phiên bản</string>
+    <string name="fpt_author">Tác giả</string>
+    <string name="fpt_description">Mô tả</string>
+</resources>

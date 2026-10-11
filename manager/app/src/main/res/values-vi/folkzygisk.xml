@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="folkzygisk_state_changed">Lựa chọn Zygisk đã thay đổi sau khi xác nhận. Không có gì được cài đặt; hãy làm mới trạng thái và chọn lại các tệp lưu trữ.</string>
+    <string name="folkzygisk_install_switch_message">Vô hiệu hoá FolkZygisk tích hợp cho lần khởi động tiếp theo và cài đặt trình cung cấp bên ngoài %1$s? Huỷ sẽ không cài đặt gì. Tiến trình tiêm hiện tại không thay đổi cho đến khi khởi động lại. Các tác động phụ của trình cài đặt không thể được khôi phục hoàn toàn; khi thất bại, các trình cung cấp dở dang sẽ bị vô hiệu hoá trước khi cố gắng khôi phục lựa chọn trước đó.</string>
+    <string name="folkzygisk_switch_install">Chuyển và cài đặt</string>
+    <string name="folkzygisk_install_canceled">Đã huỷ. Không có module nào được cài đặt và cấu hình Zygisk không thay đổi.</string>
+    <string name="folkzygisk_multiple_external">Không thể tiếp tục: có nhiều trình cung cấp Zygisk bên ngoài (%1$s). Hãy vô hiệu hoá các trình cung cấp khác và chỉ giữ lại một.</string>
+    <string name="folkzygisk_builtin_switch_message">Vô hiệu hoá các trình cung cấp bên ngoài (%1$s) và bật FolkZygisk tích hợp cho lần khởi động tiếp theo? Tiến trình tiêm hiện tại sẽ không thay đổi cho đến khi khởi động lại.</string>
+    <string name="folkzygisk_write_failed">Cấu hình FolkZygisk thất bại. Hãy làm mới trạng thái và kiểm tra engine, xung đột trình cung cấp cùng bảo vệ khởi động.</string>
+    <string name="folkzygisk_switch_title">Chuyển trình cung cấp Zygisk?</string>
+    <string name="folkzygisk_switch_message">Vô hiệu hoá FolkZygisk tích hợp cho lần khởi động tiếp theo và kích hoạt %1$s? Tiến trình tiêm hiện tại không thay đổi cho đến khi khởi động lại. Các trình cung cấp bên ngoài đang hoạt động khác sẽ chặn thao tác này.</string>
+    <string name="folkzygisk_switch_confirm">Chuyển và kích hoạt</string>
+    <string name="folkzygisk_switch_failed">Chuyển trình cung cấp thất bại. Hãy làm mới danh sách module và trạng thái FolkZygisk trước khi thử lại.</string>
+    <string name="folkzygisk_activation_conflict">%1$s chưa được kích hoạt: nó xung đột với FolkZygisk tích hợp. Hãy vô hiệu hoá trình cung cấp tích hợp trước; các thay đổi lựa chọn có hiệu lực khi khởi động lại.</string>
+    <string name="folkzygisk_preflight_failed">Xác thực hàng loạt module thất bại. Không có module nào khác được cài đặt. Hãy kiểm tra nhật ký.</string>
+    <string name="folkzygisk_install_conflict">Đã huỷ cài đặt trước khi có module nào được cài: %1$s xung đột với cấu hình FolkZygisk tích hợp đang bật. Hãy vô hiệu hoá trình cung cấp tích hợp trước khi cài đặt trình cung cấp bên ngoài; các thay đổi cần khởi động lại.</string>
+    <string name="folkzygisk_loading">Đang đọc trạng thái tiêm…</string>
+    <string name="folkzygisk_read_error">Không có trạng thái. Không thể xác minh tiến trình tiêm và cấu hình cho lần khởi động tiếp theo.</string>
+    <string name="folkzygisk_injected">Đã tiêm</string>
+    <string name="folkzygisk_partial">Tiêm một phần</string>
+    <string name="folkzygisk_starting">Đang khởi động</string>
+    <string name="folkzygisk_failed">Thất bại</string>
+    <string name="folkzygisk_unverified">Chưa xác minh</string>
+    <string name="folkzygisk_current">Tiêm hiện tại: %1$s</string>
+    <string name="folkzygisk_next_enabled">Cấu hình cho lần khởi động tiếp theo: đã bật</string>
+    <string name="folkzygisk_next_disabled">Cấu hình cho lần khởi động tiếp theo: đã tắt</string>
+    <string name="folkzygisk_reboot_required">Cần khởi động lại để áp dụng cấu hình.</string>
+    <string name="folkzygisk_external">Trình cung cấp bên ngoài: %1$s</string>
+    <string name="folkzygisk_blockers">Không thể kích hoạt: %1$s</string>
+    <string name="folkzygisk_license_gate">đang chờ xem xét giấy phép</string>
+    <string name="folkzygisk_device_gate">đang chờ chấp nhận thiết bị</string>
+    <string name="folkzygisk_engine_missing">chưa cài đặt engine</string>
+    <string name="folkzygisk_external_conflict">xung đột trình cung cấp bên ngoài</string>
+    <string name="folkzygisk_startup_protection">bảo vệ khởi động đang hoạt động</string>
+    <string name="folkzygisk_unknown_gate">hạn chế không nhận dạng</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpt_import_title">Подтвердить импорт темы</string>
+    <string name="fpt_resources">Ресурсы: %1$d</string>
+    <string name="fpt_compatibility">Отсутствующие настройки сохраняют значения по умолчанию или текущие. Неизвестные поля и неподдерживаемые ресурсы сохраняются для экспорта. Звук запуска и вибрация остаются настройками устройства.</string>
+    <string name="fpt_type_value">Тип устройства: %1$s</string>
+    <string name="fpt_name">Название</string>
+    <string name="fpt_version">Версия</string>
+    <string name="fpt_author">Автор</string>
+    <string name="fpt_description">Описание</string>
+</resources>

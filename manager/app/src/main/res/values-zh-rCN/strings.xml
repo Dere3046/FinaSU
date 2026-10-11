@@ -594,4 +594,20 @@
     <string name="media_dim">暗化程度</string>
     <string name="media_title_offset">水平偏移</string>
     <string name="media_play_failed">无法播放，请检查音频文件</string>
+    <string name="settings_app_language">语言</string>
+    <string name="settings_app_language_summary">选择应用使用的语言。</string>
+    <string name="system_default">系统默认</string>
+    <string name="sulog_filter_root_execve">Root execve</string>
+    <string name="sulog_filter_sucompat">传统 SU</string>
+    <string name="sulog_filter_ioctl_grant_root">授予 Root</string>
+    <string name="sulog_filter_daemon_restart">守护进程重启</string>
+    <string name="theme_download_progress">总进度 %1$d%%</string>
+    <string name="theme_download_file">文件 %1$d%%</string>
+    <string name="theme_download_image">封面 %1$d%%</string>
+    <string name="theme_store_download_complete">下载完成</string>
+    <string name="theme_store_download_complete_message">「%1$s」已就绪，可在我的主题中查看</string>
+    <string name="theme_store_go_my_themes">前往我的主题</string>
+    <string name="my_themes_refresh">刷新</string>
+    <string name="profile" translatable="false">App Profile</string>
+    <string name="settings_adb_root" translatable="false">ADB Root</string>
 </resources>
