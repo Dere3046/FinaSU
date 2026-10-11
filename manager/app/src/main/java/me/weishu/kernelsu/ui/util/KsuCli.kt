@@ -10,6 +10,7 @@ import android.os.SystemClock
 import android.provider.OpenableColumns
 import android.system.Os
 import android.util.Log
+import androidx.core.content.ContextCompat
 import com.topjohnwu.superuser.CallbackList
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ShellUtils
@@ -298,17 +299,9 @@ private fun flashWithIO(
     onStderr: (String) -> Unit
 ): Shell.Result {
 
-    val stdoutCallback: CallbackList<String?> = object : CallbackList<String?>() {
-        override fun onAddElement(s: String?) {
-            onStdout(s ?: "")
-        }
-    }
-
-    val stderrCallback: CallbackList<String?> = object : CallbackList<String?>() {
-        override fun onAddElement(s: String?) {
-            onStderr(s ?: "")
-        }
-    }
+    val executor = ContextCompat.getMainExecutor(ksuApp)
+    val stdoutCallback = FlashOutputCollector(executor, onStdout)
+    val stderrCallback = FlashOutputCollector(executor, onStderr)
 
     return withNewRootShell {
         newJob().add(cmd).to(stdoutCallback, stderrCallback).exec()
@@ -366,13 +359,12 @@ suspend fun flashModuleBatch(
             requireNotNull(ksuApp.contentResolver.openInputStream(uri)) { "Cannot read module archive" }
                 .use { source -> file.outputStream().use { source.copyTo(it) } }
         }
-        val output = mutableListOf<String>()
         val result = flashWithIO(
             "${quote(getKsuDaemonPath())} zygisk preflight ${files.joinToString(" ") { quote(it.absolutePath) }}",
-            { output.add(it) }, onStderr,
+            {}, onStderr,
         )
         check(result.isSuccess) { ksuApp.getString(R.string.folkzygisk_preflight_failed) }
-        val lines = output.filter { it.isNotBlank() }
+        val lines = result.out.filter { it.isNotBlank() }
         check(lines.size == 1) { ksuApp.getString(R.string.folkzygisk_preflight_failed) }
         val status = me.weishu.kernelsu.data.model.FolkZygiskPreflight.fromJson(JSONObject(lines.single()))
         if (status.blocked) {
@@ -385,19 +377,18 @@ suspend fun flashModuleBatch(
             onStdout(message)
             FlashResult(-1, message, false)
         } else {
-            var stateChanged = false
             val install = flashWithIO(
                 "${quote(getKsuDaemonPath())} zygisk install-batch --expected-state ${quote(status.stateToken)}" +
                     (if (status.conflict) " --switch-external" else "") +
                     " ${files.joinToString(" ") { quote(it.absolutePath) }}",
                 { line ->
-                    if (line == "FOLKZYGISK_BATCH_CHANGED") installed = true
-                    else onStdout(line)
-                }, { line ->
-                    if (line.trimStart().removePrefix("Error: ").startsWith("FOLKZYGISK_STATE_CHANGED:")) stateChanged = true
-                    onStderr(line)
-                },
+                    if (line != "FOLKZYGISK_BATCH_CHANGED") onStdout(line)
+                }, onStderr,
             )
+            installed = install.out.any { it == "FOLKZYGISK_BATCH_CHANGED" }
+            val stateChanged = install.err.any {
+                it.trimStart().removePrefix("Error: ").startsWith("FOLKZYGISK_STATE_CHANGED:")
+            }
             if (stateChanged) {
                 val message = ksuApp.getString(R.string.folkzygisk_state_changed)
                 onStdout(message)
