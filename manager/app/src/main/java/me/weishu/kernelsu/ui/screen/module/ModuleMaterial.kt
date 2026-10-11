@@ -698,6 +698,7 @@ private fun ModuleItem(
     val hasDescription = module.description.isNotBlank()
     val maxLinesLimit = LocalModuleDescriptionMaxLines.current
     var expanded by rememberSaveable(module.id) { mutableStateOf(false) }
+    var descriptionCanExpand by remember(module.id, module.description) { mutableStateOf(true) }
     val canOpenWebUi = module.hasWebUi && !module.remove && module.enabled
     val cardInteractionSource = remember { MutableInteractionSource() }
     val descriptionInteractionSource = remember { MutableInteractionSource() }
@@ -788,7 +789,12 @@ private fun ModuleItem(
                                         indication = null
                                     ) {
                                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                        expanded = !expanded
+                                        if (descriptionCanExpand) {
+                                            expanded = !expanded
+                                        } else if (canOpenWebUi) {
+                                            onOpenWebUi()
+                                            closeSearch()
+                                        }
                                     }
                             } else {
                                 Modifier
@@ -796,7 +802,8 @@ private fun ModuleItem(
                         ),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium,
-                    textDecoration = textDecoration
+                    textDecoration = textDecoration,
+                    onCanExpandChange = { descriptionCanExpand = it }
                 )
             }
 
