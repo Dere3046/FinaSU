@@ -151,6 +151,7 @@ allow zygote system_lib_file file { read open execute execmod map }
 allow zygote tmpfs file *
 allow zygote appdomain_tmpfs file *
 allow zygote zygote process execmem
+allow system_server system_server process execmem
 ";
 
 #[cfg(target_os = "android")]
