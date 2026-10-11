@@ -681,6 +681,30 @@ mod config_tests {
     }
 
     #[test]
+    fn shell_adb_restriction_preserves_local_feature_ids() {
+        let args = ConfigCli::try_parse_from([
+            "test",
+            "--force-feature",
+            "shell_su_adb_only=1",
+            "--force-feature",
+            "6=0",
+        ])
+        .unwrap();
+        args.config.validate().unwrap();
+        assert_eq!(
+            args.config.force_feature,
+            [(FeatureId::ShellSuAdbOnly, 1), (FeatureId::AvcSpoof, 0)]
+        );
+        assert_eq!(
+            parse_force_feature("7=1").unwrap(),
+            (FeatureId::ShellSuAdbOnly, 1)
+        );
+        let mut config = Vec::new();
+        args.config.apply(&mut config);
+        assert_eq!(config, ["force_feature=shell_su_adb_only:1,avc_spoof:0"]);
+    }
+
+    #[test]
     fn validates_module_names_and_joined_kernel_buffer_limit() {
         assert!(parse_block_module(&"a".repeat(64)).is_ok());
         for invalid in ["", "a-b", "a b", "a;reboot", "模块", &"a".repeat(65)] {

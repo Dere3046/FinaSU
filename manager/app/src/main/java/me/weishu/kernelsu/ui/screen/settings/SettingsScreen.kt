@@ -75,6 +75,7 @@ fun rememberSettingsActions(
         onSetFolkMountMode = viewModel::setFolkMountMode,
         onSetFolkZygiskEnabled = viewModel::setFolkZygiskEnabled,
         onSetAdbRootEnabled = viewModel::setAdbRootEnabled,
+        onSetShellSuAdbOnlyEnabled = viewModel::setShellSuAdbOnlyEnabled,
         onSetDefaultUmountModules = viewModel::setDefaultUmountModules,
         onSetEnableWebDebugging = viewModel::setEnableWebDebugging,
         onSetHomeLayoutStyle = viewModel::setHomeLayoutStyle,

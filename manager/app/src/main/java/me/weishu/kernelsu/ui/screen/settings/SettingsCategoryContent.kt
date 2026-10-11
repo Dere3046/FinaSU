@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.SystemUpdateAlt
 import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -525,6 +526,22 @@ fun SecurityCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
                         enabled = uiState.adbRootStatus == "supported",
                         checked = uiState.isAdbRootEnabled,
                         onCheckedChange = actions.onSetAdbRootEnabled
+                    )
+                },
+                {
+                    val summary = when (uiState.shellSuAdbOnlyStatus) {
+                        "unsupported" -> stringResource(R.string.feature_status_unsupported_summary)
+                        "managed" -> stringResource(R.string.feature_status_managed_summary)
+                        "forced" -> stringResource(R.string.feature_status_forced_summary)
+                        else -> stringResource(R.string.settings_shell_su_adb_only_summary)
+                    }
+                    SegmentedSwitchItem(
+                        icon = Icons.Filled.VerifiedUser,
+                        title = stringResource(R.string.settings_shell_su_adb_only),
+                        summary = summary,
+                        enabled = uiState.shellSuAdbOnlyStatus == "supported",
+                        checked = uiState.isShellSuAdbOnlyEnabled,
+                        onCheckedChange = actions.onSetShellSuAdbOnlyEnabled
                     )
                 }
             )

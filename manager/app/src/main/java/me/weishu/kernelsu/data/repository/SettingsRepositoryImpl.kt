@@ -299,6 +299,12 @@ class SettingsRepositoryImpl : SettingsRepository {
 
     override suspend fun getAdbRootStatus(): String = getFeatureStatus("adb_root")
 
+    override suspend fun getShellSuAdbOnlyStatus(): String = getFeatureStatus("shell_su_adb_only")
+    override suspend fun getShellSuAdbOnlyPersistValue(): Long? = getFeaturePersistValue("shell_su_adb_only")
+    override suspend fun getShellSuAdbOnlyValue(): Long? = getFeatureValue("shell_su_adb_only")
+    override fun setShellSuAdbOnlyEnabled(enabled: Boolean): Boolean =
+        execKsud("feature set shell_su_adb_only ${if (enabled) 1 else 0}", true)
+
     override suspend fun getAdbRootPersistValue(): Long? = getFeaturePersistValue("adb_root")
     override suspend fun getAdbRootValue(): Long? = getFeatureValue("adb_root")
 

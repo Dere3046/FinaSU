@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="settings_shell_su_adb_only">限制 Shell 仅可通过 ADB 获取 Root</string>
+    <string name="settings_shell_su_adb_only_summary">授权 Shell 后的额外检查：仅由 adbd 或 KernelSU Root 进程（如 ADB 模块）启动的 shell 进程可获取 Root，防止应用提权到 shell 后进一步获取 Root</string>
     <string name="feature_status_forced_summary">已由启动配置强制指定，无法在此修改</string>
     <string name="install_block_modules">屏蔽内核模块（风险）</string>
     <string name="install_block_modules_warning">启动时阻止所列内核模块加载。屏蔽系统依赖的模块可能导致卡开机 logo 或反复重启（例如部分联发科机型上的 mkp）。请仅在确认这些模块在你的设备上可以安全屏蔽时启用。如无法开机，可通过 fastboot 刷回原厂 boot / init_boot 镜像恢复。</string>

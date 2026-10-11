@@ -274,6 +274,7 @@ pub fn list_features() {
         FeatureId::AdbRoot,
         FeatureId::SelinuxHide,
         FeatureId::AvcSpoof,
+        FeatureId::ShellSuAdbOnly,
     ];
 
     for feature_id in &all_features {
@@ -341,6 +342,7 @@ pub fn save_config() -> Result<()> {
         FeatureId::AdbRoot,
         FeatureId::SelinuxHide,
         FeatureId::AvcSpoof,
+        FeatureId::ShellSuAdbOnly,
     ];
 
     for feature_id in &all_features {

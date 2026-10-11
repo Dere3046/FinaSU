@@ -13,16 +13,18 @@ pub enum FeatureId {
     SelinuxHide = 4,
     // ID 5 is the read-only dynamic-manager capability, not a toggle.
     AvcSpoof = 6,
+    ShellSuAdbOnly = 7,
 }
 
 impl FeatureId {
-    pub const ALL: [Self; 6] = [
+    pub const ALL: [Self; 7] = [
         Self::SuCompat,
         Self::KernelUmount,
         Self::Sulog,
         Self::AdbRoot,
         Self::SelinuxHide,
         Self::AvcSpoof,
+        Self::ShellSuAdbOnly,
     ];
 
     pub const fn from_u32(id: u32) -> Option<Self> {
@@ -33,6 +35,7 @@ impl FeatureId {
             3 => Some(Self::AdbRoot),
             4 => Some(Self::SelinuxHide),
             6 => Some(Self::AvcSpoof),
+            7 => Some(Self::ShellSuAdbOnly),
             _ => None,
         }
     }
@@ -45,6 +48,7 @@ impl FeatureId {
             Self::AdbRoot => "adb_root",
             Self::SelinuxHide => "selinux_hide",
             Self::AvcSpoof => "avc_spoof",
+            Self::ShellSuAdbOnly => "shell_su_adb_only",
         }
     }
 
@@ -65,6 +69,9 @@ impl FeatureId {
             }
             Self::AvcSpoof => {
                 "AVC log spoofing - mask the KSU target context in SELinux audit logs"
+            }
+            Self::ShellSuAdbOnly => {
+                "Shell SU ADB Only - when shell is granted root, additionally require the process to be spawned by adbd or a KernelSU root process (ksu domain)"
             }
         }
     }
@@ -88,6 +95,9 @@ mod tests {
             assert_eq!(parse_feature_id(&(id as u32).to_string()).unwrap(), id);
         }
         assert_eq!(FeatureId::AvcSpoof as u32, 6);
+        assert_eq!(FeatureId::ShellSuAdbOnly as u32, 7);
+        assert_eq!(FeatureId::from_u32(6), Some(FeatureId::AvcSpoof));
+        assert_eq!(FeatureId::from_u32(7), Some(FeatureId::ShellSuAdbOnly));
         assert!(parse_feature_id("5").is_err());
         assert!(parse_feature_id("dynamic_manager").is_err());
     }

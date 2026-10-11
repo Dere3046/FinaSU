@@ -78,6 +78,12 @@ class SettingsViewModel(
             val isAdbRootEnabled = if (adbRootStatus == "forced") repo.getAdbRootValue()?.let { it != 0L } == true
                 else repo.getAdbRootPersistValue() == 1L
             val isDefaultUmountModules = repo.isDefaultUmountModules()
+            val shellSuAdbOnlyStatus = repo.getShellSuAdbOnlyStatus()
+            val isShellSuAdbOnlyEnabled = if (shellSuAdbOnlyStatus == "forced") {
+                repo.getShellSuAdbOnlyValue()?.let { it != 0L } == true
+            } else {
+                repo.getShellSuAdbOnlyPersistValue() == 1L
+            }
             val autoJailbreak = repo.autoJailbreak
             val useSoftReboot = repo.useSoftReboot
             val allowAnyDynamicManager = repo.allowAnyDynamicManager
@@ -107,6 +113,8 @@ class SettingsViewModel(
                     isSuEnabled = isSuEnabled,
                     adbRootStatus = adbRootStatus,
                     isAdbRootEnabled = isAdbRootEnabled,
+                    shellSuAdbOnlyStatus = shellSuAdbOnlyStatus,
+                    isShellSuAdbOnlyEnabled = isShellSuAdbOnlyEnabled,
                     kernelUmountStatus = kernelUmountStatus,
                     isKernelUmountEnabled = isKernelUmountEnabled,
                     selinuxHideStatus = selinuxHideStatus,
@@ -383,6 +391,15 @@ class SettingsViewModel(
             if (repo.setAdbRootEnabled(enabled)) {
                 repo.execKsudFeatureSave()
                 _uiState.update { it.copy(isAdbRootEnabled = enabled) }
+            }
+        }
+    }
+
+    fun setShellSuAdbOnlyEnabled(enabled: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (repo.setShellSuAdbOnlyEnabled(enabled)) {
+                repo.execKsudFeatureSave()
+                _uiState.update { it.copy(isShellSuAdbOnlyEnabled = enabled) }
             }
         }
     }

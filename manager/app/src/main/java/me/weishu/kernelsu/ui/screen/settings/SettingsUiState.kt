@@ -64,6 +64,8 @@ data class SettingsUiState(
     // ADB Root
     val adbRootStatus: String = "",
     val isAdbRootEnabled: Boolean = false,
+    val shellSuAdbOnlyStatus: String = "",
+    val isShellSuAdbOnlyEnabled: Boolean = false,
 
     val isLkmMode: Boolean = false,
     val isLateLoadMode: Boolean = false,
@@ -98,6 +100,7 @@ data class SettingsScreenActions(
     val onSetFolkMountMode: (FolkMountMode) -> Unit,
     val onSetFolkZygiskEnabled: (Boolean, Boolean, List<String>) -> Unit,
     val onSetAdbRootEnabled: (Boolean) -> Unit,
+    val onSetShellSuAdbOnlyEnabled: (Boolean) -> Unit,
     val onSetDefaultUmountModules: (Boolean) -> Unit,
     val onSetEnableWebDebugging: (Boolean) -> Unit,
     val onSetHomeLayoutStyle: (String) -> Unit,

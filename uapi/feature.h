@@ -9,6 +9,8 @@ enum ksu_feature_id {
     KSU_FEATURE_SELINUX_HIDE = 4,
     KSU_FEATURE_DYNAMIC_MANAGER = 5,
     KSU_FEATURE_AVC_SPOOF = 6,
+    // Preserve FinaSU IDs 5/6 and their persisted configuration meanings.
+    KSU_FEATURE_SHELL_SU_ADB_ONLY = 7,
 
     KSU_FEATURE_MAX
 };
