@@ -46,7 +46,7 @@
     <string name="susfs_cancel">取消</string>
     <string name="susfs_release">Release</string>
     <string name="susfs_version">Version</string>
-    <string name="susfs_ownership">使用独立 FolkSU 配置，不安装 SUSFS，不修改 ksu_susfs 或第三方设置。</string>
+    <string name="susfs_ownership">使用独立 FinaSU 配置，不安装 SUSFS，不修改 ksu_susfs 或第三方设置。</string>
     <string name="susfs_unsupported">检测到的能力集不支持此操作</string>
     <string name="susfs_tab_paths">路径</string>
     <string name="susfs_tab_spoof">伪装</string>
@@ -55,7 +55,7 @@
     <string name="susfs_unmanaged">不管理</string>
     <string name="susfs_on">启用</string>
     <string name="susfs_off">关闭</string>
-    <string name="susfs_three_state_hint">选择是否由 FolkSU 控制此项。“不管理”不会重置内核中已生效的值。</string>
+    <string name="susfs_three_state_hint">选择是否由 FinaSU 控制此项。“不管理”不会重置内核中已生效的值。</string>
     <string name="susfs_config_invalid">无法读取配置 · 可导入有效文件恢复</string>
     <string name="susfs_save_success">配置已保存</string>
     <string name="susfs_save_success_hint">未执行内核操作。请手动应用，或开启开机应用。</string>
@@ -70,7 +70,7 @@
     <string name="susfs_import_counts">规则：%1$d · 模块名称：%2$d · 挂载前缀：%3$d</string>
     <string name="susfs_import_auto_on">此文件已开启开机应用。</string>
     <string name="susfs_import_auto_off">此文件未开启开机应用。</string>
-    <string name="susfs_import_warning">通过守护进程严格校验后，仅替换 FolkSU 保存的配置；不会立即应用，也不会清除已生效或第三方规则。若开启开机应用，下次正常启动时可能执行。</string>
+    <string name="susfs_import_warning">通过守护进程严格校验后，仅替换 FinaSU 保存的配置；不会立即应用，也不会清除已生效或第三方规则。若开启开机应用，下次正常启动时可能执行。</string>
     <string name="susfs_restore_uname">恢复真实内核信息</string>
     <string name="susfs_use_real_field">使用真实内核字段（default）</string>
     <string name="susfs_restore_hint">将两个字段保存为 default。需要立即应用才会恢复；仅删除保存值不会还原内核。</string>

@@ -19,7 +19,7 @@ def main():
         return subprocess.run(["adb", "-s", args.serial, *command],
                               text=True, capture_output=True, timeout=60)
 
-    package = adb("shell", "pm", "path", "me.yuki.folksu")
+    package = adb("shell", "pm", "path", "me.yuki.fina")
     package.check_returncode()
     base = package.stdout.strip().splitlines()[0].removeprefix("package:")
     daemon = str(Path(base).parent / "lib/arm64/libksud.so")

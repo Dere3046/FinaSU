@@ -29,7 +29,7 @@ object ProfileConfig {
     private const val AVATAR_FILE_NAME = "profile_avatar"
 
     /** Shown when the user has not set a nickname; mirrors FolkPatch's "FolkPatch" fallback. */
-    const val DEFAULT_NICKNAME = "FolkSU"
+    const val DEFAULT_NICKNAME = "FinaSU"
     const val DEFAULT_AVATAR_OPACITY = 1f
     const val MIN_AVATAR_OPACITY = 0.1f
     const val NICKNAME_MAX_LENGTH = 24

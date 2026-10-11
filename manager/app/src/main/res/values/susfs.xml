@@ -46,7 +46,7 @@
     <string name="susfs_cancel">Cancel</string>
     <string name="susfs_release">Release</string>
     <string name="susfs_version">Version</string>
-    <string name="susfs_ownership">Independent FolkSU configuration. Does not install SUSFS or modify ksu_susfs / third-party settings.</string>
+    <string name="susfs_ownership">Independent FinaSU configuration. Does not install SUSFS or modify ksu_susfs / third-party settings.</string>
     <string name="susfs_unsupported">Not supported by the detected capability set</string>
     <string name="susfs_tab_paths">Paths</string>
     <string name="susfs_tab_spoof">Spoofing</string>
@@ -55,7 +55,7 @@
     <string name="susfs_unmanaged">Do not manage</string>
     <string name="susfs_on">Enable</string>
     <string name="susfs_off">Disable</string>
-    <string name="susfs_three_state_hint">Choose whether FolkSU controls this setting. Unmanaged does not reset the active kernel value.</string>
+    <string name="susfs_three_state_hint">Choose whether FinaSU controls this setting. Unmanaged does not reset the active kernel value.</string>
     <string name="susfs_config_invalid">Configuration cannot be read · import a valid file to recover</string>
     <string name="susfs_save_success">Configuration saved</string>
     <string name="susfs_save_success_hint">No kernel operation was performed. Apply explicitly or enable boot application.</string>
@@ -70,7 +70,7 @@
     <string name="susfs_import_counts">Rules: %1$d · module names: %2$d · mount prefixes: %3$d</string>
     <string name="susfs_import_auto_on">Boot application is ON in this file.</string>
     <string name="susfs_import_auto_off">Boot application is OFF in this file.</string>
-    <string name="susfs_import_warning">Replaces only FolkSU’s saved configuration after strict daemon validation. Does not apply now or clear active / third-party rules. If boot application is on, it may run on the next normal boot.</string>
+    <string name="susfs_import_warning">Replaces only FinaSU’s saved configuration after strict daemon validation. Does not apply now or clear active / third-party rules. If boot application is on, it may run on the next normal boot.</string>
     <string name="susfs_restore_uname">Restore real kernel identity</string>
     <string name="susfs_use_real_field">Use the real kernel field (default)</string>
     <string name="susfs_restore_hint">Saves default for both fields. Apply now to restore; merely removing a saved value does not restore the kernel.</string>
