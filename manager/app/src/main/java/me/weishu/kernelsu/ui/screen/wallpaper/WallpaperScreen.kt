@@ -161,7 +161,6 @@ fun WallpaperScreen() {
     var showPageCropDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
     var showExportDialog by remember { mutableStateOf(false) }
-    var exportMetadata by remember { mutableStateOf(ThemeMetadata.current(context)) }
 
     val persist: (Uri) -> Unit = { picked ->
         scope.launch {
@@ -237,21 +236,6 @@ fun WallpaperScreen() {
         }
     }
 
-    val exportLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("application/octet-stream")
-    ) { uri ->
-        if (uri != null) {
-            scope.launch {
-                val ok = ThemeExportService.export(context, uri, exportMetadata).isSuccess
-                snackbarHost.showSnackbar(
-                    resources.getString(
-                        if (ok) R.string.wallpaper_export_success else R.string.wallpaper_export_failed
-                    )
-                )
-            }
-        }
-    }
-
     val requestImport = rememberThemeImportRequest { result ->
             scope.launch {
                 snackbarHost.showSnackbar(
@@ -268,10 +252,21 @@ fun WallpaperScreen() {
         ThemeMetadataEditor(
             initial = ThemeMetadata.current(context).let { if (it.name.isBlank()) it.copy(name = "FolkSU") else it },
             onDismiss = { showExportDialog = false },
-            onExport = {
-                exportMetadata = it
+            onExport = { metadata ->
                 showExportDialog = false
-                exportLauncher.launch("${it.name.replace(Regex("[^\\p{L}\\p{N}_ -]"), "_")}.fpt")
+                scope.launch {
+                    val fileName = "${metadata.name.replace(Regex("[^\\p{L}\\p{N}_ -]"), "_")}.fpt"
+                    val result = ThemeExportService.exportToDownloads(context, metadata, fileName)
+                    snackbarHost.showSnackbar(
+                        resources.getString(
+                            if (result.isSuccess) R.string.wallpaper_export_success else R.string.wallpaper_export_failed
+                        ) + if (result.isSuccess) {
+                            ": ${ThemeExportService.DOWNLOAD_DIR}/$fileName"
+                        } else {
+                            result.exceptionOrNull()?.message?.let { ": $it" } ?: ""
+                        }
+                    )
+                }
             },
         )
     }

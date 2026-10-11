@@ -1,13 +1,53 @@
 package me.weishu.kernelsu.wallpaper
 
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.File
 
 object ThemeExportService {
+    /** Public folder, relative to the shared Downloads directory, where exported themes land. */
+    val DOWNLOAD_DIR: String = "${Environment.DIRECTORY_DOWNLOADS}/FolkSU/Themes"
+
+    /**
+     * Writes [metadata]'s theme package into the shared Downloads collection under [DOWNLOAD_DIR].
+     *
+     * Unlike the SAF `CreateDocument` flow, the display name is preserved verbatim: the Downloads
+     * provider used to append `.bin` because `.fpt` has no MIME mapping.
+     */
+    suspend fun exportToDownloads(
+        context: Context,
+        metadata: ThemeMetadata,
+        displayName: String,
+    ): Result<Uri> = withContext(Dispatchers.IO) {
+        runCatching {
+            val resolver = context.contentResolver
+            val collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            val values = ContentValues().apply {
+                put(MediaStore.Downloads.DISPLAY_NAME, displayName)
+                put(MediaStore.Downloads.RELATIVE_PATH, DOWNLOAD_DIR)
+                put(MediaStore.Downloads.MIME_TYPE, "application/octet-stream")
+                put(MediaStore.Downloads.IS_PENDING, 1)
+            }
+            val uri = resolver.insert(collection, values) ?: error("Cannot create export file")
+            try {
+                export(context, uri, metadata).getOrThrow()
+            } catch (e: Exception) {
+                resolver.delete(uri, null, null)
+                throw e
+            }
+            resolver.update(uri, ContentValues().apply {
+                put(MediaStore.Downloads.IS_PENDING, 0)
+            }, null, null)
+            uri
+        }
+    }
+
     suspend fun export(context: Context, target: Uri, metadata: ThemeMetadata): Result<Unit> =
         withContext(Dispatchers.IO) {
             runCatching {
