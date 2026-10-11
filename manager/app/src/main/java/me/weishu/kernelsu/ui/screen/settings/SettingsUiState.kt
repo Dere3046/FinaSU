@@ -80,6 +80,7 @@ data class SettingsScreenActions(
     val onSetCheckUpdate: (Boolean) -> Unit,
     val onSetCheckModuleUpdate: (Boolean) -> Unit,
     val onOpenTheme: () -> Unit,
+    val onOpenLanguage: () -> Unit,
     val onOpenWallpaper: () -> Unit,
     val onOpenFont: () -> Unit,
     val onOpenThemeStore: () -> Unit,

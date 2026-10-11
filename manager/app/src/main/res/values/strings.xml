@@ -607,4 +607,7 @@
     <string name="media_night_opacity">Night opacity</string>
     <string name="media_dim">Dimming</string>
     <string name="media_title_offset">Horizontal offset</string>
+    <string name="settings_app_language">Language</string>
+    <string name="settings_app_language_summary">Choose the language used by the app.</string>
+    <string name="system_default">System default</string>
 </resources>

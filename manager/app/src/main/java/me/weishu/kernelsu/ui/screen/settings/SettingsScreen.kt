@@ -61,6 +61,7 @@ fun rememberSettingsActions(
         onSetCheckUpdate = viewModel::setCheckUpdate,
         onSetCheckModuleUpdate = viewModel::setCheckModuleUpdate,
         onOpenTheme = { navigator.push(Route.ColorPalette) },
+        onOpenLanguage = { navigator.push(Route.Language) },
         onOpenWallpaper = { navigator.push(Route.Wallpaper) },
         onOpenFont = { navigator.push(Route.Font) },
         onOpenThemeStore = { navigator.push(Route.ThemeStore) },

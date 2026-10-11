@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.SystemUpdateAlt
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -90,6 +91,22 @@ fun GeneralCategoryContent(uiState: SettingsUiState, actions: SettingsScreenActi
             }
         )
     }
+
+    val appLanguage = stringResource(id = R.string.settings_app_language)
+    SegmentedColumn(
+        modifier = GroupModifier,
+        content = listOf {
+            SegmentedListItem(
+                onClick = actions.onOpenLanguage,
+                headlineContent = { Text(appLanguage) },
+                supportingContent = { Text(stringResource(id = R.string.settings_app_language_summary)) },
+                leadingContent = { Icon(Icons.Filled.Translate, appLanguage) },
+                trailingContent = {
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null)
+                }
+            )
+        }
+    )
 }
 
 @Composable

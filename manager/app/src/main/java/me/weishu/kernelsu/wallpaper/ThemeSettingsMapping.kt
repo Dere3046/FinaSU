@@ -80,11 +80,6 @@ internal object ThemeSettingsMapping {
 
     fun applyLanguage(json: JSONObject) {
         if (!json.has("appLanguage")) return
-        val tags = json.getString("appLanguage")
-        if (Build.VERSION.SDK_INT >= 33) {
-            ksuApp.getSystemService(LocaleManager::class.java).applicationLocales = LocaleList.forLanguageTags(tags)
-        } else {
-            check(ksuApp.getSharedPreferences("settings", 0).edit().putString("fpt_app_language", tags).commit())
-        }
+        ThemeLanguage.setTags(ksuApp, json.getString("appLanguage"))
     }
 }
