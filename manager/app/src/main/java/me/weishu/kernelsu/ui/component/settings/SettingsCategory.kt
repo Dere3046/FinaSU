@@ -3,6 +3,7 @@ package me.weishu.kernelsu.ui.component.settings
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Brush
+import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Handyman
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Security
@@ -28,6 +29,7 @@ enum class SettingsCategory(
     BEHAVIOR("behavior", R.string.settings_category_behavior, Icons.Filled.TouchApp),
     FUNCTION("function", R.string.settings_category_function, Icons.Filled.Handyman),
     SECURITY("security", R.string.settings_category_security, Icons.Filled.Security),
+    AUTHENTICATION("authentication", R.string.settings_category_authentication, Icons.Filled.Fingerprint),
     MULTIMEDIA("multimedia", R.string.settings_category_multimedia, Icons.Filled.MusicNote),
     ;
 

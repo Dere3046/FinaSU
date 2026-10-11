@@ -326,6 +326,13 @@
     <string name="settings_category_behavior">Behavior</string>
     <string name="settings_category_function">Function</string>
     <string name="settings_category_security">Security</string>
+    <string name="settings_category_authentication">Authentication</string>
+    <string name="security_target_app_start">App launch</string>
+    <string name="security_target_module_install">Module installation</string>
+    <string name="security_target_module_manage">Module removal or disabling</string>
+    <string name="security_target_module_flash">Module flashing</string>
+    <string name="security_target_theme_import">Theme / FPT import</string>
+    <string name="security_target_settings">Open settings</string>
     <string name="profile_edit_title">Edit profile</string>
     <string name="profile_avatar_default">Default</string>
     <string name="profile_avatar_custom">Custom</string>

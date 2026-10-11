@@ -276,6 +276,13 @@
     <string name="settings_category_behavior">行为</string>
     <string name="settings_category_function">功能</string>
     <string name="settings_category_security">安全</string>
+    <string name="settings_category_authentication">验证</string>
+    <string name="security_target_app_start">应用启动</string>
+    <string name="security_target_module_install">模块安装</string>
+    <string name="security_target_module_manage">模块卸载或禁用</string>
+    <string name="security_target_module_flash">模块刷写</string>
+    <string name="security_target_theme_import">主题 / FPT 导入</string>
+    <string name="security_target_settings">进入设置</string>
     <string name="profile_edit_title">编辑资料</string>
     <string name="profile_avatar_default">默认</string>
     <string name="profile_avatar_custom">自定义</string>

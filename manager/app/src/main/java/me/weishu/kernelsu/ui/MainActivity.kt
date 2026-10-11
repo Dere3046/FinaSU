@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
-import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -52,6 +51,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -136,7 +136,7 @@ import me.weishu.kernelsu.wallpaper.WallpaperBackgroundLayer
 import me.weishu.kernelsu.ui.theme.FontConfig
 import me.weishu.kernelsu.wallpaper.WallpaperConfig
 
-open class MainActivity : ComponentActivity() {
+open class MainActivity : FragmentActivity() {
     override fun dispatchTouchEvent(event: android.view.MotionEvent?): Boolean {
         if (event?.action == android.view.MotionEvent.ACTION_UP) {
             me.weishu.kernelsu.media.MediaFeedback.touch(this)

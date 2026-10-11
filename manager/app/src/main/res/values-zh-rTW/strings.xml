@@ -326,6 +326,13 @@
     <string name="settings_category_behavior">行為</string>
     <string name="settings_category_function">功能</string>
     <string name="settings_category_security">安全性</string>
+    <string name="settings_category_authentication">驗證</string>
+    <string name="security_target_app_start">應用程式啟動</string>
+    <string name="security_target_module_install">模組安裝</string>
+    <string name="security_target_module_manage">模組解除安裝或停用</string>
+    <string name="security_target_module_flash">模組刷寫</string>
+    <string name="security_target_theme_import">佈景主題 / FPT 匯入</string>
+    <string name="security_target_settings">進入設定</string>
     <string name="profile_edit_title">編輯個人資料</string>
     <string name="profile_avatar_default">預設</string>
     <string name="profile_avatar_custom">自訂</string>
