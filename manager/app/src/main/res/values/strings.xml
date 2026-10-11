@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_status_forced_summary">Forced by boot configuration; cannot be changed here</string>
-    <string name="install_block_modules">Block kernel modules</string>
+    <string name="install_block_modules">Block kernel modules (risky)</string>
+    <string name="install_block_modules_warning">Stop the listed kernel modules from loading at boot. Blocking a module the system depends on can make the device hang on the boot logo or bootloop (e.g. MediaTek mkp on some devices). Only enable this if you know the modules are safe to block on your device. To recover, flash the stock boot / init_boot image with fastboot.</string>
+    <string name="install_block_modules_list">Modules to block</string>
     <string name="install_block_modules_summary">Comma-separated names. Takes effect on next boot; clear to remove this setting.</string>
     <string name="install_block_modules_invalid">Use letters, digits and underscores only; up to 64 characters per name and 255 in total.</string>
     <string name="install_anykernel">Flash AnyKernel3 ZIP</string>
