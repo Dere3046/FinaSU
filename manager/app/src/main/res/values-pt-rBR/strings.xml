@@ -612,4 +612,8 @@
     <string name="settings_app_language">Idioma</string>
     <string name="settings_app_language_summary">Escolha o idioma usado pelo app.</string>
     <string name="system_default">Padrão do sistema</string>
+    <string name="settings_launcher_icon">Ícone do launcher</string>
+    <string name="launcher_icon_style_default">Padrão</string>
+    <string name="launcher_icon_style_geometry">Geométrico</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

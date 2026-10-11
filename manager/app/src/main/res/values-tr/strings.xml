@@ -612,4 +612,8 @@
     <string name="settings_app_language">Dil</string>
     <string name="settings_app_language_summary">Uygulamanın kullandığı dili seçin.</string>
     <string name="system_default">Sistem varsayılanı</string>
+    <string name="settings_launcher_icon">Başlatıcı simgesi</string>
+    <string name="launcher_icon_style_default">Varsayılan</string>
+    <string name="launcher_icon_style_geometry">Geometrik</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

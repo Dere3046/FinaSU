@@ -610,4 +610,8 @@
     <string name="settings_app_language">方言</string>
     <string name="settings_app_language_summary">挑应用说啥方言。</string>
     <string name="system_default">饭庄照旧</string>
+    <string name="settings_launcher_icon">桌面图标</string>
+    <string name="launcher_icon_style_default">照旧</string>
+    <string name="launcher_icon_style_geometry">几何样</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

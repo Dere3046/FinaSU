@@ -610,4 +610,8 @@
     <string name="settings_app_language">言語</string>
     <string name="settings_app_language_summary">アプリで使用する言語を選択します。</string>
     <string name="system_default">システムのデフォルト</string>
+    <string name="settings_launcher_icon">ランチャーアイコン</string>
+    <string name="launcher_icon_style_default">デフォルト</string>
+    <string name="launcher_icon_style_geometry">ジオメトリ</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

@@ -610,4 +610,8 @@
     <string name="settings_app_language">圣域语言</string>
     <string name="settings_app_language_summary">遴选圣器所用之圣言。</string>
     <string name="system_default">天意默认</string>
+    <string name="settings_launcher_icon">桌面圣印</string>
+    <string name="launcher_icon_style_default">天意默认</string>
+    <string name="launcher_icon_style_geometry">几何圣形</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

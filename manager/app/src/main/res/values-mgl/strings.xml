@@ -610,4 +610,8 @@
     <string name="settings_app_language">魔法语言</string>
     <string name="settings_app_language_summary">选择应用使用的魔法语言。</string>
     <string name="system_default">魔法界默认</string>
+    <string name="settings_launcher_icon">魔法界图标</string>
+    <string name="launcher_icon_style_default">默认</string>
+    <string name="launcher_icon_style_geometry">几何</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

@@ -610,4 +610,8 @@
     <string name="settings_app_language">Ngôn ngữ</string>
     <string name="settings_app_language_summary">Chọn ngôn ngữ sử dụng cho ứng dụng.</string>
     <string name="system_default">Mặc định hệ thống</string>
+    <string name="settings_launcher_icon">Biểu tượng trình khởi chạy</string>
+    <string name="launcher_icon_style_default">Mặc định</string>
+    <string name="launcher_icon_style_geometry">Hình học</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

@@ -612,4 +612,8 @@
     <string name="settings_app_language">اللغة</string>
     <string name="settings_app_language_summary">اختر اللغة المستخدمة في التطبيق.</string>
     <string name="system_default">افتراضي النظام</string>
+    <string name="settings_launcher_icon">أيقونة المشغّل</string>
+    <string name="launcher_icon_style_default">افتراضي</string>
+    <string name="launcher_icon_style_geometry">هندسي</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

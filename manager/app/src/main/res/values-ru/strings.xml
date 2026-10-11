@@ -612,4 +612,8 @@
     <string name="settings_app_language">Язык</string>
     <string name="settings_app_language_summary">Выберите язык приложения.</string>
     <string name="system_default">Системный по умолчанию</string>
+    <string name="settings_launcher_icon">Значок лаунчера</string>
+    <string name="launcher_icon_style_default">По умолчанию</string>
+    <string name="launcher_icon_style_geometry">Геометрический</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

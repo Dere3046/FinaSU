@@ -614,4 +614,8 @@ Przed kontynuowaniem upewnij się, że bootloader jest odblokowany!</string>
     <string name="settings_app_language">Język</string>
     <string name="settings_app_language_summary">Wybierz język używany przez aplikację.</string>
     <string name="system_default">Domyślny systemowy</string>
+    <string name="settings_launcher_icon">Ikona launchera</string>
+    <string name="launcher_icon_style_default">Domyślny</string>
+    <string name="launcher_icon_style_geometry">Geometryczny</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

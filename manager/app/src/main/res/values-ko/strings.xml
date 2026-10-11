@@ -610,4 +610,8 @@
     <string name="settings_app_language">언어</string>
     <string name="settings_app_language_summary">앱에서 사용하는 언어를 선택합니다.</string>
     <string name="system_default">시스템 기본값</string>
+    <string name="settings_launcher_icon">런처 아이콘</string>
+    <string name="launcher_icon_style_default">기본</string>
+    <string name="launcher_icon_style_geometry">기하학</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

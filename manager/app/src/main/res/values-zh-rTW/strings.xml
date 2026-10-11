@@ -610,4 +610,8 @@
     <string name="settings_app_language">語言</string>
     <string name="settings_app_language_summary">選擇應用程式使用的語言。</string>
     <string name="system_default">系統預設</string>
+    <string name="settings_launcher_icon">啟動器圖示</string>
+    <string name="launcher_icon_style_default">預設</string>
+    <string name="launcher_icon_style_geometry">幾何</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>

@@ -610,4 +610,8 @@
     <string name="settings_app_language">仙音道语</string>
     <string name="settings_app_language_summary">择仙府所用之道语。</string>
     <string name="system_default">循天道常序</string>
+    <string name="settings_launcher_icon">仙术界道印</string>
+    <string name="launcher_icon_style_default">循旧</string>
+    <string name="launcher_icon_style_geometry">几何之形</string>
+    <string name="launcher_icon_style_kernelsu">KernelSU</string>
 </resources>
