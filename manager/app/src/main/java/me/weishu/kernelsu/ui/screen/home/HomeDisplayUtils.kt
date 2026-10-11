@@ -73,11 +73,11 @@ internal fun formatFrequency(khz: Long): String = when {
     else -> String.format(Locale.US, "%d kHz", khz)
 }
 
-/** The LKM/GKI working mode, or an empty string while the module is not loaded. */
+/** The LKM/Built-In working mode, or an empty string while the module is not loaded. */
 internal fun workingModeLabel(state: HomeUiState): String = when {
     state.ksuVersion == null -> ""
     state.lkmMode == true -> "LKM"
-    state.lkmMode == false -> "GKI"
+    state.lkmMode == false -> "Built-In"
     else -> ""
 }
 

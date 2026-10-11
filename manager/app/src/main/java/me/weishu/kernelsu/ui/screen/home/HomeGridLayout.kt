@@ -143,7 +143,7 @@ private fun GridStatusCard(
         when (state.lkmMode) {
             null -> ""
             true -> "LKM"
-            else -> "GKI"
+            else -> "Built-In"
         }
     } else ""
 
