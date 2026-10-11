@@ -142,7 +142,7 @@
     <string name="home_support_title">给大厨捧个场</string>
     <string name="home_support_content">KernelSU 一直免费开源，打赏一下就是最大的支持。</string>
     <string name="home_gki_warning">打 v3.0.0 起，GKI 干活模式只在试菜时用，不推荐日常下厨，镜像文件也不再供了。</string>
-    <string name="about_source_code"><![CDATA[在 %1$s 翻阅菜谱源码<br/>加入我们的 %2$s 频道<br/>加入我们的 <b><a href="https://pd.qq.com/s/8lipl1brp">QQ</a></b> 频道]]></string>
+    <string name="about_source_code"><![CDATA[在 %1$s 翻阅菜谱源码<br/>加入我们的 %2$s 频道]]></string>
     <string name="profile" translatable="false">App Profile</string>
     <string name="profile_default">照旧</string>
     <string name="profile_template">样板</string>

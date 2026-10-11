@@ -14,17 +14,14 @@ fun AboutScreen() {
     val uriHandler = LocalUriHandler.current
     val htmlString = stringResource(
         id = R.string.about_source_code,
-        "<b><a href=\"https://github.com/tiann/KernelSU\">GitHub</a></b>",
-        "<b><a href=\"https://t.me/KernelSU\">Telegram</a></b>"
+        "<b><a href=\"https://github.com/LyraVoid/FinaSU\">GitHub</a></b>",
+        "<b><a href=\"https://t.me/FinaSU\">Telegram</a></b>"
     )
     val state = AboutUiState(
         title = stringResource(R.string.about),
         appName = stringResource(R.string.app_name),
         versionName = BuildConfig.VERSION_NAME,
-        links = extractLinks(htmlString) + listOf(
-            LinkInfo("FolkZygisk · ReZygisk / PerformanC / ThePedroo", "https://github.com/PerformanC/ReZygisk"),
-            LinkInfo("FolkZygisk · GPLv3 / AGPLv3 / BSD-3-Clause · Source & notices", "https://github.com/LyraVoid/FolkSU/tree/main/userspace/folkzygisk"),
-        ),
+        links = extractLinks(htmlString),
     )
     val actions = AboutScreenActions(
         onBack = dropUnlessResumed { navigator.pop() },

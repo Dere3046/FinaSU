@@ -142,7 +142,7 @@
     <string name="home_support_title">支持缔造者</string>
     <string name="home_support_content">KernelSU 将永远免费开源，向缔造者献上心意以表支持</string>
     <string name="home_gki_warning">自 v3.0.0 起 GKI 工作模式仅用于测试结界，不建议日常使用，也不再提供镜像咒式</string>
-    <string name="about_source_code"><![CDATA[在 %1$s 查阅魔法书<br/>加入我们的 %2$s 频道<br/>加入我们的 <b><a href="https://pd.qq.com/s/8lipl1brp">QQ</a></b> 频道]]></string>
+    <string name="about_source_code"><![CDATA[在 %1$s 查阅魔法书<br/>加入我们的 %2$s 频道]]></string>
     <string name="profile" translatable="false">App Profile</string>
     <string name="profile_default">默认</string>
     <string name="profile_template">模板</string>

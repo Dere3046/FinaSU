@@ -142,7 +142,7 @@
     <string name="home_support_title">圣光援助</string>
     <string name="home_support_content">KernelSU 永为自由开源，愿以捐赠献上圣光</string>
     <string name="home_gki_warning">自 v3.0.0 起，GKI 运转模式仅用于试炼之境，不荐于日常；镜像圣匣亦不再降下。</string>
-    <string name="about_source_code"><![CDATA[在 %1$s 仰望圣光神典<br/>加入我们的 %2$s 圣殿<br/>加入我们的 <b><a href="https://pd.qq.com/s/8lipl1brp">QQ</a></b> 圣殿]]></string>
+    <string name="about_source_code"><![CDATA[在 %1$s 仰望圣光神典<br/>加入我们的 %2$s 圣殿]]></string>
     <string name="profile" translatable="false">App Profile</string>
     <string name="profile_default">天意默认</string>
     <string name="profile_template">圣契</string>
