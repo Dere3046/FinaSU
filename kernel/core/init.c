@@ -10,6 +10,7 @@
 #include "policy/allowlist.h"
 #include "policy/app_profile.h"
 #include "policy/feature.h"
+#include "feature/module_blacklist.h"
 #include "klog.h" // IWYU pragma: keep
 #include "manager/dynamic_manager.h"
 #include "manager/manager_observer.h"
@@ -137,6 +138,7 @@ int __init kernelsu_init(void)
     ksu_syscall_hook_init();
 
     ksu_feature_init();
+    ksu_module_blacklist_init();
     ksu_sulog_init();
     ksu_adb_root_init();
     ksu_lsm_hook_init();
@@ -235,6 +237,7 @@ void __exit kernelsu_exit(void)
     ksu_adb_root_exit();
     ksu_sulog_exit();
     ksu_feature_exit();
+    ksu_module_blacklist_exit();
 
     put_cred(ksu_cred);
 }

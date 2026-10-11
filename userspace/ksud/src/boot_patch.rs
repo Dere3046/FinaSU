@@ -521,9 +521,20 @@ pub struct KsuConfigArgs {
     /// Force a writable feature at boot, e.g. su_compat=0. Can be repeated.
     #[arg(long, value_name = "FEATURE=VALUE", value_parser = parse_force_feature)]
     force_feature: Vec<(FeatureId, u64)>,
+    /// Block kernel modules at boot. Comma-separated and/or repeated; omission clears the list.
+    #[arg(long = "block-module", value_name = "NAME", value_delimiter = ',', value_parser = parse_block_module)]
+    block_module: Vec<String>,
 }
 
 impl KsuConfigArgs {
+    pub fn validate(&self) -> Result<()> {
+        ensure!(
+            self.block_module.join(",").len() <= 255,
+            "block-module list exceeds 255 bytes"
+        );
+        Ok(())
+    }
+
     pub fn apply(&self, config: &mut Vec<String>) {
         set_config_flag(config, "no custom rc", "norc=1", self.no_custom_rc);
         set_config_flag(config, "allow shell", "allow_shell=1", self.allow_shell);
@@ -536,7 +547,23 @@ impl KsuConfigArgs {
                 .collect::<Vec<_>>();
             config.push(format!("force_feature={}", entries.join(",")));
         }
+        config.retain(|v| !v.starts_with("block_modules="));
+        if !self.block_module.is_empty() {
+            config.push(format!("block_modules={}", self.block_module.join(",")));
+        }
     }
+}
+
+fn parse_block_module(s: &str) -> Result<String> {
+    ensure!(
+        !s.is_empty() && s.len() <= 64,
+        "module name must be 1 to 64 bytes"
+    );
+    ensure!(
+        s.bytes().all(|ch| ch.is_ascii_alphanumeric() || ch == b'_'),
+        "module name must contain only letters, digits and underscores"
+    );
+    Ok(s.to_owned())
 }
 
 fn set_config_flag(config: &mut Vec<String>, name: &str, value: &str, add: bool) {
@@ -562,6 +589,113 @@ fn parse_force_feature(s: &str) -> Result<(FeatureId, u64)> {
             .parse()
             .with_context(|| format!("invalid value for feature {name}: {value}"))?,
     ))
+}
+
+#[cfg(test)]
+mod config_tests {
+    use super::*;
+    use clap::Parser;
+
+    #[derive(Parser)]
+    struct ConfigCli {
+        #[command(flatten)]
+        config: KsuConfigArgs,
+    }
+
+    #[test]
+    fn parses_repeated_config_flags_and_local_avc_feature() {
+        let args = ConfigCli::try_parse_from([
+            "test",
+            "--force-feature",
+            "su_compat=0",
+            "--force-feature",
+            "6=1",
+            "--block-module",
+            "vr,mkp",
+            "--block-module",
+            "oplus_secure_guard",
+        ])
+        .unwrap();
+        args.config.validate().unwrap();
+        assert_eq!(
+            args.config.force_feature,
+            [(FeatureId::SuCompat, 0), (FeatureId::AvcSpoof, 1)]
+        );
+        assert_eq!(
+            args.config.block_module,
+            ["vr", "mkp", "oplus_secure_guard"]
+        );
+        for invalid in [
+            "5=1",
+            "dynamic_manager=1",
+            "su_compat=-1",
+            "su_compat=18446744073709551616",
+            "su_compat",
+        ] {
+            assert!(parse_force_feature(invalid).is_err(), "{invalid}");
+        }
+    }
+
+    #[test]
+    fn replaces_only_owned_config_entries_and_omission_clears_them() {
+        let mut config = vec![
+            "bundled=1",
+            "other=ok",
+            "force_feature_extra=keep",
+            "block_modules_extra=keep",
+            "force_feature=su_compat:1",
+            "block_modules=old",
+            "allow_shell=1",
+            "norc=1",
+        ]
+        .into_iter()
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+        let args = KsuConfigArgs {
+            force_feature: vec![(FeatureId::AvcSpoof, 0)],
+            block_module: vec!["mkp".into()],
+            ..Default::default()
+        };
+        args.apply(&mut config);
+        assert_eq!(
+            config,
+            [
+                "bundled=1",
+                "other=ok",
+                "force_feature_extra=keep",
+                "block_modules_extra=keep",
+                "force_feature=avc_spoof:0",
+                "block_modules=mkp"
+            ]
+        );
+        KsuConfigArgs::default().apply(&mut config);
+        assert_eq!(
+            config,
+            [
+                "bundled=1",
+                "other=ok",
+                "force_feature_extra=keep",
+                "block_modules_extra=keep"
+            ]
+        );
+    }
+
+    #[test]
+    fn validates_module_names_and_joined_kernel_buffer_limit() {
+        assert!(parse_block_module(&"a".repeat(64)).is_ok());
+        for invalid in ["", "a-b", "a b", "a;reboot", "模块", &"a".repeat(65)] {
+            assert!(parse_block_module(invalid).is_err());
+        }
+        let mut args = KsuConfigArgs {
+            block_module: vec!["a".repeat(63); 4],
+            ..Default::default()
+        };
+        assert_eq!(args.block_module.join(",").len(), 255);
+        assert!(args.validate().is_ok());
+        args.block_module[0].push('a');
+        assert!(args.validate().is_err());
+        assert!(ConfigCli::try_parse_from(["test", "--block-module", "vr;reboot"]).is_err());
+    }
 }
 
 pub fn patch(args: BootPatchArgs) -> Result<()> {
@@ -784,6 +918,7 @@ pub fn patch(args: BootPatchArgs) -> Result<()> {
             .map(|v| v.split(' ').map(std::borrow::ToOwned::to_owned).collect())
             .unwrap_or_default();
 
+        config.validate()?;
         config.apply(&mut ksu_config);
         if let Some(bundled) = bundled_lkm {
             set_config_flag(&mut ksu_config, "bundled LKM", "bundled=1", bundled);

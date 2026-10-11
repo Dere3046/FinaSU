@@ -2642,6 +2642,7 @@ pub fn patch_boot(args: &BootPatchV2Args) -> Result<()> {
 
     println!("- Recovering BTF/kallsyms and injecting module");
     let mut params = Vec::new();
+    args.config.validate()?;
     args.config.apply(&mut params);
     let (patched_kernel, report) = inject_image(&raw_kernel, &module, &params.join(" "))?;
 
