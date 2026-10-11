@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="folkzygisk_state_changed">Zygisk selection changed after confirmation. Nothing was installed; refresh the state and select the archives again.</string>
+    <string name="folkzygisk_install_switch_message">Disable built-in FolkZygisk for the next boot and install external provider %1$s? Cancel installs nothing. Current injection is unchanged until reboot. Installer side effects cannot be fully rolled back; on failure, partial providers will be disabled before attempting to restore the previous selection.</string>
+    <string name="folkzygisk_switch_install">Switch and install</string>
+    <string name="folkzygisk_install_canceled">Canceled. No modules installed or Zygisk configuration changed.</string>
+    <string name="folkzygisk_multiple_external">Cannot continue: multiple external Zygisk providers (%1$s). Disable the other providers and keep only one.</string>
     <string name="folkzygisk_builtin_switch_message">Disable external providers (%1$s) and enable built-in FolkZygisk for the next boot? Current injection will not change until reboot.</string>
     <string name="folkzygisk_write_failed">FolkZygisk configuration failed. Refresh status and check the engine, provider conflicts and startup protection.</string>
     <string name="folkzygisk_switch_title">Switch Zygisk provider?</string>

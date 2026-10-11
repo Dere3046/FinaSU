@@ -306,6 +306,9 @@ pub enum Command {
         /// Explicitly disable recognized external providers before selecting built-in
         #[arg(long)]
         disable_external: bool,
+        /// Exact external IDs shown in the confirmation dialog
+        #[arg(long)]
+        expected_external: Vec<String>,
     },
     /// Disable FolkZygisk for the next boot
     Disable,
@@ -315,6 +318,15 @@ pub enum Command {
     InstallEngine,
     /// Inspect an entire ZIP batch before any installer is executed
     Preflight {
+        #[arg(required = true)]
+        archives: Vec<String>,
+    },
+    /// Install a preflighted batch under one provider/configuration lock
+    InstallBatch {
+        #[arg(long)]
+        expected_state: String,
+        #[arg(long)]
+        switch_external: bool,
         #[arg(required = true)]
         archives: Vec<String>,
     },
@@ -332,9 +344,12 @@ struct PreflightStatus {
     builtin_enabled: bool,
     provider_ids: Vec<String>,
     conflict: bool,
+    external_providers: Vec<String>,
+    blocked: bool,
+    state_token: String,
 }
 
-fn preflight(enabled: bool, ids: &[String]) -> PreflightStatus {
+fn preflight(enabled: bool, ids: &[String], external: &[String]) -> PreflightStatus {
     let provider_ids: Vec<_> = ids
         .iter()
         .filter(|id| is_provider(id))
@@ -343,11 +358,39 @@ fn preflight(enabled: bool, ids: &[String]) -> PreflightStatus {
         .into_iter()
         .collect();
     PreflightStatus {
-        schema_version: 1,
+        schema_version: 2,
         builtin_enabled: enabled,
         conflict: enabled && !provider_ids.is_empty(),
+        blocked: provider_ids
+            .iter()
+            .chain(external)
+            .collect::<BTreeSet<_>>()
+            .len()
+            > 1
+            || ids.iter().filter(|id| is_provider(id)).count() > 1,
+        state_token: selection_token(enabled, external),
+        external_providers: external.to_vec(),
         provider_ids,
     }
+}
+
+fn selection_token(enabled: bool, external: &[String]) -> String {
+    let mut identity = vec![u8::from(enabled)];
+    for id in external {
+        identity.extend_from_slice(id.as_bytes());
+        identity.push(0);
+    }
+    sha256::digest(&identity)
+}
+
+fn check_confirmed_providers(expected: &[String], actual: &[String]) -> Result<()> {
+    let expected: BTreeSet<_> = expected.iter().collect();
+    let actual: BTreeSet<_> = actual.iter().collect();
+    ensure!(
+        expected == actual,
+        "FOLKZYGISK_STATE_CHANGED: external providers changed; confirm again"
+    );
+    Ok(())
 }
 
 fn archive_id(archive: &Path) -> Result<String> {
@@ -591,10 +634,56 @@ pub fn lock() -> Result<File> {
 
 /// Called before extracting a provider ZIP, removing disable, or undoing removal.
 pub fn check_activation(id: &str) -> Result<()> {
-    if is_provider(id) && read_config(Path::new(CONFIG))?.enabled {
+    if !is_provider(id) {
+        return Ok(());
+    }
+    if read_config(Path::new(CONFIG))?.enabled {
         bail!(
             "FOLKZYGISK_CONFLICT: {id} cannot be installed or activated while FolkZygisk is enabled; disable FolkZygisk first (changes apply on reboot)"
         );
+    }
+    ensure_single_external(id, &providers(Path::new(MODULES), Path::new(UPDATES))?)?;
+    Ok(())
+}
+
+fn ensure_single_external(id: &str, external: &[String]) -> Result<()> {
+    ensure!(
+        external.iter().all(|provider| provider == id),
+        "FOLKZYGISK_EXTERNAL_CONFLICT: other external providers are active: {}",
+        external.join(", ")
+    );
+    Ok(())
+}
+
+/// Clear only the requested marker on both boot-promotion copies. Roll back on rc failure.
+pub fn clear_activation_markers(
+    installed: &Path,
+    pending: &Path,
+    undo_uninstall: bool,
+    mut refresh: impl FnMut() -> Result<()>,
+) -> Result<()> {
+    let marker = if undo_uninstall { "remove" } else { "disable" };
+    let mut previous = Vec::new();
+    for directory in [installed, pending] {
+        let path = directory.join(marker);
+        match fs::read(&path) {
+            Ok(bytes) => previous.push((path, bytes)),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => return Err(error.into()),
+        }
+    }
+    let result = (|| {
+        for (path, _) in &previous {
+            fs::remove_file(path)?;
+        }
+        refresh()
+    })();
+    if let Err(error) = result {
+        for (path, bytes) in previous {
+            fs::write(path, bytes).context("Restore activation marker")?;
+        }
+        refresh().context("Restore activation rc")?;
+        return Err(error);
     }
     Ok(())
 }
@@ -673,6 +762,45 @@ fn switch_external(config: &Path, id: &str, activate: impl FnOnce() -> Result<()
     Ok(())
 }
 
+/// Restore built-in selection only after a failed installer's provider copies are quarantined.
+fn install_external(
+    config: &Path,
+    modules: &Path,
+    updates: &Path,
+    id: &str,
+    install: impl FnOnce() -> Result<()>,
+    mut refresh: impl FnMut() -> Result<()>,
+) -> Result<()> {
+    let previous = read_config(config)?;
+    for root in [modules, updates] {
+        ensure!(
+            !root.join(id).join("remove").exists(),
+            "Provider is marked for removal; undo removal before installing"
+        );
+    }
+    write_config(config, &Config { enabled: false })?;
+    let result = install().and_then(|()| {
+        clear_activation_markers(&modules.join(id), &updates.join(id), false, &mut refresh)?;
+        ensure_single_external(id, &providers(modules, updates)?)
+    });
+    if let Err(error) = result {
+        for root in [modules, updates] {
+            let path = root.join(id);
+            if path.is_dir() {
+                File::create(path.join("disable"))?.sync_all()?;
+            }
+        }
+        refresh()?;
+        ensure!(
+            providers(modules, updates)?.is_empty(),
+            "Provider quarantine failed; built-in remains disabled"
+        );
+        write_config(config, &previous)?;
+        return Err(error);
+    }
+    Ok(())
+}
+
 fn write_json(path: &Path, value: &impl Serialize) -> Result<()> {
     let parent = path.parent().context("Missing configuration directory")?;
     fs::create_dir_all(parent)?;
@@ -696,11 +824,7 @@ pub fn run(command: Command) -> Result<()> {
             {
                 crate::module::validate_module_id(&id)?;
                 let external = providers(Path::new(MODULES), Path::new(UPDATES))?;
-                ensure!(
-                    external.iter().all(|provider| provider == &id),
-                    "Other external Zygisk providers are active: {}",
-                    external.join(", ")
-                );
+                ensure_single_external(&id, &external)?;
                 switch_external(Path::new(CONFIG), &id, || {
                     crate::module::activate_external_provider_locked(&id, undo_uninstall)
                 })?;
@@ -717,8 +841,69 @@ pub fn run(command: Command) -> Result<()> {
                 .iter()
                 .map(|archive| archive_id(Path::new(archive)))
                 .collect::<Result<Vec<_>>>()?;
-            let status = preflight(read_config(Path::new(CONFIG))?.enabled, &ids);
+            let status = preflight(
+                read_config(Path::new(CONFIG))?.enabled,
+                &ids,
+                &providers(Path::new(MODULES), Path::new(UPDATES))?,
+            );
             println!("{}", serde_json::to_string(&status)?);
+        }
+        Command::InstallBatch {
+            expected_state,
+            switch_external: confirmed,
+            archives,
+        } => {
+            let ids = archives
+                .iter()
+                .map(|archive| archive_id(Path::new(archive)))
+                .collect::<Result<Vec<_>>>()?;
+            let config = read_config(Path::new(CONFIG))?;
+            let status = preflight(
+                config.enabled,
+                &ids,
+                &providers(Path::new(MODULES), Path::new(UPDATES))?,
+            );
+            ensure!(
+                status.state_token == expected_state,
+                "FOLKZYGISK_STATE_CHANGED: preflight again"
+            );
+            ensure!(
+                !status.blocked,
+                "FOLKZYGISK_EXTERNAL_CONFLICT: multiple external providers"
+            );
+            ensure!(
+                ids.iter().filter(|id| is_provider(id)).count() <= 1,
+                "FOLKZYGISK_EXTERNAL_CONFLICT: choose only one provider archive per batch"
+            );
+            ensure!(
+                !status.conflict || confirmed,
+                "FOLKZYGISK_CONFLICT: confirmation required"
+            );
+            #[cfg(target_os = "android")]
+            {
+                // Ordinary modules first: a later unrelated failure cannot leave a
+                // successfully selected provider with restored built-in configuration.
+                let mut batch: Vec<_> = archives.iter().zip(&ids).collect();
+                batch.sort_by_key(|(_, id)| is_provider(id));
+                for (archive, id) in batch {
+                    let install = || crate::module::install_module_locked(archive);
+                    if is_provider(id) && config.enabled {
+                        install_external(
+                            Path::new(CONFIG),
+                            Path::new(MODULES),
+                            Path::new(UPDATES),
+                            id,
+                            install,
+                            crate::module::regenerate_preinit_rc,
+                        )?;
+                    } else {
+                        install()?;
+                    }
+                    println!("FOLKZYGISK_BATCH_CHANGED");
+                }
+            }
+            #[cfg(not(target_os = "android"))]
+            bail!("Batch installation requires Android");
         }
         Command::Status { json } => {
             let runtime = read_runtime(Path::new(RUNTIME), Path::new("/proc"))?;
@@ -745,8 +930,14 @@ pub fn run(command: Command) -> Result<()> {
                 println!("{}", serde_json::to_string_pretty(&status)?);
             }
         }
-        Command::Enable { disable_external } => {
+        Command::Enable {
+            disable_external,
+            expected_external,
+        } => {
             let external = providers(Path::new(MODULES), Path::new(UPDATES))?;
+            if disable_external {
+                check_confirmed_providers(&expected_external, &external)?;
+            }
             ensure!(
                 disable_external || external.is_empty(),
                 "FOLKZYGISK_CONFLICT: {}",
@@ -826,6 +1017,125 @@ pub fn run(command: Command) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn confirmation_cannot_disable_an_unseen_provider() -> anyhow::Result<()> {
+        super::check_confirmed_providers(&["rezygisk".into()], &["rezygisk".into()])?;
+        assert!(
+            super::check_confirmed_providers(
+                &["rezygisk".into()],
+                &["onyxzygisk".into(), "rezygisk".into()]
+            )
+            .is_err()
+        );
+        assert!(super::check_confirmed_providers(&["rezygisk".into()], &[]).is_err());
+        assert!(super::check_confirmed_providers(&[], &["rezygisk".into()]).is_err());
+        Ok(())
+    }
+    #[test]
+    fn failed_provider_install_is_quarantined_before_selection_restore() -> anyhow::Result<()> {
+        let dir = tempfile::tempdir()?;
+        let config = dir.path().join("config.json");
+        let modules = dir.path().join("modules");
+        let updates = dir.path().join("updates");
+        super::write_config(&config, &super::Config { enabled: true })?;
+        let result = super::install_external(
+            &config,
+            &modules,
+            &updates,
+            "rezygisk",
+            || {
+                std::fs::create_dir_all(updates.join("rezygisk"))?;
+                anyhow::bail!("installer failed after extraction")
+            },
+            || Ok(()),
+        );
+        assert!(result.is_err());
+        assert!(super::read_config(&config)?.enabled);
+        assert!(updates.join("rezygisk/disable").exists());
+        assert!(super::providers(&modules, &updates)?.is_empty());
+        super::install_external(
+            &config,
+            &modules,
+            &updates,
+            "rezygisk",
+            || {
+                std::fs::create_dir_all(modules.join("rezygisk"))?;
+                Ok(())
+            },
+            || Ok(()),
+        )?;
+        assert!(!super::read_config(&config)?.enabled);
+        assert!(!updates.join("rezygisk/disable").exists());
+        assert_eq!(super::providers(&modules, &updates)?, vec!["rezygisk"]);
+        // Fail closed: never restore the built-in if quarantine/rc regeneration fails.
+        super::write_config(&config, &super::Config { enabled: true })?;
+        assert!(
+            super::install_external(
+                &config,
+                &modules,
+                &updates,
+                "rezygisk",
+                || anyhow::bail!("installer failed"),
+                || anyhow::bail!("rc failed")
+            )
+            .is_err()
+        );
+        assert!(!super::read_config(&config)?.enabled);
+        Ok(())
+    }
+    #[test]
+    fn preflight_blocks_multiple_providers_and_tracks_selection() {
+        let ids = vec!["rezygisk".to_owned()];
+        let one = super::preflight(true, &ids, &[]);
+        assert!(!one.blocked);
+        assert!(one.conflict);
+        assert!(super::preflight(false, &ids, &["onyxzygisk".to_owned()]).blocked);
+        assert!(super::preflight(false, &["rezygisk".into(), "rezygisk".into()], &[]).blocked);
+        assert!(!super::preflight(false, &ids, &ids).blocked);
+        assert_ne!(
+            one.state_token,
+            super::preflight(false, &ids, &[]).state_token
+        );
+        assert_ne!(
+            one.state_token,
+            super::preflight(true, &ids, &ids).state_token
+        );
+        assert!(super::ensure_single_external("rezygisk", &["onyxzygisk".into()]).is_err());
+        assert!(super::ensure_single_external("rezygisk", &ids).is_ok());
+    }
+
+    #[test]
+    fn pending_activation_markers_clear_together_and_restore_on_failure() -> anyhow::Result<()> {
+        let dir = tempfile::tempdir()?;
+        let installed = dir.path().join("installed");
+        let pending = dir.path().join("pending");
+        std::fs::create_dir_all(&installed)?;
+        std::fs::create_dir_all(&pending)?;
+        for name in ["disable", "remove"] {
+            for path in [&installed, &pending] {
+                std::fs::write(path.join(name), b"original")?;
+            }
+            let mut calls = 0;
+            assert!(
+                super::clear_activation_markers(&installed, &pending, name == "remove", || {
+                    calls += 1;
+                    if calls == 1 {
+                        anyhow::bail!("rc failure");
+                    }
+                    Ok(())
+                })
+                .is_err()
+            );
+            for path in [&installed, &pending] {
+                assert_eq!(std::fs::read(path.join(name))?, b"original");
+            }
+            super::clear_activation_markers(&installed, &pending, name == "remove", || Ok(()))?;
+            for path in [&installed, &pending] {
+                assert!(!path.join(name).exists());
+            }
+        }
+        Ok(())
+    }
     #[test]
     fn builtin_selection_disables_pending_providers_and_rolls_back() -> Result<()> {
         let dir = tempfile::tempdir()?;
@@ -912,11 +1222,11 @@ mod tests {
             "onyxzygisk".to_owned(),
             "rezygisk".to_owned(),
         ];
-        let status = super::preflight(true, &ids);
+        let status = super::preflight(true, &ids, &[]);
         assert!(status.conflict);
         assert_eq!(status.provider_ids, vec!["onyxzygisk", "rezygisk"]);
-        assert!(!super::preflight(false, &ids).conflict);
-        assert!(!super::preflight(true, &["lsposed".to_owned()]).conflict);
+        assert!(!super::preflight(false, &ids, &[]).conflict);
+        assert!(!super::preflight(true, &["lsposed".to_owned()], &[]).conflict);
     }
     use super::*;
 

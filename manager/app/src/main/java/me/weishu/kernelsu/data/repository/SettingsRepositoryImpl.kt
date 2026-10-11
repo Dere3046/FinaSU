@@ -257,7 +257,7 @@ class SettingsRepositoryImpl : SettingsRepository {
             }
         }
 
-    override suspend fun setFolkZygiskEnabled(enabled: Boolean, disableExternal: Boolean): Result<Unit> =
+    override suspend fun setFolkZygiskEnabled(enabled: Boolean, disableExternal: Boolean, expectedExternal: List<String>): Result<Unit> =
         withContext(Dispatchers.IO) {
             runCatching {
                 if (enabled) {
@@ -266,7 +266,15 @@ class SettingsRepositoryImpl : SettingsRepository {
                         check(execKsudResult("zygisk install-engine").isSuccess) { "Engine installation failed" }
                     }
                 }
-                val command = if (enabled) "enable${if (disableExternal) " --disable-external" else ""}" else "disable"
+                val command = if (!enabled) {
+                    "disable"
+                } else {
+                    "enable" + if (disableExternal) {
+                        " --disable-external" + expectedExternal.joinToString("") {
+                            " --expected-external '" + it.replace("'", "'\"'\"'") + "'"
+                        }
+                    } else ""
+                }
                 check(execKsudResult("zygisk $command").isSuccess) { "FolkZygisk configuration failed" }
             }
         }

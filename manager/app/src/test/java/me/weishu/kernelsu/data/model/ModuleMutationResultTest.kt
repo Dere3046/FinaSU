@@ -12,4 +12,11 @@ class ModuleMutationResultTest {
         assertFalse(ModuleMutationResult.fromOutput(false, listOf("unrelated failure")).zygiskConflict)
         assertFalse(ModuleMutationResult.fromOutput(false, listOf("mention FOLKZYGISK_CONFLICT: example")).zygiskConflict)
     }
+
+    @Test fun distinguishesExternalProviderConflict() {
+        val result = ModuleMutationResult.fromOutput(false, listOf("Error: FOLKZYGISK_EXTERNAL_CONFLICT: onyxzygisk"))
+        assertTrue(result.externalConflict)
+        assertFalse(result.zygiskConflict)
+        assertFalse(ModuleMutationResult.fromOutput(true, listOf("FOLKZYGISK_EXTERNAL_CONFLICT: example")).externalConflict)
+    }
 }

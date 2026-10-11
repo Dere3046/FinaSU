@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="folkzygisk_state_changed">确认后 Zygisk 配置已变化，未安装任何模块；请刷新状态后重新选择安装包。</string>
+    <string name="folkzygisk_install_switch_message">关闭下次启动的内置 FolkZygisk，并安装外置提供者 %1$s？取消不会安装任何模块。当前注入不会改变，重启后生效。安装器的副作用无法完全回滚；失败时会尝试停用残留提供者并恢复原配置。</string>
+    <string name="folkzygisk_switch_install">切换并安装</string>
+    <string name="folkzygisk_install_canceled">已取消，未安装任何模块，也未修改 Zygisk 配置。</string>
+    <string name="folkzygisk_multiple_external">无法继续：存在多个外置 Zygisk 提供者（%1$s）。请先停用其他提供者，仅保留一个。</string>
     <string name="folkzygisk_builtin_switch_message">停用外置提供者（%1$s），并为下次启动启用内置 FolkZygisk？当前注入状态不会改变，重启后生效。</string>
     <string name="folkzygisk_write_failed">FolkZygisk 配置失败，请刷新状态并检查引擎、提供者冲突与启动保护。</string>
     <string name="folkzygisk_switch_title">切换 Zygisk 提供者？</string>

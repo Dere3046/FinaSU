@@ -90,7 +90,7 @@ data class SettingsScreenActions(
     val onSetSulogEnabled: (Boolean) -> Unit,
     val onSetAvcSpoofEnabled: (Boolean) -> Unit,
     val onSetFolkMountMode: (FolkMountMode) -> Unit,
-    val onSetFolkZygiskEnabled: (Boolean, Boolean) -> Unit,
+    val onSetFolkZygiskEnabled: (Boolean, Boolean, List<String>) -> Unit,
     val onSetAdbRootEnabled: (Boolean) -> Unit,
     val onSetDefaultUmountModules: (Boolean) -> Unit,
     val onSetEnableWebDebugging: (Boolean) -> Unit,

@@ -9,6 +9,7 @@ import me.weishu.kernelsu.data.model.ModuleUpdateInfo
 import me.weishu.kernelsu.ui.component.SearchStatus
 
 sealed interface ModuleConfirmRequest {
+    data object ExternalConflict : ModuleConfirmRequest
     data class SwitchExternal(val module: Module, val undoUninstall: Boolean) : ModuleConfirmRequest
     data class Update(
         val module: Module,

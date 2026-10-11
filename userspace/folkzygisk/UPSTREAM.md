@@ -106,6 +106,26 @@ is refused while a validated monitor is alive or startup was attempted this
 boot, since running daemons resolve libraries through the engine path. It does
 not change provider selection or launch injection.
 
+## Provider confirmation and installation
+
+The Manager stages an entire ZIP batch once and uses schema-2 preflight before
+running installers. A built-in/external conflict offers switch-and-install or
+cancel; multiple external providers are blocked. `zygisk install-batch` checks
+the confirmed selection token under the shared operation lock and keeps that
+lock across all installers. Ordinary modules run first, the single provider
+archive last. Duplicate provider archives are rejected, including shared IDs.
+Failed provider installs are quarantined in both module trees before restoring
+built-in selection; failed quarantine leaves built-in selection disabled. Other
+successful modules and arbitrary installer side effects are not rolled back.
+These transactions recover ordinary errors, not process death or power loss.
+
+Enabling the built-in provider with `--disable-external` requires one
+`--expected-external <id>` per provider shown in the confirmation. A changed
+provider set is rejected before marker changes. Enable/undo-removal clears the
+corresponding marker in installed and pending copies, restoring markers if rc
+regeneration fails. All recognized provider installation/activation paths refuse
+other active external IDs; plugin modules are not provider conflicts.
+
 ## Kernel unmount coordination
 
 The daemon queries kernel_umount on each process-flags request. When the kernel

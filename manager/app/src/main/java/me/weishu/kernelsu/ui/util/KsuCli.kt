@@ -340,7 +340,7 @@ fun flashAnyKernel(
     }
 }
 
-fun flashModule(
+suspend fun flashModule(
     uri: Uri,
     onStdout: (String) -> Unit,
     onStderr: (String) -> Unit
@@ -349,10 +349,11 @@ fun flashModule(
 }
 
 /** Stage the entire batch before preflight; install the exact staged archives. */
-fun flashModuleBatch(
+suspend fun flashModuleBatch(
     uris: List<Uri>,
     onStdout: (String) -> Unit,
     onStderr: (String) -> Unit,
+    confirmExternal: suspend (List<String>, Boolean) -> Boolean = { _, _ -> false },
 ): FlashResult {
     val files = mutableListOf<File>()
     var installed = false
@@ -374,21 +375,37 @@ fun flashModuleBatch(
         val lines = output.filter { it.isNotBlank() }
         check(lines.size == 1) { ksuApp.getString(R.string.folkzygisk_preflight_failed) }
         val status = me.weishu.kernelsu.data.model.FolkZygiskPreflight.fromJson(JSONObject(lines.single()))
-        if (status.conflict) {
-            val message = ksuApp.getString(R.string.folkzygisk_install_conflict, status.providerIds.joinToString(", "))
+        if (status.blocked) {
+            val message = ksuApp.getString(R.string.folkzygisk_multiple_external, (status.providerIds + status.externalProviders).distinct().joinToString(", "))
+            confirmExternal((status.providerIds + status.externalProviders).distinct(), true)
+            onStdout(message)
+            FlashResult(-1, message, false)
+        } else if (status.conflict && !confirmExternal(status.providerIds, false)) {
+            val message = ksuApp.getString(R.string.folkzygisk_install_canceled)
             onStdout(message)
             FlashResult(-1, message, false)
         } else {
-            for (file in files) {
-                val install = flashWithIO(
-                    "${quote(getKsuDaemonPath())} module install ${quote(file.absolutePath)}", onStdout, onStderr,
-                )
-                if (!install.isSuccess) return FlashResult(install, installed)
-                installed = true
-            }
-            FlashResult(0, "", true)
+            var stateChanged = false
+            val install = flashWithIO(
+                "${quote(getKsuDaemonPath())} zygisk install-batch --expected-state ${quote(status.stateToken)}" +
+                    (if (status.conflict) " --switch-external" else "") +
+                    " ${files.joinToString(" ") { quote(it.absolutePath) }}",
+                { line ->
+                    if (line == "FOLKZYGISK_BATCH_CHANGED") installed = true
+                    else onStdout(line)
+                }, { line ->
+                    if (line.trimStart().removePrefix("Error: ").startsWith("FOLKZYGISK_STATE_CHANGED:")) stateChanged = true
+                    onStderr(line)
+                },
+            )
+            if (stateChanged) {
+                val message = ksuApp.getString(R.string.folkzygisk_state_changed)
+                onStdout(message)
+                FlashResult(install.code, message, installed)
+            } else FlashResult(install, installed)
         }
     } catch (error: Exception) {
+        if (error is kotlinx.coroutines.CancellationException) throw error
         val message = ksuApp.getString(R.string.folkzygisk_preflight_failed)
         onStderr(error.toString())
         FlashResult(-1, message, installed)

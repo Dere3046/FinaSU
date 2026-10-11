@@ -64,9 +64,9 @@ internal fun FolkZygiskStatusItem(state: SettingsUiState, actions: SettingsScree
                     if (dialog.awaitConfirm(
                         title = context.getString(R.string.folkzygisk_switch_title),
                         content = context.getString(R.string.folkzygisk_builtin_switch_message, status.externalProviders.joinToString(", ")),
-                    ) == ConfirmResult.Confirmed) actions.onSetFolkZygiskEnabled(true, true)
+                    ) == ConfirmResult.Confirmed) actions.onSetFolkZygiskEnabled(true, true, status.externalProviders)
                 }
-            } else actions.onSetFolkZygiskEnabled(enabled, false)
+            } else actions.onSetFolkZygiskEnabled(enabled, false, emptyList())
         },
     )
 }

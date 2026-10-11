@@ -780,6 +780,13 @@ pub fn install_module(zip: &str) -> Result<()> {
     ksucalls::ensure_uapi_version_matched()?;
     let _zygisk_lock = crate::zygisk::lock()?;
 
+    install_module_locked(zip)
+}
+
+/// Caller holds the shared provider/configuration lock.
+pub fn install_module_locked(zip: &str) -> Result<()> {
+    ksucalls::ensure_uapi_version_matched()?;
+
     let result = install_module_to_system(zip);
     if let Err(ref e) = result {
         println!("- Error: {e}");
@@ -797,19 +804,12 @@ pub fn undo_uninstall_module(id: &str) -> Result<()> {
     let module_path = Path::new(defs::MODULE_DIR).join(id);
     ensure!(module_path.exists(), "Module {id} not found");
 
-    // Remove the remove mark
-    let remove_file = module_path.join(defs::REMOVE_FILE_NAME);
-    if remove_file.exists() {
-        std::fs::remove_file(&remove_file)
-            .with_context(|| format!("Failed to delete remove file for module '{id}'"))?;
-        info!("Removed the remove mark for module {id}");
-    }
-
-    if let Err(e) = regenerate_preinit_rc() {
-        warn!("regenerate preinit rc failed: {e}");
-    }
-
-    Ok(())
+    crate::zygisk::clear_activation_markers(
+        &module_path,
+        &Path::new(defs::MODULE_UPDATE_DIR).join(id),
+        true,
+        regenerate_preinit_rc,
+    )
 }
 
 pub fn uninstall_module(id: &str) -> Result<()> {
@@ -848,19 +848,12 @@ pub fn enable_module(id: &str) -> Result<()> {
     let module_path = Path::new(defs::MODULE_DIR).join(id);
     ensure!(module_path.exists(), "Module {id} not found");
 
-    let disable_path = module_path.join(defs::DISABLE_FILE_NAME);
-    if disable_path.exists() {
-        std::fs::remove_file(&disable_path).with_context(|| {
-            format!("Failed to remove disable file: {}", disable_path.display())
-        })?;
-        info!("Module {id} enabled");
-    }
-
-    if let Err(e) = regenerate_preinit_rc() {
-        warn!("regenerate preinit rc failed: {e}");
-    }
-
-    Ok(())
+    crate::zygisk::clear_activation_markers(
+        &module_path,
+        &Path::new(defs::MODULE_UPDATE_DIR).join(id),
+        false,
+        regenerate_preinit_rc,
+    )
 }
 
 /// Only called with the Zygisk operation lock held and selection already disabled.
@@ -869,41 +862,16 @@ pub fn activate_external_provider_locked(id: &str, undo_uninstall: bool) -> Resu
     let path = Path::new(defs::MODULE_DIR).join(id);
     ensure!(path.is_dir(), "Module {id} not found");
     let pending = Path::new(defs::MODULE_UPDATE_DIR).join(id);
-    ensure!(
-        !pending.join(defs::DISABLE_FILE_NAME).exists()
-            && !pending.join(defs::REMOVE_FILE_NAME).exists(),
-        "Pending provider {id} is disabled or marked for removal"
-    );
-    let marker = path.join(if undo_uninstall {
-        defs::REMOVE_FILE_NAME
-    } else {
-        defs::DISABLE_FILE_NAME
-    });
-    let other = path.join(if undo_uninstall {
+    let other = if undo_uninstall {
         defs::DISABLE_FILE_NAME
     } else {
         defs::REMOVE_FILE_NAME
-    });
+    };
     ensure!(
-        !other.exists(),
+        !path.join(other).exists() && !pending.join(other).exists(),
         "Module {id} is still disabled or marked for removal"
     );
-    let previous = match std::fs::read(&marker) {
-        Ok(bytes) => Some(bytes),
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => None,
-        Err(error) => return Err(error.into()),
-    };
-    if previous.is_some() {
-        std::fs::remove_file(&marker)?;
-    }
-    if let Err(error) = regenerate_preinit_rc() {
-        if let Some(bytes) = previous {
-            std::fs::write(&marker, bytes).context("Restore module activation marker")?;
-        }
-        regenerate_preinit_rc().context("Restore preinit rc after activation failure")?;
-        return Err(error);
-    }
-    Ok(())
+    crate::zygisk::clear_activation_markers(&path, &pending, undo_uninstall, regenerate_preinit_rc)
 }
 
 pub fn disable_module(id: &str) -> Result<()> {

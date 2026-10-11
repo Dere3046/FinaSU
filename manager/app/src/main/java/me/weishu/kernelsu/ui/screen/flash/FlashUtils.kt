@@ -26,6 +26,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.weishu.kernelsu.ui.component.dialog.ConfirmResult
+import me.weishu.kernelsu.ui.component.dialog.rememberConfirmDialog
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.parcelize.Parcelize
 import me.weishu.kernelsu.R
 import me.weishu.kernelsu.ui.component.material.FolkTextButton
@@ -102,18 +105,20 @@ sealed class FlashIt : Parcelable {
     data object FlashUninstall : FlashIt()
 }
 
-fun flashModulesSequentially(
+suspend fun flashModulesSequentially(
     uris: List<Uri>,
     onStdout: (String) -> Unit,
-    onStderr: (String) -> Unit
+    onStderr: (String) -> Unit,
+    confirmExternal: suspend (List<String>, Boolean) -> Boolean = { _, _ -> false },
 ): FlashResult {
-    return flashModuleBatch(uris, onStdout, onStderr)
+    return flashModuleBatch(uris, onStdout, onStderr, confirmExternal)
 }
 
-fun flashIt(
+suspend fun flashIt(
     flashIt: FlashIt,
     onStdout: (String) -> Unit,
-    onStderr: (String) -> Unit
+    onStderr: (String) -> Unit,
+    confirmExternal: suspend (List<String>, Boolean) -> Boolean = { _, _ -> false },
 ): FlashResult {
     return when (flashIt) {
         is FlashIt.FlashAnyKernel -> me.weishu.kernelsu.ui.util.flashAnyKernel(
@@ -143,7 +148,7 @@ fun flashIt(
         )
 
         is FlashIt.FlashModules -> {
-            flashModulesSequentially(flashIt.uris, onStdout, onStderr)
+            flashModulesSequentially(flashIt.uris, onStdout, onStderr, confirmExternal)
         }
 
         FlashIt.FlashRestore -> restoreBoot(onStdout, onStderr)
@@ -161,6 +166,8 @@ fun FlashEffect(
     onFlashingStatusChange: (FlashingStatus) -> Unit,
     enabled: Boolean = true
 ) {
+    val dialog = rememberConfirmDialog()
+    val context = LocalContext.current
     LaunchedEffect(enabled) {
         if (!enabled || text.isNotEmpty()) {
             return@LaunchedEffect
@@ -181,6 +188,16 @@ fun FlashEffect(
                 logContent.append(it).append("\n")
             }, onStderr = {
                 logContent.append(it).append("\n")
+            }, confirmExternal = { ids, blocked ->
+                // Suspend without holding the backend lock or blocking an IO worker.
+                withContext(Dispatchers.Main) {
+                    dialog.awaitConfirm(
+                        title = context.getString(R.string.folkzygisk_switch_title),
+                        content = context.getString(if (blocked) R.string.folkzygisk_multiple_external
+                            else R.string.folkzygisk_install_switch_message, ids.joinToString(", ")),
+                        confirm = context.getString(if (blocked) android.R.string.ok else R.string.folkzygisk_switch_install),
+                    ) == ConfirmResult.Confirmed && !blocked
+                }
             }).apply {
                 if (code != 0) {
                     currentText += "Error code: $code.\n $err Please save and check the log.\n"

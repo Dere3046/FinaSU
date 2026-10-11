@@ -422,6 +422,8 @@ class ModuleViewModel(
                 emitEffect(ModuleEffect.SnackBar(res.getString(R.string.reboot_to_apply)))
             } else if (result.zygiskConflict) {
                 requestExternalSwitch(module, undoUninstall = false)
+            } else if (result.externalConflict) {
+                showExternalConflict(module)
             } else {
                 val message = if (module.enabled) R.string.module_failed_to_disable else R.string.module_failed_to_enable
                 emitEffect(ModuleEffect.SnackBar(res.getString(message).format(module.name)))
@@ -462,6 +464,10 @@ class ModuleViewModel(
                 requestExternalSwitch(module, undoUninstall = true)
                 return@launch
             }
+            if (result.externalConflict) {
+                showExternalConflict(module)
+                return@launch
+            }
             emitEffect(
                 ModuleEffect.SnackBar(
                     res.getString(
@@ -485,6 +491,16 @@ class ModuleViewModel(
         }
     }
 
+    private fun showExternalConflict(module: Module) {
+        _uiState.update { it.copy(confirmDialogState = ModuleConfirmDialogState(
+            request = ModuleConfirmRequest.ExternalConflict,
+            title = ksuApp.getString(R.string.folkzygisk_switch_title),
+            content = ksuApp.getString(R.string.folkzygisk_multiple_external, module.name),
+            confirm = ksuApp.getString(android.R.string.ok),
+            dismiss = ksuApp.getString(android.R.string.cancel),
+        )) }
+    }
+
     fun confirmSwitchExternal(request: ModuleConfirmRequest.SwitchExternal) {
         // Consume the request before launching: repeated confirmation cannot run it twice.
         if (_uiState.value.confirmDialogState?.request != request) return
@@ -492,6 +508,10 @@ class ModuleViewModel(
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
                 mutateModuleActivation(request.module.id, undoUninstall = request.undoUninstall, switchExternal = true)
+            }
+            if (result.externalConflict) {
+                showExternalConflict(request.module)
+                return@launch
             }
             if (result.success) fetchModuleList(checkUpdate = true, resort = false)
             val message = if (result.success) {

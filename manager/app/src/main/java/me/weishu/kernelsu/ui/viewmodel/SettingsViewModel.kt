@@ -125,12 +125,12 @@ class SettingsViewModel(
         }
     }
 
-    fun setFolkZygiskEnabled(enabled: Boolean, disableExternal: Boolean) {
+    fun setFolkZygiskEnabled(enabled: Boolean, disableExternal: Boolean, expectedExternal: List<String>) {
         if (_uiState.value.isFolkZygiskWriting || _uiState.value.isFolkZygiskLoading) return
         ++refreshGeneration
         _uiState.update { it.copy(isFolkZygiskWriting = true) }
         viewModelScope.launch {
-            val result = repo.setFolkZygiskEnabled(enabled, disableExternal)
+            val result = repo.setFolkZygiskEnabled(enabled, disableExternal, expectedExternal)
             val status = repo.getFolkZygiskStatus()
             _uiState.update {
                 it.copy(isFolkZygiskWriting = false, folkZygiskStatus = status.getOrNull(),

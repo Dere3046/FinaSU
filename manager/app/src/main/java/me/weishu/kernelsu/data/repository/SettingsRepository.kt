@@ -63,7 +63,7 @@ interface SettingsRepository {
 
     suspend fun getFolkMountStatus(): Result<FolkMountStatus>
     suspend fun getFolkZygiskStatus(): Result<FolkZygiskStatus>
-    suspend fun setFolkZygiskEnabled(enabled: Boolean, disableExternal: Boolean): Result<Unit>
+    suspend fun setFolkZygiskEnabled(enabled: Boolean, disableExternal: Boolean, expectedExternal: List<String>): Result<Unit>
     suspend fun setFolkMountMode(mode: FolkMountMode): Result<Unit>
 
     suspend fun getAdbRootStatus(): String
