@@ -27,6 +27,8 @@ data class HomeUiState(
     val currentManagerVersionCode: Long,
     val systemInfo: SystemInfo,
     val susfs: me.weishu.kernelsu.data.susfs.SusfsStatus = me.weishu.kernelsu.data.susfs.SusfsStatus(),
+    /** The active Zygisk implementation ("Built-In" or a provider's name); null hides the row. */
+    val zygiskProvider: String? = null,
 ) {
     val isSELinuxPermissive: Boolean
         get() = systemInfo.selinuxStatus == "Permissive"

@@ -69,6 +69,7 @@ fun rememberSettingsActions(
         onSetSuCompatMode = viewModel::setSuCompatMode,
         onSetKernelUmountEnabled = viewModel::setKernelUmountEnabled,
         onSetSelinuxHideEnabled = viewModel::setSelinuxHideEnabled,
+        onSetSELinuxMode = viewModel::setSELinuxMode,
         onSetSulogEnabled = viewModel::setSulogEnabled,
         onSetAvcSpoofEnabled = viewModel::setAvcSpoofEnabled,
         onSetFolkMountMode = viewModel::setFolkMountMode,

@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">Strict</string>
     <string name="seccomp_status_filter">Filter</string>
     <string name="seccomp_status_unknown">Unknown</string>
+    <string name="home_zygisk_implement">Zygisk implementation</string>
     <string name="superuser">Superuser</string>
     <string name="sulog_log_files">Log files</string>
     <string name="sulog_failed_to_load">Failed to load SU log</string>
@@ -268,6 +269,13 @@
     <string name="settings_selinux_hide_summary">Prevent applications from detecting SELinux modifications</string>
     <string name="settings_selinux_hide_reboot_required">Reboot to take effect</string>
     <string name="settings_selinux_hide_failed">Error: %d</string>
+    <string name="settings_selinux_mode">SELinux mode</string>
+    <string name="settings_selinux_mode_enforcing">Enforcing</string>
+    <string name="settings_selinux_mode_permissive">Permissive</string>
+    <string name="settings_selinux_current_mode">Current: %1$s</string>
+    <string name="settings_selinux_mode_failed">Could not change the SELinux mode</string>
+    <string name="msg_selinux_permissive_warning">Switching to permissive stops SELinux from enforcing policy on the whole device until you switch back. Continue?</string>
+    <string name="msg_selinux_enforcing_confirm">Switch back to enforcing? Apps that rely on permissive mode may stop working.</string>
     <string name="settings_sulog">SU Log</string>
     <string name="settings_avc_spoof">AVC log spoofing</string>
     <string name="settings_avc_spoof_summary">Mask the KSU target context in SELinux audit logs</string>

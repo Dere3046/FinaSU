@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">Estrito</string>
     <string name="seccomp_status_filter">Filtro</string>
     <string name="seccomp_status_unknown">Desconhecido</string>
+    <string name="home_zygisk_implement">Implementação do Zygisk</string>
     <string name="superuser">SuperUsuário</string>
     <string name="sulog_log_files">Arquivos de registro</string>
     <string name="sulog_failed_to_load">Falha ao carregar o registro do SU</string>
@@ -270,6 +271,13 @@
     <string name="settings_selinux_hide_summary">Impedir que os aplicativos detectem modificações do SELinux</string>
     <string name="settings_selinux_hide_reboot_required">Reinicie para entrar em vigor</string>
     <string name="settings_selinux_hide_failed">Erro: %d</string>
+    <string name="settings_selinux_mode">Modo do SELinux</string>
+    <string name="settings_selinux_mode_enforcing">Impondo</string>
+    <string name="settings_selinux_mode_permissive">Permissivo</string>
+    <string name="settings_selinux_current_mode">Atual: %1$s</string>
+    <string name="settings_selinux_mode_failed">Não foi possível alterar o modo do SELinux</string>
+    <string name="msg_selinux_permissive_warning">Mudar para permissivo faz o SELinux parar de aplicar políticas no dispositivo inteiro até você voltar. Continuar?</string>
+    <string name="msg_selinux_enforcing_confirm">Voltar para impondo? Aplicativos que dependem do modo permissivo podem parar de funcionar.</string>
     <string name="settings_sulog">Registro do SU</string>
     <string name="settings_avc_spoof">Falsificação do registro AVC</string>
     <string name="settings_avc_spoof_summary">Mascarar o contexto de destino do KSU nos registros de auditoria do SELinux</string>

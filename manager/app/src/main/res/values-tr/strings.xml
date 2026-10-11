@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">Katı</string>
     <string name="seccomp_status_filter">Filtre</string>
     <string name="seccomp_status_unknown">Bilinmiyor</string>
+    <string name="home_zygisk_implement">Zygisk uygulaması</string>
     <string name="superuser">Süper kullanıcı</string>
     <string name="sulog_log_files">Günlük dosyaları</string>
     <string name="sulog_failed_to_load">SU günlüğü yüklenemedi</string>
@@ -270,6 +271,13 @@
     <string name="settings_selinux_hide_summary">Uygulamaların SELinux değişikliklerini algılamasını önle</string>
     <string name="settings_selinux_hide_reboot_required">Etkili olması için yeniden başlatın</string>
     <string name="settings_selinux_hide_failed">Hata: %d</string>
+    <string name="settings_selinux_mode">SELinux modu</string>
+    <string name="settings_selinux_mode_enforcing">Etkin (Enforcing)</string>
+    <string name="settings_selinux_mode_permissive">Serbest (Permissive)</string>
+    <string name="settings_selinux_current_mode">Geçerli: %1$s</string>
+    <string name="settings_selinux_mode_failed">SELinux modu değiştirilemedi</string>
+    <string name="msg_selinux_permissive_warning">Serbest moda geçmek, geri dönene kadar SELinux\'ın tüm cihazda politikayı uygulamasını durdurur. Devam edilsin mi?</string>
+    <string name="msg_selinux_enforcing_confirm">Etkin (Enforcing) moduna geri dönülsün mü? Serbest moda bağlı uygulamalar çalışmayı durdurabilir.</string>
     <string name="settings_sulog">SU Günlüğü</string>
     <string name="settings_avc_spoof">AVC günlüğü gizleme</string>
     <string name="settings_avc_spoof_summary">SELinux denetim günlüklerinde KSU hedef bağlamını maskele</string>

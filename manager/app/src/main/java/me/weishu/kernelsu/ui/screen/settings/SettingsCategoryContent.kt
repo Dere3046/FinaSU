@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.FontDownload
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.LayersClear
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Security
@@ -468,6 +469,7 @@ fun FunctionCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
 
 @Composable
 fun SecurityCategoryContent(uiState: SettingsUiState, actions: SettingsScreenActions) {
+    var showSELinuxModeDialog by remember { mutableStateOf(false) }
     KsuIsValid {
         SegmentedColumn(
             modifier = GroupModifier,
@@ -489,6 +491,27 @@ fun SecurityCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
                     )
                 },
                 {
+                    val modeDisplay = when (uiState.selinuxMode) {
+                        "Enforcing" -> stringResource(R.string.settings_selinux_mode_enforcing)
+                        "Permissive" -> stringResource(R.string.settings_selinux_mode_permissive)
+                        "Disabled" -> stringResource(R.string.selinux_status_disabled)
+                        else -> stringResource(R.string.selinux_status_unknown)
+                    }
+                    val modeTitle = stringResource(R.string.settings_selinux_mode)
+                    SegmentedListItem(
+                        onClick = { showSELinuxModeDialog = true },
+                        enabled = !uiState.isSELinuxModeWriting,
+                        headlineContent = { Text(modeTitle) },
+                        supportingContent = {
+                            Text(stringResource(R.string.settings_selinux_current_mode, modeDisplay))
+                        },
+                        leadingContent = { Icon(Icons.Filled.Lock, modeTitle) },
+                        trailingContent = {
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null)
+                        },
+                    )
+                },
+                {
                     val adbRootSummary = when (uiState.adbRootStatus) {
                         "forced" -> stringResource(R.string.feature_status_forced_summary)
                         "unsupported" -> stringResource(id = R.string.feature_status_unsupported_summary)
@@ -505,6 +528,14 @@ fun SecurityCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
                     )
                 }
             )
+        )
+    }
+
+    if (showSELinuxModeDialog) {
+        SELinuxModeDialog(
+            currentMode = uiState.selinuxMode,
+            onDismiss = { showSELinuxModeDialog = false },
+            onConfirm = actions.onSetSELinuxMode,
         )
     }
 }

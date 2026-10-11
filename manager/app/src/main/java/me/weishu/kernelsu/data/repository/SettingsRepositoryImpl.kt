@@ -26,6 +26,8 @@ import me.weishu.kernelsu.ui.util.execKsudResult
 import me.weishu.kernelsu.ui.util.getFeaturePersistValue
 import me.weishu.kernelsu.ui.util.getFeatureValue
 import me.weishu.kernelsu.ui.util.getFeatureStatus
+import me.weishu.kernelsu.ui.util.getSELinuxStatusRaw
+import me.weishu.kernelsu.ui.util.setSELinuxEnforcing
 import org.json.JSONObject
 import java.security.SecureRandom
 
@@ -219,6 +221,11 @@ class SettingsRepositoryImpl : SettingsRepository {
     override fun isSelinuxHideEnabled(): Boolean = Natives.isSelinuxHideEnabled()
 
     override fun setSelinuxHideEnabled(enabled: Boolean): Int = Natives.setSelinuxHideEnabled(enabled)
+
+    override suspend fun getSELinuxMode(): String = withContext(Dispatchers.IO) { getSELinuxStatusRaw() }
+
+    override suspend fun setSELinuxMode(enforcing: Boolean): Boolean =
+        withContext(Dispatchers.IO) { setSELinuxEnforcing(enforcing) }
 
     override suspend fun getSulogStatus(): String = getFeatureStatus("sulog")
 

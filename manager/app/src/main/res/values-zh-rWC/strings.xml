@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">森严</string>
     <string name="seccomp_status_filter">滤网</string>
     <string name="seccomp_status_unknown">未辨</string>
+    <string name="home_zygisk_implement">Zygisk 之施行</string>
     <string name="superuser">登仙至尊</string>
     <string name="sulog_log_files">仙录卷宗</string>
     <string name="sulog_failed_to_load">载入 SU 仙录败陨</string>
@@ -268,6 +269,13 @@
     <string name="settings_selinux_hide_summary">阻诸凡器窥探 SELinux 之改</string>
     <string name="settings_selinux_hide_reboot_required">重铸仙躯乃显其效</string>
     <string name="settings_selinux_hide_failed">仙误：%d</string>
+    <string name="settings_selinux_mode">SELinux 禁守令模式</string>
+    <string name="settings_selinux_mode_enforcing">闭关</string>
+    <string name="settings_selinux_mode_permissive">宽宥之境</string>
+    <string name="settings_selinux_current_mode">今为：%1$s</string>
+    <string name="settings_selinux_mode_failed">SELinux 禁守令未能改易</string>
+    <string name="msg_selinux_permissive_warning">化为宽宥之境，则 SELinux 于全机暂罢戒律之施，直至复返。可续行？</string>
+    <string name="msg_selinux_enforcing_confirm">复返闭关？倚宽宥之境之凡器或止其行。</string>
     <string name="settings_sulog">SU 仙录</string>
     <string name="settings_avc_spoof">AVC 仙录伪装</string>
     <string name="settings_avc_spoof_summary">隐去 SELinux 审录中之 KSU 目标上下文</string>

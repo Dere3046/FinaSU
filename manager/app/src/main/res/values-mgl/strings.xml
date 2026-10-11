@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">严格模式</string>
     <string name="seccomp_status_filter">过滤模式</string>
     <string name="seccomp_status_unknown">未知</string>
+    <string name="home_zygisk_implement">Zygisk 施行</string>
     <string name="superuser">魔法使</string>
     <string name="sulog_log_files">魔法记录文件</string>
     <string name="sulog_failed_to_load">加载 SU 魔法记录失败</string>
@@ -268,6 +269,13 @@
     <string name="settings_selinux_hide_summary">阻止应用窥见 SELinux 的修改</string>
     <string name="settings_selinux_hide_reboot_required">重新觉醒后生效</string>
     <string name="settings_selinux_hide_failed">错误：%d</string>
+    <string name="settings_selinux_mode">SELinux 模式</string>
+    <string name="settings_selinux_mode_enforcing">强制守护</string>
+    <string name="settings_selinux_mode_permissive">宽容模式</string>
+    <string name="settings_selinux_current_mode">现为: %1$s</string>
+    <string name="settings_selinux_mode_failed">未能变更 SELinux 模式</string>
+    <string name="msg_selinux_permissive_warning">转为宽容模式，则 SELinux 于全机不复强制其政，直至复返。是否续行？</string>
+    <string name="msg_selinux_enforcing_confirm">复返强制守护？倚宽容模式之器或止其行。</string>
     <string name="settings_sulog">SU 魔法记录</string>
     <string name="settings_avc_spoof">AVC 魔法记录伪装</string>
     <string name="settings_avc_spoof_summary">隐遁 SELinux 审计记录中的 KSU 目标上下文</string>

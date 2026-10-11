@@ -30,3 +30,23 @@ fun getSELinuxStatusRaw(): String {
         "Unknown"
     }
 }
+
+/**
+ * Switches SELinux between enforcing and permissive via root `setenforce`.
+ * Returns true when the command succeeded. Safe to call from any thread (IO recommended).
+ */
+fun setSELinuxEnforcing(enforcing: Boolean): Boolean {
+    // setenforce needs root: `Shell.Builder.create().build("sh")` is a non-root fallback shell, so it
+    // can read getenforce but cannot switch the mode. Use the cached root shell (ksud/su) instead.
+    return try {
+        val stdoutList = ArrayList<String>()
+        val stderrList = ArrayList<String>()
+        val result = getRootShell().newJob()
+            .add("setenforce ${if (enforcing) 1 else 0}")
+            .to(stdoutList, stderrList)
+            .exec()
+        result.isSuccess
+    } catch (t: Throwable) {
+        false
+    }
+}

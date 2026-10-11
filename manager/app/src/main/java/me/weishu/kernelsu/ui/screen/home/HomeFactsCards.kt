@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.icons.filled.Vaccines
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -83,6 +84,12 @@ internal fun HomeFactsTile(
             label = stringResource(R.string.home_seccomp_status),
             value = seccompDisplayName(state.systemInfo.seccompStatus),
         )
+        state.zygiskProvider?.let { provider ->
+            HomeFactRow(
+                label = stringResource(R.string.home_zygisk_implement),
+                value = provider,
+            )
+        }
         SusfsHomeRow(state.susfs, onSusfs)
     }
 }
@@ -114,6 +121,7 @@ internal fun InfoCard(
     systemInfo: SystemInfo,
     modifier: Modifier = Modifier,
     susfs: me.weishu.kernelsu.data.susfs.SusfsStatus = me.weishu.kernelsu.data.susfs.SusfsStatus(),
+    zygiskProvider: String? = null,
     onSusfs: () -> Unit = {},
 ) {
     val selinuxDisplay = selinuxDisplayName(systemInfo.selinuxStatus)
@@ -156,6 +164,13 @@ internal fun InfoCard(
                 label = stringResource(R.string.home_seccomp_status),
                 value = seccompDisplay,
             )
+            if (zygiskProvider != null) {
+                InfoRow(
+                    icon = Icons.Filled.Vaccines,
+                    label = stringResource(R.string.home_zygisk_implement),
+                    value = zygiskProvider,
+                )
+            }
             if (susfs.detected) {
                 val interactionSource = remember { MutableInteractionSource() }
                 val haptic = LocalHapticFeedback.current

@@ -102,7 +102,7 @@ fun HomePagerMaterial(
             }
             // The tile layouts place the facts card inside their own board.
             if (layout == HomeLayoutStyle.CIRCLE || layout == HomeLayoutStyle.GRID) {
-                InfoCard(systemInfo = state.systemInfo, susfs = state.susfs, onSusfs = actions.onSusfs)
+                InfoCard(systemInfo = state.systemInfo, susfs = state.susfs, zygiskProvider = state.zygiskProvider, onSusfs = actions.onSusfs)
             }
             SupportLinks(onOpenUrl = actions.onOpenUrl)
             Spacer(

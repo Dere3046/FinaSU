@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">严苛模式</string>
     <string name="seccomp_status_filter">滤净模式</string>
     <string name="seccomp_status_unknown">不可知</string>
+    <string name="home_zygisk_implement">Zygisk 之施行</string>
     <string name="superuser">圣光使者</string>
     <string name="sulog_log_files">神谕圣录</string>
     <string name="sulog_failed_to_load">召唤神谕日志未至</string>
@@ -268,6 +269,13 @@
     <string name="settings_selinux_hide_summary">阻止圣器察觉 SELinux 之变更</string>
     <string name="settings_selinux_hide_reboot_required">神翼再生后生效</string>
     <string name="settings_selinux_hide_failed">谬误：%d</string>
+    <string name="settings_selinux_mode">SELinux 结界模式</string>
+    <string name="settings_selinux_mode_enforcing">结界强制执行</string>
+    <string name="settings_selinux_mode_permissive">结界宽容模式</string>
+    <string name="settings_selinux_current_mode">今为：%1$s</string>
+    <string name="settings_selinux_mode_failed">SELinux 结界模式未能更迭</string>
+    <string name="msg_selinux_permissive_warning">化作宽容结界，则 SELinux 于全机暂止戒律之施，直至重返。可续行？</string>
+    <string name="msg_selinux_enforcing_confirm">重返结界强制执行？倚宽容结界之圣器或止其行。</string>
     <string name="settings_sulog">SU 神谕日志</string>
     <string name="settings_avc_spoof">AVC 日志幻化</string>
     <string name="settings_avc_spoof_summary">隐匿 SELinux 审计日志中 KSU 圣标之内境</string>

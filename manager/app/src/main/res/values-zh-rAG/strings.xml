@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">严格模式喵</string>
     <string name="seccomp_status_filter">过滤模式喵</string>
     <string name="seccomp_status_unknown">不知道喵…</string>
+    <string name="home_zygisk_implement">Zygisk 实现喵</string>
     <string name="superuser">超级用户</string>
     <string name="sulog_log_files">日志文件喵</string>
     <string name="sulog_failed_to_load">SU 日志加载失败了啦喵…</string>
@@ -268,6 +269,13 @@
     <string name="settings_selinux_hide_summary">不让应用发现 SELinux 被改过喵</string>
     <string name="settings_selinux_hide_reboot_required">重启生效喵</string>
     <string name="settings_selinux_hide_failed">出错啦喵：%d</string>
+    <string name="settings_selinux_mode">SELinux 模式喵</string>
+    <string name="settings_selinux_mode_enforcing">强制开着喵！</string>
+    <string name="settings_selinux_mode_permissive">宽松模式喵！</string>
+    <string name="settings_selinux_current_mode">当前：%1$s喵</string>
+    <string name="settings_selinux_mode_failed">改不动 SELinux 模式喵</string>
+    <string name="msg_selinux_permissive_warning">切到宽松模式喵，SELinux 就不管全机的规矩了，切回去才管喵。要继续喵？</string>
+    <string name="msg_selinux_enforcing_confirm">切回强制开着喵？靠宽松模式的应用可能就不跑了喵。</string>
     <string name="settings_sulog">SU 日志喵</string>
     <string name="settings_avc_spoof">AVC 日志伪装喵</string>
     <string name="settings_avc_spoof_summary">把 SELinux 审计日志里 KSU 的目标上下文藏起来喵</string>

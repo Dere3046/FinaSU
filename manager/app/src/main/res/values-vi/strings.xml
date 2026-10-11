@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">Strict</string>
     <string name="seccomp_status_filter">Filter</string>
     <string name="seccomp_status_unknown">Không xác định!</string>
+    <string name="home_zygisk_implement">Triển khai Zygisk</string>
     <string name="superuser">Superuser</string>
     <string name="sulog_log_files">File nhật ký</string>
     <string name="sulog_failed_to_load">Load nhật ký SU thất bại!</string>
@@ -268,6 +269,13 @@
     <string name="settings_selinux_hide_summary">Ngăn chặn các ứng dụng phát hiện các thay đổi của SELinux.</string>
     <string name="settings_selinux_hide_reboot_required">Khởi động lại để có hiệu lực!</string>
     <string name="settings_selinux_hide_failed">Lỗi: %d</string>
+    <string name="settings_selinux_mode">Chế độ SELinux</string>
+    <string name="settings_selinux_mode_enforcing">Enforcing</string>
+    <string name="settings_selinux_mode_permissive">Permissive</string>
+    <string name="settings_selinux_current_mode">Hiện tại: %1$s</string>
+    <string name="settings_selinux_mode_failed">Không thể thay đổi chế độ SELinux</string>
+    <string name="msg_selinux_permissive_warning">Chuyển sang Permissive khiến SELinux ngừng thực thi chính sách trên toàn thiết bị cho đến khi bạn chuyển lại. Tiếp tục?</string>
+    <string name="msg_selinux_enforcing_confirm">Chuyển lại về Enforcing? Các ứng dụng phụ thuộc vào chế độ Permissive có thể ngừng hoạt động.</string>
     <string name="settings_sulog">Nhật ký SU</string>
     <string name="settings_avc_spoof">Giả mạo nhật ký AVC</string>
     <string name="settings_avc_spoof_summary">Che giấu ngữ cảnh mục tiêu KSU trong nhật ký kiểm tra SELinux</string>

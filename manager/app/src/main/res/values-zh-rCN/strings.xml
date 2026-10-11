@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">严格模式</string>
     <string name="seccomp_status_filter">过滤模式</string>
     <string name="seccomp_status_unknown">未知</string>
+    <string name="home_zygisk_implement">Zygisk 实现</string>
     <string name="superuser">超级用户</string>
     <string name="module_failed_to_enable">无法启用模块：%s</string>
     <string name="module_failed_to_disable">无法禁用模块：%s</string>
@@ -368,6 +369,13 @@
     <string name="settings_selinux_hide_summary">阻止应用检测 SELinux 修改</string>
     <string name="settings_selinux_hide_reboot_required">重启生效</string>
     <string name="settings_selinux_hide_failed">错误：%d</string>
+    <string name="settings_selinux_mode">SELinux 模式</string>
+    <string name="settings_selinux_mode_enforcing">强制执行</string>
+    <string name="settings_selinux_mode_permissive">宽容模式</string>
+    <string name="settings_selinux_current_mode">当前：%1$s</string>
+    <string name="settings_selinux_mode_failed">无法更改 SELinux 模式</string>
+    <string name="msg_selinux_permissive_warning">切换到宽容模式后，SELinux 将不再在整个设备上强制执行策略，直到你切回。是否继续？</string>
+    <string name="msg_selinux_enforcing_confirm">切回强制执行？依赖宽容模式的应用可能会停止运行。</string>
     <string name="menu_sort">排序</string>
     <string name="sort_by_name">应用名</string>
     <string name="sort_by_package_name">包名</string>

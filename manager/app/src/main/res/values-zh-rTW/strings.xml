@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">嚴格模式</string>
     <string name="seccomp_status_filter">過濾模式</string>
     <string name="seccomp_status_unknown">不明</string>
+    <string name="home_zygisk_implement">Zygisk 實作</string>
     <string name="superuser">授權</string>
     <string name="sulog_log_files">日誌檔案</string>
     <string name="sulog_failed_to_load">載入 SU 日誌失敗</string>
@@ -268,6 +269,13 @@
     <string name="settings_selinux_hide_summary">防止應用程式偵測 SELinux 修改</string>
     <string name="settings_selinux_hide_reboot_required">重新啟動後生效</string>
     <string name="settings_selinux_hide_failed">錯誤：%d</string>
+    <string name="settings_selinux_mode">SELinux 模式</string>
+    <string name="settings_selinux_mode_enforcing">強制執行</string>
+    <string name="settings_selinux_mode_permissive">容許執行</string>
+    <string name="settings_selinux_current_mode">目前：%1$s</string>
+    <string name="settings_selinux_mode_failed">無法變更 SELinux 模式</string>
+    <string name="msg_selinux_permissive_warning">切換為容許執行後，SELinux 將不再於整台裝置強制執行政策，直到你切換回來。要繼續嗎？</string>
+    <string name="msg_selinux_enforcing_confirm">切回強制執行？依賴容許執行的應用程式可能無法運作。</string>
     <string name="settings_sulog">SU 日誌</string>
     <string name="settings_avc_spoof">AVC 日誌偽裝</string>
     <string name="settings_avc_spoof_summary">隱藏 SELinux 稽核日誌中的 KSU 目標情境</string>

@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">صارم</string>
     <string name="seccomp_status_filter">تصفية</string>
     <string name="seccomp_status_unknown">مجهول</string>
+    <string name="home_zygisk_implement">تنفيذ Zygisk</string>
     <string name="superuser">مستخدم خارق</string>
     <string name="sulog_log_files">ملفات السجل</string>
     <string name="sulog_failed_to_load">فشل تحميل سجل SU</string>
@@ -270,6 +271,13 @@
     <string name="settings_selinux_hide_summary">منع التطبيقات من اكتشاف تعديلات SELinux</string>
     <string name="settings_selinux_hide_reboot_required">أعد التشغيل لتفعيل التغيير</string>
     <string name="settings_selinux_hide_failed">خطأ: %d</string>
+    <string name="settings_selinux_mode">وضع SELinux</string>
+    <string name="settings_selinux_mode_enforcing">مفروض</string>
+    <string name="settings_selinux_mode_permissive">متساهل</string>
+    <string name="settings_selinux_current_mode">الحالي: %1$s</string>
+    <string name="settings_selinux_mode_failed">تعذّر تغيير وضع SELinux</string>
+    <string name="msg_selinux_permissive_warning">التبديل إلى متساهل يوقف SELinux عن فرض السياسة على الجهاز بأكمله حتى تعود. هل تريد المتابعة؟</string>
+    <string name="msg_selinux_enforcing_confirm">هل تريد التبديل مجددًا إلى مفروض؟ قد تتوقف التطبيقات التي تعتمد على الوضع المتساهل عن العمل.</string>
     <string name="settings_sulog">سجل SU</string>
     <string name="settings_avc_spoof">تزييف سجل AVC</string>
     <string name="settings_avc_spoof_summary">إخفاء سياق هدف KSU في سجلات تدقيق SELinux</string>

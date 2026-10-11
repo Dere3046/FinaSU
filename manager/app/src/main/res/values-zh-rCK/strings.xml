@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">严格模式</string>
     <string name="seccomp_status_filter">过滤模式</string>
     <string name="seccomp_status_unknown">不知道</string>
+    <string name="home_zygisk_implement">Zygisk 实现</string>
     <string name="superuser">首席大厨</string>
     <string name="sulog_log_files">账本文件</string>
     <string name="sulog_failed_to_load">SU 账本翻不开了</string>
@@ -268,6 +269,13 @@
     <string name="settings_selinux_hide_summary">别让应用瞧出 SELinux 动过手脚</string>
     <string name="settings_selinux_hide_reboot_required">重新开火才认</string>
     <string name="settings_selinux_hide_failed">出岔子了：%d</string>
+    <string name="settings_selinux_mode">SELinux 模式</string>
+    <string name="settings_selinux_mode_enforcing">严格检查</string>
+    <string name="settings_selinux_mode_permissive">宽松模式</string>
+    <string name="settings_selinux_current_mode">当前：%1$s</string>
+    <string name="settings_selinux_mode_failed">SELinux 模式改不动</string>
+    <string name="msg_selinux_permissive_warning">切到宽松模式，SELinux 全机就不查规矩了，切回去才查。还继续不？</string>
+    <string name="msg_selinux_enforcing_confirm">切回严格检查？靠宽松模式的应用可能就不跑了。</string>
     <string name="settings_sulog">SU 账本</string>
     <string name="settings_avc_spoof">AVC 账本伪装</string>
     <string name="settings_avc_spoof_summary">把 SELinux 审计账本里的 KSU 目标地界藏起来</string>

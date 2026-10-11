@@ -31,6 +31,7 @@ import me.weishu.kernelsu.ui.screen.home.getManagerVersion
 import me.weishu.kernelsu.ui.util.CapabilityRepository
 import me.weishu.kernelsu.ui.util.RootShellStatus
 import me.weishu.kernelsu.ui.util.checkNewVersion
+import me.weishu.kernelsu.ui.util.getModuleDisplayName
 import me.weishu.kernelsu.ui.util.getSELinuxStatusRaw
 import me.weishu.kernelsu.ui.util.module.LatestVersionInfo
 import me.weishu.kernelsu.ui.util.resolveDeviceName
@@ -55,6 +56,7 @@ class HomeViewModel(
     private var refreshToken = 0L
     private val susfsRepository = me.weishu.kernelsu.data.susfs.SusfsRepository()
     private var susfsToken = 0L
+    private var zygiskToken = 0L
 
     init {
         viewModelScope.launch {
@@ -62,10 +64,18 @@ class HomeViewModel(
                 me.weishu.kernelsu.ui.util.RootShell.status,
                 me.weishu.kernelsu.ui.util.RootShell.generation,
             ) { status, generation -> status to generation }.collect { (status, _) ->
-                if (status == RootShellStatus.Ready) refreshSusfs()
-                else {
+                if (status == RootShellStatus.Ready) {
+                    refreshSusfs()
+                    refreshZygisk()
+                } else {
                     susfsToken++
-                    _uiState.update { it.copy(susfs = me.weishu.kernelsu.data.susfs.SusfsStatus(protocol = "root_unavailable")) }
+                    zygiskToken++
+                    _uiState.update {
+                        it.copy(
+                            susfs = me.weishu.kernelsu.data.susfs.SusfsStatus(protocol = "root_unavailable"),
+                            zygiskProvider = null,
+                        )
+                    }
                 }
             }
         }
@@ -118,6 +128,7 @@ class HomeViewModel(
 
     fun refresh() {
         refreshSusfs()
+        refreshZygisk()
         // Guard against overlapping refreshes: a slower, older build must not overwrite a newer
         // snapshot (or clobber the capability collector's root update).
         val token = ++refreshToken
@@ -130,6 +141,7 @@ class HomeViewModel(
             _uiState.update {
                 baseState.copy(
                     susfs = it.susfs,
+                    zygiskProvider = it.zygiskProvider,
                     isRootAvailable = capability.rootStatus == RootShellStatus.Ready,
                     rootStatus = capability.rootStatus,
                 )
@@ -153,6 +165,31 @@ class HomeViewModel(
                 _uiState.update { it.copy(susfs = status) }
             }
         }
+    }
+
+    /**
+     * Resolves the active Zygisk implementation for the home card: the built-in engine when it is
+     * enabled, otherwise the first active external provider (by its module name). Null hides the row.
+     */
+    fun refreshZygisk() {
+        val request = ++zygiskToken
+        viewModelScope.launch {
+            val provider = try {
+                resolveZygiskProvider()
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                null
+            }
+            if (request == zygiskToken) _uiState.update { it.copy(zygiskProvider = provider) }
+        }
+    }
+
+    private suspend fun resolveZygiskProvider(): String? {
+        val status = settingsRepo.getFolkZygiskStatus().getOrNull() ?: return null
+        if (status.enabled && status.engineAvailable) return "Built-In"
+        val external = status.externalProviders.firstOrNull() ?: return null
+        return getModuleDisplayName(external) ?: external
     }
 
     private fun buildState(): HomeUiState {

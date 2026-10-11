@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">Ketat</string>
     <string name="seccomp_status_filter">Filter</string>
     <string name="seccomp_status_unknown">Tidak diketahui</string>
+    <string name="home_zygisk_implement">Implementasi Zygisk</string>
     <string name="superuser">Superuser</string>
     <string name="sulog_log_files">Berkas log</string>
     <string name="sulog_failed_to_load">Gagal memuat SU log</string>
@@ -268,6 +269,13 @@
     <string name="settings_selinux_hide_summary">Mencegah aplikasi mendeteksi modifikasi SELinux</string>
     <string name="settings_selinux_hide_reboot_required">Mulai ulang untuk menerapkan</string>
     <string name="settings_selinux_hide_failed">Kesalahan: %d</string>
+    <string name="settings_selinux_mode">Mode SELinux</string>
+    <string name="settings_selinux_mode_enforcing">Enforcing</string>
+    <string name="settings_selinux_mode_permissive">Permissive</string>
+    <string name="settings_selinux_current_mode">Saat ini: %1$s</string>
+    <string name="settings_selinux_mode_failed">Tidak dapat mengubah mode SELinux</string>
+    <string name="msg_selinux_permissive_warning">Beralih ke permissive menghentikan SELinux menegakkan kebijakan di seluruh perangkat hingga Anda beralih kembali. Lanjutkan?</string>
+    <string name="msg_selinux_enforcing_confirm">Kembali ke enforcing? Aplikasi yang bergantung pada mode permissive mungkin berhenti berfungsi.</string>
     <string name="settings_sulog">SU Log</string>
     <string name="settings_avc_spoof">Pemalsuan log AVC</string>
     <string name="settings_avc_spoof_summary">Samarkan konteks target KSU dalam log audit SELinux</string>

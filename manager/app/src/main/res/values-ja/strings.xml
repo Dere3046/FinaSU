@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">厳格</string>
     <string name="seccomp_status_filter">フィルター</string>
     <string name="seccomp_status_unknown">不明</string>
+    <string name="home_zygisk_implement">Zygisk の実装</string>
     <string name="superuser">Superuser</string>
     <string name="sulog_log_files">ログファイル</string>
     <string name="sulog_failed_to_load">SU ログの読み込みに失敗しました</string>
@@ -268,6 +269,13 @@
     <string name="settings_selinux_hide_summary">アプリによる SELinux の改変検出を防ぎます</string>
     <string name="settings_selinux_hide_reboot_required">再起動すると有効化されます</string>
     <string name="settings_selinux_hide_failed">エラー: %d</string>
+    <string name="settings_selinux_mode">SELinux モード</string>
+    <string name="settings_selinux_mode_enforcing">Enforcing</string>
+    <string name="settings_selinux_mode_permissive">Permissive</string>
+    <string name="settings_selinux_current_mode">現在: %1$s</string>
+    <string name="settings_selinux_mode_failed">SELinux モードを変更できませんでした</string>
+    <string name="msg_selinux_permissive_warning">パーミッシブに切り替えると、戻すまで SELinux はデバイス全体でポリシーを強制しなくなります。続行しますか？</string>
+    <string name="msg_selinux_enforcing_confirm">エンフォーシングに戻しますか？パーミッシブモードに依存するアプリが動作しなくなる可能性があります。</string>
     <string name="settings_sulog">SU ログ</string>
     <string name="settings_avc_spoof">AVC ログの偽装</string>
     <string name="settings_avc_spoof_summary">SELinux 監査ログ内の KSU ターゲットコンテキストを隠します</string>

@@ -68,6 +68,7 @@ class SettingsViewModel(
             val isKernelUmountEnabled = repo.isKernelUmountEnabled()
             val selinuxHideStatus = repo.getSelinuxHideStatus()
             val isSelinuxHideEnabled = repo.isSelinuxHideEnabled()
+            val selinuxMode = repo.getSELinuxMode()
             val sulogStatus = repo.getSulogStatus()
             val avcSpoofStatus = repo.getAvcSpoofStatus()
             val isAvcSpoofEnabled = repo.isAvcSpoofEnabled()
@@ -110,6 +111,7 @@ class SettingsViewModel(
                     isKernelUmountEnabled = isKernelUmountEnabled,
                     selinuxHideStatus = selinuxHideStatus,
                     isSelinuxHideEnabled = isSelinuxHideEnabled,
+                    selinuxMode = selinuxMode,
                     sulogStatus = sulogStatus,
                     avcSpoofStatus = avcSpoofStatus,
                     isAvcSpoofEnabled = isAvcSpoofEnabled,
@@ -273,6 +275,21 @@ class SettingsViewModel(
                         Toast.makeText(ksuApp, ksuApp.getString(R.string.settings_selinux_hide_failed, status),
                             Toast.LENGTH_LONG).show()
                     }
+                }
+            }
+        }
+    }
+
+    fun setSELinuxMode(enforcing: Boolean) {
+        if (_uiState.value.isSELinuxModeWriting) return
+        _uiState.update { it.copy(isSELinuxModeWriting = true) }
+        viewModelScope.launch(Dispatchers.IO) {
+            val success = repo.setSELinuxMode(enforcing)
+            val mode = repo.getSELinuxMode()
+            _uiState.update { it.copy(selinuxMode = mode, isSELinuxModeWriting = false) }
+            if (!success) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(ksuApp, R.string.settings_selinux_mode_failed, Toast.LENGTH_LONG).show()
                 }
             }
         }

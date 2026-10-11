@@ -52,6 +52,7 @@
     <string name="seccomp_status_strict">Ścisły</string>
     <string name="seccomp_status_filter">Filtr</string>
     <string name="seccomp_status_unknown">Nieznany</string>
+    <string name="home_zygisk_implement">Implementacja Zygisk</string>
     <string name="superuser">Superużytkownik</string>
     <string name="sulog_log_files">Pliki dziennika</string>
     <string name="sulog_failed_to_load">Nie udało się wczytać dziennika SU</string>
@@ -272,6 +273,13 @@ Przed kontynuowaniem upewnij się, że bootloader jest odblokowany!</string>
     <string name="settings_selinux_hide_summary">Uniemożliwia aplikacjom wykrycie modyfikacji SELinux</string>
     <string name="settings_selinux_hide_reboot_required">Wymaga ponownego uruchomienia</string>
     <string name="settings_selinux_hide_failed">Błąd: %d</string>
+    <string name="settings_selinux_mode">Tryb SELinux</string>
+    <string name="settings_selinux_mode_enforcing">Enforcing</string>
+    <string name="settings_selinux_mode_permissive">Dozwolony</string>
+    <string name="settings_selinux_current_mode">Obecnie: %1$s</string>
+    <string name="settings_selinux_mode_failed">Nie udało się zmienić trybu SELinux</string>
+    <string name="msg_selinux_permissive_warning">Przełączenie na tryb dozwolony powoduje, że SELinux przestaje egzekwować politykę na całym urządzeniu, dopóki nie wrócisz. Kontynuować?</string>
+    <string name="msg_selinux_enforcing_confirm">Wrócić do trybu wymuszającego? Aplikacje polegające na trybie dozwolonym mogą przestać działać.</string>
     <string name="settings_sulog">Dziennik SU</string>
     <string name="settings_avc_spoof">Fałszowanie dziennika AVC</string>
     <string name="settings_avc_spoof_summary">Maskuj kontekst docelowy KSU w dziennikach audytu SELinux</string>
