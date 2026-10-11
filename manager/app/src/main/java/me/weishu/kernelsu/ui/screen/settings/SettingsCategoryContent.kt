@@ -7,6 +7,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.Rule
 import androidx.compose.material.icons.filled.Adb
 import androidx.compose.material.icons.filled.AdminPanelSettings
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.DeveloperMode
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.FlashOn
@@ -25,7 +26,12 @@ import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import me.weishu.kernelsu.R
@@ -37,6 +43,8 @@ import me.weishu.kernelsu.ui.component.material.SegmentedColumn
 import me.weishu.kernelsu.ui.component.material.SegmentedDropdownItem
 import me.weishu.kernelsu.ui.component.material.SegmentedListItem
 import me.weishu.kernelsu.ui.component.material.SegmentedSwitchItem
+import me.weishu.kernelsu.ui.component.profile.dialogs.SingleSelectDialog
+import me.weishu.kernelsu.ui.util.LauncherIconUtils
 
 /**
  * Contents of each settings category, split out of the old flat hub. Every function emits its own
@@ -111,6 +119,19 @@ fun GeneralCategoryContent(uiState: SettingsUiState, actions: SettingsScreenActi
 
 @Composable
 fun AppearanceCategoryContent(uiState: SettingsUiState, actions: SettingsScreenActions) {
+    val context = LocalContext.current
+    var launcherIconStyle by remember { mutableStateOf(LauncherIconUtils.currentStyle(context)) }
+    var showLauncherIconDialog by remember { mutableStateOf(false) }
+    val launcherIconLabels = LauncherIconUtils.styles.associateWith { style ->
+        stringResource(
+            when (style) {
+                LauncherIconUtils.STYLE_GEOMETRY -> R.string.launcher_icon_style_geometry
+                LauncherIconUtils.STYLE_KERNELSU -> R.string.launcher_icon_style_kernelsu
+                else -> R.string.launcher_icon_style_default
+            }
+        )
+    }
+
     SegmentedColumn(
         modifier = GroupModifier,
         content = buildList {
@@ -159,6 +180,19 @@ fun AppearanceCategoryContent(uiState: SettingsUiState, actions: SettingsScreenA
                 )
             }
             add {
+                SegmentedListItem(
+                    onClick = { showLauncherIconDialog = true },
+                    headlineContent = { Text(stringResource(id = R.string.settings_launcher_icon)) },
+                    supportingContent = {
+                        Text(launcherIconLabels[launcherIconStyle] ?: launcherIconStyle)
+                    },
+                    leadingContent = { Icon(Icons.Filled.Apps, stringResource(id = R.string.settings_launcher_icon)) },
+                    trailingContent = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null)
+                    }
+                )
+            }
+            add {
                 val supportedHomeLayouts = HomeLayoutStyle.supported
                 val homeLayoutItems = supportedHomeLayouts.map { style ->
                     stringResource(
@@ -188,6 +222,21 @@ fun AppearanceCategoryContent(uiState: SettingsUiState, actions: SettingsScreenA
             }
         }
     )
+
+    if (showLauncherIconDialog) {
+        SingleSelectDialog(
+            title = stringResource(id = R.string.settings_launcher_icon),
+            items = LauncherIconUtils.styles,
+            selectedItem = launcherIconStyle,
+            itemTitle = { style -> launcherIconLabels[style] ?: style },
+            onConfirm = { style ->
+                if (LauncherIconUtils.setStyle(context, style)) {
+                    launcherIconStyle = style
+                }
+            },
+            onDismiss = { showLauncherIconDialog = false }
+        )
+    }
 
     DisplayDensitySection(uiState, actions)
     VisualMediaSettings()

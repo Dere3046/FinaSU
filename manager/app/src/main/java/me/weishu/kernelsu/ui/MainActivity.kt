@@ -136,7 +136,7 @@ import me.weishu.kernelsu.wallpaper.WallpaperBackgroundLayer
 import me.weishu.kernelsu.ui.theme.FontConfig
 import me.weishu.kernelsu.wallpaper.WallpaperConfig
 
-class MainActivity : ComponentActivity() {
+open class MainActivity : ComponentActivity() {
     override fun dispatchTouchEvent(event: android.view.MotionEvent?): Boolean {
         if (event?.action == android.view.MotionEvent.ACTION_UP) {
             me.weishu.kernelsu.media.MediaFeedback.touch(this)
