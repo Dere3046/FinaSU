@@ -3,7 +3,7 @@
 //! Listing only reads the package metadata. It never loads or runs plugin
 //! code, so a broken or hostile entry cannot affect the listing itself.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
@@ -75,6 +75,104 @@ pub fn print_list() -> Result<()> {
     let plugins = discover(Path::new(defs::PLUGIN_DIR))?;
     println!("{}", serde_json::to_string(&plugins)?);
     Ok(())
+}
+
+/// The order in which the enabled plugins should run.
+#[derive(Debug, Default, Serialize)]
+pub struct Plan {
+    /// Plugin ids that can run, dependencies first.
+    pub runnable: Vec<String>,
+    /// Plugins that are left out, with the reason.
+    pub skipped: Vec<(String, String)>,
+}
+
+/// Orders the enabled plugins so that every dependency runs before the plugins
+/// that need it. Ties are broken by id, so the order only depends on the set of
+/// installed plugins. A plugin whose dependency is missing, disabled or invalid
+/// is left out with the reason, and so is every plugin that needs it; a
+/// dependency cycle leaves all of its members out rather than picking one.
+pub fn execution_order(plugins: &[PluginInfo]) -> Plan {
+    let enabled: BTreeMap<&str, &PluginInfo> = plugins
+        .iter()
+        .filter(|plugin| plugin.enabled && plugin.error.is_none())
+        .map(|plugin| (plugin.id.as_str(), plugin))
+        .collect();
+
+    let mut skipped: BTreeMap<String, String> = BTreeMap::new();
+    loop {
+        let mut changed = false;
+        for (id, plugin) in &enabled {
+            if skipped.contains_key(*id) {
+                continue;
+            }
+            for dependency in &plugin.depends {
+                let reason = if enabled.contains_key(dependency.as_str()) {
+                    skipped.get(dependency).map(|reason| {
+                        format!("requires '{dependency}', which is skipped ({reason})")
+                    })
+                } else {
+                    Some(describe_absent(plugins, dependency))
+                };
+                if let Some(reason) = reason {
+                    skipped.insert((*id).to_owned(), reason);
+                    changed = true;
+                    break;
+                }
+            }
+        }
+        if !changed {
+            break;
+        }
+    }
+
+    let mut runnable = Vec::new();
+    let mut done: BTreeSet<&str> = BTreeSet::new();
+    loop {
+        let mut next = None;
+        for (id, plugin) in &enabled {
+            if done.contains(*id) || skipped.contains_key(*id) {
+                continue;
+            }
+            if plugin
+                .depends
+                .iter()
+                .all(|dependency| done.contains(dependency.as_str()))
+            {
+                next = Some(*id);
+                break;
+            }
+        }
+        match next {
+            Some(id) => {
+                done.insert(id);
+                runnable.push(id.to_owned());
+            }
+            None => break,
+        }
+    }
+
+    for id in enabled.keys() {
+        if !done.contains(*id) {
+            skipped
+                .entry((*id).to_owned())
+                .or_insert_with(|| "dependency cycle".to_owned());
+        }
+    }
+
+    Plan {
+        runnable,
+        skipped: skipped.into_iter().collect(),
+    }
+}
+
+fn describe_absent(plugins: &[PluginInfo], dependency: &str) -> String {
+    match plugins.iter().find(|plugin| plugin.id == dependency) {
+        Some(plugin) if plugin.error.is_some() => {
+            format!("requires '{dependency}', whose manifest is invalid")
+        }
+        Some(_) => format!("requires '{dependency}', which is disabled"),
+        None => format!("requires '{dependency}', which is not installed"),
+    }
 }
 
 fn inspect(path: &Path, id: &str) -> PluginInfo {
@@ -191,5 +289,123 @@ mod tests {
         );
         assert_eq!(worker.config.len(), 1);
         assert_eq!(worker.config[0].field_type, "number");
+    }
+
+    fn info(id: &str, enabled: bool, error: Option<&str>, depends: &[&str]) -> PluginInfo {
+        PluginInfo {
+            id: id.to_owned(),
+            name: String::new(),
+            author: String::new(),
+            version: String::new(),
+            description: String::new(),
+            descriptions: BTreeMap::new(),
+            license: String::new(),
+            enabled,
+            has_manifest: error.is_none(),
+            has_action: false,
+            entry: defs::PLUGIN_ENTRY.to_owned(),
+            quick_action: None,
+            config: Vec::new(),
+            depends: depends.iter().map(|dep| (*dep).to_owned()).collect(),
+            callbacks: Vec::new(),
+            error: error.map(str::to_owned),
+        }
+    }
+
+    #[test]
+    fn orders_dependencies_before_dependents() {
+        let plugins = [
+            info("top", true, None, &["middle"]),
+            info("middle", true, None, &["base"]),
+            info("base", true, None, &[]),
+        ];
+        let plan = execution_order(&plugins);
+        assert_eq!(plan.runnable, ["base", "middle", "top"]);
+        assert!(plan.skipped.is_empty());
+    }
+
+    #[test]
+    fn breaks_ties_by_id() {
+        let plugins = [
+            info("zeta", true, None, &[]),
+            info("alpha", true, None, &[]),
+        ];
+        assert_eq!(execution_order(&plugins).runnable, ["alpha", "zeta"]);
+    }
+
+    #[test]
+    fn leaves_out_plugins_whose_dependencies_cannot_run() {
+        let plugins = [
+            info("absent", true, None, &["nowhere"]),
+            info("disabled", true, None, &["off"]),
+            info("off", false, None, &[]),
+            info("child", true, None, &["absent"]),
+            info("alone", true, None, &[]),
+        ];
+        let plan = execution_order(&plugins);
+        assert_eq!(plan.runnable, ["alone"]);
+        let reasons: BTreeMap<_, _> = plan.skipped.iter().cloned().collect();
+        assert_eq!(
+            reasons.get("absent").map(String::as_str),
+            Some("requires 'nowhere', which is not installed")
+        );
+        assert_eq!(
+            reasons.get("disabled").map(String::as_str),
+            Some("requires 'off', which is disabled")
+        );
+        assert!(reasons.contains_key("child"));
+    }
+
+    #[test]
+    fn leaves_out_plugins_that_depend_on_an_invalid_manifest() {
+        let plugins = [
+            info("broken", true, Some("plugin.json is not valid JSON"), &[]),
+            info("child", true, None, &["broken"]),
+        ];
+        let plan = execution_order(&plugins);
+        assert!(plan.runnable.is_empty());
+        let reasons: BTreeMap<_, _> = plan.skipped.iter().cloned().collect();
+        assert_eq!(
+            reasons.get("child").map(String::as_str),
+            Some("requires 'broken', whose manifest is invalid")
+        );
+    }
+
+    #[test]
+    fn leaves_out_every_plugin_of_a_dependency_cycle() {
+        let plugins = [
+            info("left", true, None, &["right"]),
+            info("right", true, None, &["left"]),
+        ];
+        let plan = execution_order(&plugins);
+        assert!(plan.runnable.is_empty());
+        let reasons: BTreeMap<_, _> = plan.skipped.iter().cloned().collect();
+        assert_eq!(
+            reasons.get("left").map(String::as_str),
+            Some("dependency cycle")
+        );
+        assert_eq!(
+            reasons.get("right").map(String::as_str),
+            Some("dependency cycle")
+        );
+    }
+
+    #[test]
+    fn never_runs_a_disabled_plugin() {
+        let plugins = [info("off", false, None, &[])];
+        let plan = execution_order(&plugins);
+        assert!(plan.runnable.is_empty());
+        assert!(plan.skipped.is_empty());
+    }
+
+    #[test]
+    fn a_dependency_runs_before_an_earlier_id() {
+        let plugins = [
+            info("zz-base", true, None, &[]),
+            info("aa-top", true, None, &["zz-base"]),
+        ];
+        let plan = execution_order(&plugins);
+        assert_eq!(plan.runnable, ["zz-base", "aa-top"]);
+        assert!(plan.skipped.is_empty());
     }
 }

@@ -9,9 +9,11 @@ pub mod lock;
 pub mod log;
 pub mod manifest;
 pub mod runtime;
+pub mod stage;
 pub mod store;
 
 use std::path::{Path, PathBuf};
+use std::time::Duration;
 
 use anyhow::Result;
 
@@ -83,6 +85,15 @@ pub enum Command {
         /// Descriptor that receives the readiness byte
         #[arg(long)]
         ready_fd: Option<i32>,
+    },
+    /// Run one plugin stage over the installed plugins
+    #[command(hide = true)]
+    Stage {
+        /// Stage name
+        stage: String,
+        /// Seconds the whole dispatch may take
+        #[arg(long)]
+        budget: Option<u64>,
     },
 }
 
@@ -175,6 +186,11 @@ pub fn run(command: Command) -> Result<()> {
         } => {
             let code = daemon::run(plugin_dir, lock_dir, &id, &callback, interval, ready_fd)?;
             report(code)
+        }
+        Command::Stage { stage, budget } => {
+            let deadline =
+                budget.map(|seconds| std::time::Instant::now() + Duration::from_secs(seconds));
+            stage::run(plugin_dir, lock_dir, &stage, deadline)
         }
     }
 }

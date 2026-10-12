@@ -86,7 +86,7 @@ fn target_dir(plugin_dir: &Path, id: &str) -> Result<PathBuf> {
 }
 
 #[cfg(target_os = "android")]
-fn supervise(
+pub fn supervise(
     plugin_dir: &Path,
     lock_dir: &Path,
     id: &str,
