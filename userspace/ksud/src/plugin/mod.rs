@@ -2,12 +2,13 @@
 #![cfg_attr(not(target_os = "android"), allow(dead_code))]
 
 pub mod config;
+pub mod install;
 pub mod lock;
 pub mod log;
 pub mod manifest;
 pub mod store;
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 
@@ -28,13 +29,31 @@ pub enum Command {
     /// Print a plugin's output log
     Log {
         /// Plugin id
-        #[arg(long)]
         id: String,
     },
     /// Remove a plugin's output log
     ClearLog {
         /// Plugin id
-        #[arg(long)]
+        id: String,
+    },
+    /// Install or update a plugin from a ZIP package
+    Install {
+        /// Path to the package
+        zip: PathBuf,
+    },
+    /// Remove an installed plugin
+    Uninstall {
+        /// Plugin id
+        id: String,
+    },
+    /// Allow a plugin to run
+    Enable {
+        /// Plugin id
+        id: String,
+    },
+    /// Stop a plugin from running
+    Disable {
+        /// Plugin id
         id: String,
     },
 }
@@ -68,6 +87,7 @@ pub enum ConfigCommand {
 pub fn run(command: Command) -> Result<()> {
     let plugin_dir = Path::new(defs::PLUGIN_DIR);
     let lock_dir = Path::new(defs::PLUGIN_LOCK_DIR);
+    let stage_dir = Path::new(defs::PLUGIN_STAGE_DIR);
     match command {
         Command::List => store::print_list(),
         Command::Config { id, command } => {
@@ -91,5 +111,25 @@ pub fn run(command: Command) -> Result<()> {
             Ok(())
         }
         Command::ClearLog { id } => log::clear(plugin_dir, lock_dir, &id),
+        Command::Install { zip } => {
+            let id = install::install(plugin_dir, lock_dir, stage_dir, &zip)?;
+            println!("installed {id}");
+            Ok(())
+        }
+        Command::Uninstall { id } => {
+            install::uninstall(plugin_dir, lock_dir, &id)?;
+            println!("uninstalled {id}");
+            Ok(())
+        }
+        Command::Enable { id } => {
+            install::set_enabled(plugin_dir, lock_dir, &id, true)?;
+            println!("enabled {id}");
+            Ok(())
+        }
+        Command::Disable { id } => {
+            install::set_enabled(plugin_dir, lock_dir, &id, false)?;
+            println!("disabled {id}");
+            Ok(())
+        }
     }
 }

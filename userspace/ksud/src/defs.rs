@@ -91,6 +91,7 @@ pub const PLUGIN_LOG_FILE: &str = "last_output.log";
 // Private state owned by this manager, so it stays out of the shared package
 // directory that may hold packages installed by another manager.
 pub const PLUGIN_LOCK_DIR: &str = "/data/adb/ksu/plugin_locks/finasu/";
+pub const PLUGIN_STAGE_DIR: &str = "/data/adb/ksu/plugin_stage/finasu/";
 
 pub const PLUGIN_MAX_ID_LEN: usize = 64;
 pub const PLUGIN_MAX_ENTRY_LEN: usize = 128;
@@ -99,6 +100,12 @@ pub const PLUGIN_MAX_CONFIG_KEY_LEN: usize = 64;
 pub const PLUGIN_MAX_MANIFEST_SIZE: u64 = 1024 * 1024;
 pub const PLUGIN_MAX_CONFIG_SIZE: u64 = 4 * 1024 * 1024;
 pub const PLUGIN_MAX_LOG_SIZE: u64 = 64 * 1024;
+
+// Package limits applied before anything is written to the plugin directory.
+pub const PLUGIN_MAX_ARCHIVE_FILES: usize = 2048;
+pub const PLUGIN_MAX_FILE_SIZE: u64 = 16 * 1024 * 1024;
+pub const PLUGIN_MAX_TOTAL_SIZE: u64 = 64 * 1024 * 1024;
+pub const PLUGIN_MAX_COMPRESSION_RATIO: u64 = 200;
 
 #[cfg(target_os = "android")]
 pub use android::*;
