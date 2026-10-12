@@ -18,8 +18,13 @@ interface BackupSource {
     /** Produces the artifacts that should be persisted by a [BackupStorage]. */
     suspend fun export(): Result<List<BackupArtifact>>
 
-    /** Applies [entry] back to the system. */
-    suspend fun restore(entry: BackupEntry): Result<Unit>
+    /**
+     * Applies [entry] back to the system using [content] as its payload.
+     *
+     * The engine reads the payload from the storage the entry came from and hands it over here, so a
+     * source never needs to know which backend held it.
+     */
+    suspend fun restore(entry: BackupEntry, content: BackupContent): Result<Unit>
 
     /** Deletes [entry] from the source's own inventory, when one exists. */
     suspend fun delete(entry: BackupEntry): Result<Unit>

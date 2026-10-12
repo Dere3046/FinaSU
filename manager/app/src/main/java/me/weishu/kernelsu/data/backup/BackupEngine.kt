@@ -70,52 +70,75 @@ class BackupEngine(
         val failures = mutableListOf<BackupFailure>()
         val artifactsByDirectory = artifacts.groupBy { directoryOf(kind, it) }
 
-        for (storage in storages) {
-            val storageName = storage.toString()
-            for ((directory, group) in artifactsByDirectory) {
-                val listingResult = storage.list(directory)
-                val listing = listingResult.getOrNull()
-                if (listing == null) {
-                    failures += BackupFailure(
-                        operation = "list",
-                        path = directory,
-                        storage = storageName,
-                        cause = listingResult.exceptionOrNull()
-                            ?: IllegalStateException("listing $directory failed"),
-                    )
-                    continue
-                }
-                val existingByPath = listing.associate { it.relativePath to it.sha256 }
-                for (artifact in group) {
-                    val path = remotePathFor(kind, artifact.moduleId, artifact.fileName)
-                    if (DuplicatePolicy.isDuplicate(existingByPath, path, artifact.sha256)) {
-                        skipped += path
+        try {
+            for (storage in storages) {
+                val storageName = storage.toString()
+                for ((directory, group) in artifactsByDirectory) {
+                    val listingResult = storage.list(directory)
+                    val listing = listingResult.getOrNull()
+                    if (listing == null) {
+                        failures += BackupFailure(
+                            operation = "list",
+                            path = directory,
+                            storage = storageName,
+                            cause = listingResult.exceptionOrNull()
+                                ?: IllegalStateException("listing $directory failed"),
+                        )
                         continue
                     }
-                    storage.put(path, artifact.bytes).fold(
-                        onSuccess = { written += path },
-                        onFailure = { failures += BackupFailure("put", path, storageName, it) },
-                    )
-                    val metaFileName = artifact.metaFileName
-                    val metaJson = artifact.metaJson
-                    if (metaFileName != null && metaJson != null) {
-                        val metaPath = "$directory/$metaFileName"
-                        storage.put(metaPath, metaJson.toByteArray(Charsets.UTF_8)).fold(
-                            onSuccess = { written += metaPath },
-                            onFailure = { failures += BackupFailure("put", metaPath, storageName, it) },
-                        )
+                    val existingByPath = listing.associate { it.relativePath to it.sha256 }
+                    for (artifact in group) {
+                        val path = remotePathFor(kind, artifact.moduleId, artifact.fileName)
+                        if (DuplicatePolicy.isDuplicate(existingByPath, path, artifact.sha256)) {
+                            skipped += path
+                            continue
+                        }
+                        val putResult = storage.put(path, artifact.content)
+                        if (putResult.isFailure) {
+                            failures += BackupFailure("put", path, storageName, requireNotNull(putResult.exceptionOrNull()))
+                            continue
+                        }
+                        written += path
+                        val metaFileName = artifact.metaFileName
+                        val metaJson = artifact.metaJson
+                        if (metaFileName != null && metaJson != null) {
+                            val metaPath = "$directory/$metaFileName"
+                            storage.put(metaPath, metaJson.toByteArray(Charsets.UTF_8)).fold(
+                                onSuccess = { written += metaPath },
+                                onFailure = { failures += BackupFailure("put", metaPath, storageName, it) },
+                            )
+                        }
                     }
                 }
             }
+        } finally {
+            // The engine owns file-backed artifacts: a source hands its temporary files over for
+            // persistence and expects the engine to release them once every backend has read them.
+            artifacts.forEach { it.file?.delete() }
         }
         return BackupRunResult(kind = kind, written = written, skipped = skipped, failures = failures)
     }
 
-    /** Restores [entry] through the source registered for [kind]. */
-    suspend fun restore(kind: BackupKind, entry: BackupEntry): Result<Unit> {
+    /**
+     * Restores [entry] from [storage] through the source registered for [kind].
+     *
+     * The payload is read from the backend the entry was listed from and forwarded to the source, so
+     * a caller restoring a remote entry never has to materialise it first.
+     */
+    suspend fun restore(kind: BackupKind, entry: BackupEntry, storage: BackupStorage): Result<Unit> {
         val source = sources.sourceFor(kind)
             ?: return Result.failure(IllegalStateException("no backup source registered for $kind"))
-        return source.restore(entry)
+        val content = storage.open(entry.relativePath).getOrElse { return Result.failure(it) }
+        return try {
+            if (entry.sha256.isNotBlank() && content.sha256() != entry.sha256) {
+                return Result.failure(IllegalStateException("backup checksum mismatch: ${entry.relativePath}"))
+            }
+            source.restore(entry, content)
+        } finally {
+            // A streaming backend hands over a temporary file it owns; the engine releases it once
+            // the source has consumed the payload.
+            if (content is BackupContent.FileRef) content.file().delete()
+        }
     }
 
     private fun directoryOf(kind: BackupKind, artifact: BackupArtifact): String =

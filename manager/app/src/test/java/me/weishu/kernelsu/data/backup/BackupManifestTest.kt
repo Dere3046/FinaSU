@@ -56,6 +56,17 @@ class BackupManifestTest {
     @Test
     fun `boot meta round trips through json`() {
         assertEquals(bootMeta, BootBackupMeta.fromJson(bootMeta.toJson()).getOrThrow())
+        assertEquals(
+            BackupTrigger.PRE_FLASH,
+            BootBackupMeta.fromJson(bootMeta.copy(trigger = BackupTrigger.PRE_FLASH).toJson())
+                .getOrThrow().trigger,
+        )
+    }
+
+    @Test
+    fun `boot meta without a trigger defaults to manual`() {
+        val json = org.json.JSONObject(bootMeta.toJson()).apply { remove("trigger") }.toString()
+        assertEquals(BackupTrigger.MANUAL, BootBackupMeta.fromJson(json).getOrThrow().trigger)
     }
 
     @Test

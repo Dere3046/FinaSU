@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelStoreOwner
 import me.weishu.kernelsu.data.repository.SettingsRepositoryImpl
 import me.weishu.kernelsu.data.security.SecurityRepository
 import me.weishu.kernelsu.data.security.SecurityRepositoryImpl
+import me.weishu.kernelsu.data.backup.SecretStore
+import me.weishu.kernelsu.data.backup.device.KeystoreSecretStore
 import me.weishu.kernelsu.ui.component.security.BiometricAuthenticator
 import me.weishu.kernelsu.ui.util.LauncherIconUtils
 import me.weishu.kernelsu.ui.viewmodel.SuperUserViewModel
@@ -42,6 +44,8 @@ class KernelSUApplication : Application(), ViewModelStoreOwner {
             biometricSupported = { BiometricAuthenticator.isSupported(this) },
         )
     }
+    /** Reversible secret storage (WebDAV password); distinct from the one-way credential vault. */
+    val backupSecrets: SecretStore by lazy { KeystoreSecretStore(this) }
     private val appViewModelStore by lazy { ViewModelStore() }
 
     private fun isUserUnlocked(): Boolean =

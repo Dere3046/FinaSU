@@ -25,14 +25,18 @@ class ArchiveNamingTest {
     @Test
     fun `module archive name follows the contract`() {
         assertEquals(
-            "example.module-1.2.3-123-20231114_221320.zip",
+            "example.module-snapshot-1.2.3-123-20231114_221320.zip",
             moduleArchiveName("example.module", "1.2.3", 123, epochMs),
+        )
+        assertEquals(
+            "example.module-installer-1.2.3-123-20231114_221320.zip",
+            moduleArchiveName("example.module", "1.2.3", 123, epochMs, MODULE_MARKER_INSTALLER),
         )
     }
 
     @Test
     fun `module meta name replaces the zip suffix`() {
-        assertEquals("example.module-1.2.3-123-20231114_221320.meta.json", moduleMetaFileName("example.module-1.2.3-123-20231114_221320.zip"))
+        assertEquals("example.module-snapshot-1.2.3-123-20231114_221320.meta.json", moduleMetaFileName("example.module-snapshot-1.2.3-123-20231114_221320.zip"))
     }
 
     @Test

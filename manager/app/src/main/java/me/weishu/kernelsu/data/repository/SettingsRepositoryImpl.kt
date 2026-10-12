@@ -34,6 +34,9 @@ import java.security.SecureRandom
 private const val SETTINGS_PREFS = "settings"
 private const val KEY_USE_SOFT_REBOOT = "soft_reboot"
 
+/** Partitions backed up by default; the runtime list is filtered by what the device actually has. */
+val DEFAULT_BACKUP_PARTITIONS = setOf("boot", "init_boot", "vendor_boot")
+
 /** Prefer soft reboot: always in jailbreak mode, or when the setting is enabled. */
 fun isSoftRebootPreferred(): Boolean =
     Natives.isLateLoadMode || ksuApp.getSharedPreferences(SETTINGS_PREFS, Context.MODE_PRIVATE)
@@ -187,6 +190,43 @@ class SettingsRepositoryImpl : SettingsRepository {
     override var repoSelectedRepositoryUrl: String
         get() = prefs.getString("repo_cluster_url", "").orEmpty()
         set(value) = prefs.edit { putString("repo_cluster_url", value) }
+
+    override var backupLocalEnabled: Boolean
+        get() = prefs.getBoolean("backup_local_enabled", true)
+        set(value) = prefs.edit { putBoolean("backup_local_enabled", value) }
+
+    override var backupWebDavEnabled: Boolean
+        get() = prefs.getBoolean("backup_webdav_enabled", false)
+        set(value) = prefs.edit { putBoolean("backup_webdav_enabled", value) }
+
+    override var webDavUrl: String
+        get() = prefs.getString("backup_webdav_url", "").orEmpty()
+        set(value) = prefs.edit { putString("backup_webdav_url", value) }
+
+    override var webDavUsername: String
+        get() = prefs.getString("backup_webdav_username", "").orEmpty()
+        set(value) = prefs.edit { putString("backup_webdav_username", value) }
+
+    override var webDavPath: String
+        get() = prefs.getString("backup_webdav_path", "").orEmpty()
+        set(value) = prefs.edit { putString("backup_webdav_path", value) }
+
+    override var backupModulesEnabled: Boolean
+        get() = prefs.getBoolean("backup_modules_enabled", true)
+        set(value) = prefs.edit { putBoolean("backup_modules_enabled", value) }
+
+    override var backupAllowlistEnabled: Boolean
+        get() = prefs.getBoolean("backup_allowlist_enabled", true)
+        set(value) = prefs.edit { putBoolean("backup_allowlist_enabled", value) }
+
+    override var backupPartitions: Set<String>
+        get() = prefs.getStringSet("backup_partitions", DEFAULT_BACKUP_PARTITIONS)?.toSet()
+            ?: DEFAULT_BACKUP_PARTITIONS
+        set(value) = prefs.edit { putStringSet("backup_partitions", value) }
+
+    override var backupBeforeFlash: Boolean
+        get() = prefs.getBoolean("backup_before_flash", false)
+        set(value) = prefs.edit { putBoolean("backup_before_flash", value) }
 
     override val intentToken: String
         get() {

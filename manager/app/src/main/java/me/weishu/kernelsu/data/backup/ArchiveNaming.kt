@@ -48,9 +48,28 @@ fun sanitizeSegment(raw: String): String {
     return cleaned.ifEmpty { "_" }
 }
 
-/** Builds a module archive file name: `<moduleId>-<versionName>-<versionCode>-<timestamp>.zip`. */
-fun moduleArchiveName(moduleId: String, versionName: String, versionCode: Int, epochMs: Long): String =
-    "${sanitizeSegment(moduleId)}-${sanitizeSegment(versionName)}-$versionCode-${backupTimestamp(epochMs)}.zip"
+/** Marker for a module archive that is the original installer ZIP the user flashed. */
+const val MODULE_MARKER_INSTALLER = "installer"
+
+/** Marker for a module archive that snapshots an installed module directory. */
+const val MODULE_MARKER_SNAPSHOT = "snapshot"
+
+/**
+ * Builds a module archive file name:
+ * `<moduleId>-<marker>-<versionName>-<versionCode>-<timestamp>.zip`.
+ *
+ * [marker] records how the archive was produced: [MODULE_MARKER_INSTALLER] when the user's original
+ * installer ZIP was archived, [MODULE_MARKER_SNAPSHOT] for a snapshot of an installed module. The
+ * marker also keeps an installer and a snapshot of the same version from colliding on one path.
+ */
+fun moduleArchiveName(
+    moduleId: String,
+    versionName: String,
+    versionCode: Int,
+    epochMs: Long,
+    marker: String = MODULE_MARKER_SNAPSHOT,
+): String =
+    "${sanitizeSegment(moduleId)}-${sanitizeSegment(marker)}-${sanitizeSegment(versionName)}-$versionCode-${backupTimestamp(epochMs)}.zip"
 
 /** Derives the sidecar file name for a module archive. */
 fun moduleMetaFileName(zipFileName: String): String =
@@ -60,9 +79,24 @@ fun moduleMetaFileName(zipFileName: String): String =
 fun allowlistFileName(epochMs: Long): String =
     "allowlist-${backupTimestamp(epochMs)}.json"
 
-/** Builds a boot image file name: `<partition>-stock-<sha1>.img`. */
-fun bootBackupName(partition: String, sha1: String): String =
-    "${sanitizeSegment(partition)}-stock-${sanitizeSegment(sha1)}.img"
+/** Marker for a pre-flash snapshot of the unpatched partition. */
+const val BOOT_MARKER_STOCK = "stock"
+
+/** Marker for a capture whose hash matched a known patched image. */
+const val BOOT_MARKER_PATCHED = "patched"
+
+/** Marker for a manual capture of whatever the partition holds right now. */
+const val BOOT_MARKER_CURRENT = "current"
+
+/**
+ * Builds a boot image file name: `<partition>-<marker>-<sha1>.img`.
+ *
+ * [marker] describes how the image was captured: [BOOT_MARKER_STOCK] for a pre-flash snapshot of
+ * the unpatched partition, [BOOT_MARKER_PATCHED] when a manual capture matched a known patched
+ * image, and [BOOT_MARKER_CURRENT] for a manual capture of the current contents.
+ */
+fun bootBackupName(partition: String, sha1: String, marker: String = BOOT_MARKER_STOCK): String =
+    "${sanitizeSegment(partition)}-${sanitizeSegment(marker)}-${sanitizeSegment(sha1)}.img"
 
 /** Derives the sidecar file name for a boot image. */
 fun bootMetaFileName(imgFileName: String): String =

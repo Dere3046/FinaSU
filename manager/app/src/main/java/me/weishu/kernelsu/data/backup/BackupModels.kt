@@ -1,5 +1,7 @@
 package me.weishu.kernelsu.data.backup
 
+import java.io.File
+
 /**
  * The category of user data a backup entry captures.
  *
@@ -35,6 +37,24 @@ enum class BackupOrigin(val value: String) {
     companion object {
         /** Resolves [value] to an origin, returning `null` for unrecognised input. */
         fun fromValue(value: String?): BackupOrigin? = entries.firstOrNull { it.value == value }
+    }
+}
+
+/**
+ * What triggered a backup run.
+ *
+ * [value] is the stable wire representation used by backup metadata.
+ */
+enum class BackupTrigger(val value: String) {
+    /** The user asked for a backup explicitly. */
+    MANUAL("manual"),
+
+    /** A snapshot taken automatically right before a flash overwrites the target. */
+    PRE_FLASH("pre_flash");
+
+    companion object {
+        /** Resolves [value] to a trigger, returning `null` for unrecognised input. */
+        fun fromValue(value: String?): BackupTrigger? = entries.firstOrNull { it.value == value }
     }
 }
 
@@ -81,23 +101,39 @@ data class BackupEntry(
     val createdAtEpochMs: Long = 0,
     val source: BackupOrigin = BackupOrigin.EXPORTED,
     val relativePath: String = "",
+    /** Origin marker carried in the file name: a boot capture (`stock`/`patched`/`current`) or a module archive (`installer`/`snapshot`); blank when unknown. */
+    val marker: String = "",
 )
 
 /**
  * Payload produced by a [BackupSource] and handed to a [BackupStorage].
  *
- * [bytes] holds the primary payload; [metaJson] holds the optional sidecar document described by
- * the backup format contract. [sha256] is the lowercase hex hash of [bytes].
+ * Exactly one of [bytes] or [file] carries the primary payload: small documents are held in memory,
+ * while large payloads (e.g. partition images) are referenced by file and streamed on write.
+ * [metaJson] holds the optional sidecar document described by the backup format contract;
+ * [sha256] is the lowercase hex hash of the payload.
  */
 data class BackupArtifact(
     val kind: BackupKind,
     val moduleId: String?,
     val fileName: String,
     val metaFileName: String?,
-    val bytes: ByteArray,
     val sha256: String,
     val metaJson: String?,
-)
+    val bytes: ByteArray? = null,
+    val file: File? = null,
+) {
+    init {
+        require((bytes != null) != (file != null)) {
+            "exactly one of bytes or file must be provided"
+        }
+    }
+
+    /** The streamable payload backing this artifact. */
+    val content: BackupContent
+        get() = bytes?.let { BackupContent.Bytes(it) }
+            ?: BackupContent.FileRef(requireNotNull(file))
+}
 
 /** An entry as reported by a [BackupStorage] listing. */
 data class RemoteEntry(

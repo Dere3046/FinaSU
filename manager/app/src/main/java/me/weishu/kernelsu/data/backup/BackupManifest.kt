@@ -76,7 +76,7 @@ data class ModuleBackupMeta(
     }
 }
 
-/** Sidecar metadata for an exported stock boot image. */
+/** Sidecar metadata for a captured boot partition image. */
 data class BootBackupMeta(
     val partition: String,
     val sha1: String,
@@ -84,6 +84,8 @@ data class BootBackupMeta(
     val device: String,
     val fingerprint: String,
     val createdAt: String,
+    /** What triggered the capture; older sidecars without the field are read as [BackupTrigger.MANUAL]. */
+    val trigger: BackupTrigger = BackupTrigger.MANUAL,
 ) {
     /** Serialises this metadata to a 2-space indented JSON object. */
     fun toJson(): String {
@@ -96,6 +98,7 @@ data class BootBackupMeta(
         json.put("device", device)
         json.put("fingerprint", fingerprint)
         json.put("createdAt", createdAt)
+        json.put("trigger", trigger.value)
         return json.toString(2)
     }
 
@@ -111,6 +114,7 @@ data class BootBackupMeta(
                 device = obj.optString("device", ""),
                 fingerprint = obj.optString("fingerprint", ""),
                 createdAt = obj.optString("createdAt", ""),
+                trigger = BackupTrigger.fromValue(obj.optString("trigger", "")) ?: BackupTrigger.MANUAL,
             )
         }
     }

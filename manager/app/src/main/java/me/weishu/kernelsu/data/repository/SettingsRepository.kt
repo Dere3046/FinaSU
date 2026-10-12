@@ -39,6 +39,20 @@ interface SettingsRepository {
     var repoSelectedRepositoryUrl: String
     val intentToken: String
 
+    // Backup targets and content. The WebDAV password is *not* here: it is a reverse-readable
+    // secret and lives in the keystore-backed SecretStore.
+    var backupLocalEnabled: Boolean
+    var backupWebDavEnabled: Boolean
+    var webDavUrl: String
+    var webDavUsername: String
+    var webDavPath: String
+    var backupModulesEnabled: Boolean
+    var backupAllowlistEnabled: Boolean
+    var backupPartitions: Set<String>
+
+    /** When enabled, a snapshot is taken automatically before a flash overwrites a target. */
+    var backupBeforeFlash: Boolean
+
     suspend fun getSuCompatStatus(): String
     suspend fun getSuCompatPersistValue(): Long?
     fun isSuEnabled(): Boolean

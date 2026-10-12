@@ -58,6 +58,9 @@ class FakeBackupSource(
     var lastRestored: BackupEntry? = null
         private set
 
+    var lastRestoredContent: BackupContent? = null
+        private set
+
     override suspend fun list(): Result<List<BackupEntry>> = Result.success(entries)
 
     override suspend fun export(): Result<List<BackupArtifact>> {
@@ -65,9 +68,10 @@ class FakeBackupSource(
         return Result.success(artifacts)
     }
 
-    override suspend fun restore(entry: BackupEntry): Result<Unit> {
+    override suspend fun restore(entry: BackupEntry, content: BackupContent): Result<Unit> {
         restoreCount++
         lastRestored = entry
+        lastRestoredContent = content
         return Result.success(Unit)
     }
 
