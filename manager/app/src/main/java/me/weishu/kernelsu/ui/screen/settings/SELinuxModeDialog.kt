@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 import me.weishu.kernelsu.R
@@ -29,7 +29,7 @@ internal fun SELinuxModeDialog(
     onDismiss: () -> Unit,
     onConfirm: (Boolean) -> Unit,
 ) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     val confirmDialog = rememberConfirmDialog()
     val scope = rememberCoroutineScope()
     val currentEnforcing = currentMode == "Enforcing"
@@ -62,13 +62,13 @@ internal fun SELinuxModeDialog(
             FolkTextButton(
                 enabled = selectedEnforcing != currentEnforcing,
                 onClick = {
-                    val message = context.getString(
+                    val message = resources.getString(
                         if (selectedEnforcing) R.string.msg_selinux_enforcing_confirm
                         else R.string.msg_selinux_permissive_warning
                     )
                     scope.launch {
                         val result = confirmDialog.awaitConfirm(
-                            title = context.getString(R.string.settings_selinux_mode),
+                            title = resources.getString(R.string.settings_selinux_mode),
                             content = message,
                         )
                         if (result == ConfirmResult.Confirmed) {

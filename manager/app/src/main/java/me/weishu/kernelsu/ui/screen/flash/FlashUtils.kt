@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.weishu.kernelsu.ui.component.dialog.ConfirmResult
 import me.weishu.kernelsu.ui.component.dialog.rememberConfirmDialog
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import kotlinx.parcelize.Parcelize
 import me.weishu.kernelsu.R
 import me.weishu.kernelsu.ui.component.material.FolkTextButton
@@ -171,7 +171,7 @@ fun FlashEffect(
     enabled: Boolean = true
 ) {
     val dialog = rememberConfirmDialog()
-    val context = LocalContext.current
+    val resources = LocalResources.current
     LaunchedEffect(enabled) {
         if (!enabled || text.isNotEmpty()) {
             return@LaunchedEffect
@@ -196,10 +196,10 @@ fun FlashEffect(
                 // Suspend without holding the backend lock or blocking an IO worker.
                 withContext(Dispatchers.Main) {
                     dialog.awaitConfirm(
-                        title = context.getString(R.string.folkzygisk_switch_title),
-                        content = context.getString(if (blocked) R.string.folkzygisk_multiple_external
+                        title = resources.getString(R.string.folkzygisk_switch_title),
+                        content = resources.getString(if (blocked) R.string.folkzygisk_multiple_external
                             else R.string.folkzygisk_install_switch_message, ids.joinToString(", ")),
-                        confirm = context.getString(if (blocked) android.R.string.ok else R.string.folkzygisk_switch_install),
+                        confirm = resources.getString(if (blocked) android.R.string.ok else R.string.folkzygisk_switch_install),
                     ) == ConfirmResult.Confirmed && !blocked
                 }
             }).apply {

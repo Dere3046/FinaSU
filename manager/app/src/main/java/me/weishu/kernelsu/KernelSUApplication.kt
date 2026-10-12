@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import me.weishu.kernelsu.data.repository.SettingsRepositoryImpl
 import me.weishu.kernelsu.data.security.SecurityRepository
 import me.weishu.kernelsu.data.security.SecurityRepositoryImpl
+import me.weishu.kernelsu.ui.component.security.BiometricAuthenticator
 import me.weishu.kernelsu.ui.util.LauncherIconUtils
 import me.weishu.kernelsu.ui.viewmodel.SuperUserViewModel
 import okhttp3.Cache
@@ -36,7 +37,10 @@ class KernelSUApplication : Application(), ViewModelStoreOwner {
 
     lateinit var okhttpClient: OkHttpClient
     val securityRepository: SecurityRepository by lazy {
-        SecurityRepositoryImpl(getSharedPreferences(SecurityRepositoryImpl.PREFS_NAME, MODE_PRIVATE))
+        SecurityRepositoryImpl(
+            getSharedPreferences(SecurityRepositoryImpl.PREFS_NAME, MODE_PRIVATE),
+            biometricSupported = { BiometricAuthenticator.isSupported(this) },
+        )
     }
     private val appViewModelStore by lazy { ViewModelStore() }
 

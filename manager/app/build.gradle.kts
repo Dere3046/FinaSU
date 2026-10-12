@@ -164,7 +164,7 @@ android {
                 val authProps = Properties()
                 val authFile = rootProject.file("auth.properties")
                 if (authFile.exists()) {
-                    authProps.load(FileInputStream(authFile))
+                    FileInputStream(authFile).use(authProps::load)
                 }
                 val apiToken = authProps.getProperty("api.token", "")
                 val signatureHash = authProps.getProperty("app.signature.hash", "")
@@ -186,6 +186,8 @@ android {
     lint {
         abortOnError = true
         checkReleaseBuilds = false
+        // Incomplete locales fall back to English; keep reporting translation gaps.
+        warning += "MissingTranslation"
     }
 
     compileOptions {

@@ -6,7 +6,7 @@ import me.weishu.kernelsu.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import kotlinx.coroutines.launch
 import me.weishu.kernelsu.ui.component.dialog.ConfirmResult
 import me.weishu.kernelsu.ui.component.dialog.rememberConfirmDialog
@@ -14,7 +14,7 @@ import me.weishu.kernelsu.ui.component.material.SegmentedSwitchItem
 
 @Composable
 internal fun FolkZygiskStatusItem(state: SettingsUiState, actions: SettingsScreenActions) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val dialog = rememberConfirmDialog()
     val status = state.folkZygiskStatus
@@ -62,8 +62,8 @@ internal fun FolkZygiskStatusItem(state: SettingsUiState, actions: SettingsScree
             if (enabled && status != null && status.externalProviders.isNotEmpty()) {
                 if (!dialog.isShown) scope.launch {
                     if (dialog.awaitConfirm(
-                        title = context.getString(R.string.folkzygisk_switch_title),
-                        content = context.getString(R.string.folkzygisk_builtin_switch_message, status.externalProviders.joinToString(", ")),
+                        title = resources.getString(R.string.folkzygisk_switch_title),
+                        content = resources.getString(R.string.folkzygisk_builtin_switch_message, status.externalProviders.joinToString(", ")),
                     ) == ConfirmResult.Confirmed) actions.onSetFolkZygiskEnabled(true, true, status.externalProviders)
                 }
             } else actions.onSetFolkZygiskEnabled(enabled, false, emptyList())

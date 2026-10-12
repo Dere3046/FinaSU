@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
@@ -119,6 +120,7 @@ fun NavigationSettingsSection(uiState: SettingsUiState, actions: SettingsScreenA
 @Composable
 private fun NavCustomIconsSection() {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val revision by BottomBarIconConfig.revision.collectAsState()
     val customEnabled = remember(revision) { BottomBarIconConfig.isEnabled }
     var iconPickTarget by remember { mutableStateOf<BottomBarDestination?>(null) }
@@ -129,7 +131,7 @@ private fun NavCustomIconsSection() {
             val saved = BottomBarIconConfig.saveCustomIcon(context, destination.name, uri)
             Toast.makeText(
                 context,
-                context.getString(if (saved) R.string.nav_icon_set else R.string.nav_icon_set_failed),
+                resources.getString(if (saved) R.string.nav_icon_set else R.string.nav_icon_set_failed),
                 Toast.LENGTH_SHORT
             ).show()
         }

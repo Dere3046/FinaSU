@@ -6,12 +6,12 @@ import java.util.Base64
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
-/** Pure cryptography. Call from a worker dispatcher; no plaintext is persisted. */
-class PasswordVault(private val random: SecureRandom = SecureRandom()) {
-    fun create(password: CharArray): String {
-        require(password.size in MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH)
+/** PBKDF2 records shared by every credential kind. Callers validate the secret shape first. */
+class CredentialVault(private val random: SecureRandom = SecureRandom()) {
+    fun create(secret: CharArray): String {
+        require(secret.size in 1..MAX_SECRET_LENGTH)
         val salt = ByteArray(SALT_BYTES).also(random::nextBytes)
-        val derived = derive(password, salt, ITERATIONS)
+        val derived = derive(secret, salt, ITERATIONS)
         return try {
             listOf(VERSION.toString(), ITERATIONS.toString(), encode(salt), encode(derived)).joinToString(":")
         } finally {
@@ -21,10 +21,10 @@ class PasswordVault(private val random: SecureRandom = SecureRandom()) {
 
     fun isValidRecord(record: String): Boolean = parse(record) != null
 
-    fun verify(password: CharArray, record: String): Boolean {
+    fun verify(secret: CharArray, record: String): Boolean {
         val parsed = parse(record) ?: return false
-        if (password.size !in 1..MAX_PASSWORD_LENGTH) return false
-        val derived = derive(password, parsed.salt, parsed.iterations)
+        if (secret.size !in 1..MAX_SECRET_LENGTH) return false
+        val derived = derive(secret, parsed.salt, parsed.iterations)
         return try {
             MessageDigest.isEqual(parsed.hash, derived)
         } finally {
@@ -33,8 +33,8 @@ class PasswordVault(private val random: SecureRandom = SecureRandom()) {
         }
     }
 
-    private fun derive(password: CharArray, salt: ByteArray, iterations: Int): ByteArray {
-        val spec = PBEKeySpec(password, salt, iterations, HASH_BYTES * 8)
+    private fun derive(secret: CharArray, salt: ByteArray, iterations: Int): ByteArray {
+        val spec = PBEKeySpec(secret, salt, iterations, HASH_BYTES * 8)
         return try {
             SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256").generateSecret(spec).encoded
         } finally {
@@ -63,8 +63,7 @@ class PasswordVault(private val random: SecureRandom = SecureRandom()) {
     private data class Record(val iterations: Int, val salt: ByteArray, val hash: ByteArray)
 
     companion object {
-        const val MIN_PASSWORD_LENGTH = 8
-        const val MAX_PASSWORD_LENGTH = 1024
+        const val MAX_SECRET_LENGTH = 1024
         private const val VERSION = 1
         private const val ITERATIONS = 600_000
         private const val MAX_ITERATIONS = 1_000_000

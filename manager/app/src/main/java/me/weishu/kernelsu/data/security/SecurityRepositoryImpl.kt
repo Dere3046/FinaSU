@@ -13,17 +13,18 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
-/** One application-scoped instance owns both policies and credentials in the same prefs file. */
+/** One application-scoped instance owns the policy and every credential record. */
 class SecurityRepositoryImpl(
     private val prefs: SharedPreferences,
-    private val vault: PasswordVault = PasswordVault(),
+    private val vault: CredentialVault = CredentialVault(),
     private val worker: CoroutineDispatcher = Dispatchers.IO,
     private val elapsedRealtime: () -> Long = SystemClock::elapsedRealtime,
+    private val biometricSupported: () -> Boolean = { true },
 ) : SecurityRepository {
     private val mutableState = MutableStateFlow(SecurityState())
     override val state = mutableState.asStateFlow()
     private val mutex = Mutex()
-    private var passwordRecord: String? = null
+    private val records = mutableMapOf<CredentialKind, String?>()
     private var failures = 0
     private var retryAt = 0L
 
@@ -34,95 +35,129 @@ class SecurityRepositoryImpl(
     override suspend fun updateConfig(config: SecurityConfig): Boolean = withContext(worker) {
         mutex.withLock {
             loadIfNeeded()
-            if (state.value.storageError ||
-                (config.needsPassword() && state.value.passwordStatus != PasswordStatus.READY)
-            ) return@withLock false
-            persist(config, passwordRecord)
-        }
-    }
-
-    override suspend fun verifyPassword(password: CharArray): PasswordResult = withContext(worker) {
-        mutex.withLock { loadIfNeeded(); verifyLocked(password) }
-    }
-
-    override suspend fun setPassword(password: CharArray): PasswordResult = withContext(worker) {
-        mutex.withLock {
-            loadIfNeeded()
-            if (state.value.storageError) return@withLock PasswordResult.StorageError
-            if (passwordRecord != null) return@withLock PasswordResult.AlreadySet
-            if (!validLength(password)) return@withLock PasswordResult.InvalidLength
-            val record = vault.create(password)
-            currentCoroutineContext().ensureActive()
-            if (persist(state.value.config, record)) PasswordResult.Success else PasswordResult.StorageError
-        }
-    }
-
-    override suspend fun changePassword(oldPassword: CharArray, newPassword: CharArray): PasswordResult =
-        withContext(worker) {
-            mutex.withLock {
-                loadIfNeeded()
-                val verified = verifyLocked(oldPassword)
-                if (verified != PasswordResult.Success) return@withLock verified
-                if (!validLength(newPassword)) return@withLock PasswordResult.InvalidLength
-                val record = vault.create(newPassword)
-                currentCoroutineContext().ensureActive()
-                if (persist(state.value.config, record)) PasswordResult.Success else PasswordResult.StorageError
+            if (state.value.storageError) return@withLock false
+            val missing = config.methods().any { method ->
+                method.credential?.let { state.value.statusOf(it) != CredentialStatus.READY } == true
             }
+            val fallbackMissing = config.allowCredentialFallback && !state.value.hasAnyCredential()
+            if (missing || fallbackMissing) return@withLock false
+            currentCoroutineContext().ensureActive()
+            persist(config, records)
         }
+    }
 
-    override suspend fun clearPassword(oldPassword: CharArray): PasswordResult = withContext(worker) {
+    override suspend fun verify(kind: CredentialKind, secret: CharArray): CredentialResult = withContext(worker) {
         mutex.withLock {
             loadIfNeeded()
-            val verified = verifyLocked(oldPassword)
-            if (verified != PasswordResult.Success) return@withLock verified
+            verifyLocked(kind, secret)
+        }
+    }
+
+    override suspend fun set(kind: CredentialKind, secret: CharArray): CredentialResult = withContext(worker) {
+        mutex.withLock {
+            loadIfNeeded()
+            if (state.value.storageError) return@withLock CredentialResult.StorageError
+            if (records[kind] != null) return@withLock CredentialResult.AlreadySet
+            if (!Credentials.isValid(kind, secret)) return@withLock CredentialResult.InvalidFormat
+            val record = vault.create(secret)
             currentCoroutineContext().ensureActive()
-            if (persist(state.value.config.withoutPassword(), null)) PasswordResult.Success
-            else PasswordResult.StorageError
+            val updated = records + (kind to record)
+            if (persist(state.value.config, updated)) CredentialResult.Success else CredentialResult.StorageError
+        }
+    }
+
+    override suspend fun change(
+        kind: CredentialKind,
+        oldSecret: CharArray,
+        newSecret: CharArray,
+    ): CredentialResult = withContext(worker) {
+        mutex.withLock {
+            loadIfNeeded()
+            val verified = verifyLocked(kind, oldSecret)
+            if (verified != CredentialResult.Success) return@withLock verified
+            if (!Credentials.isValid(kind, newSecret)) return@withLock CredentialResult.InvalidFormat
+            val record = vault.create(newSecret)
+            currentCoroutineContext().ensureActive()
+            val updated = records + (kind to record)
+            if (persist(state.value.config, updated)) CredentialResult.Success else CredentialResult.StorageError
+        }
+    }
+
+    override suspend fun clear(kind: CredentialKind, secret: CharArray): CredentialResult = withContext(worker) {
+        mutex.withLock {
+            loadIfNeeded()
+            val verified = verifyLocked(kind, secret)
+            if (verified != CredentialResult.Success) return@withLock verified
+            currentCoroutineContext().ensureActive()
+            val other = CredentialKind.entries.first { it != kind }
+            val remaining = records[other] != null
+            val config = state.value.config.withoutCredential(kind, remaining)
+            val updated = records + (kind to null)
+            if (persist(config, updated)) CredentialResult.Success else CredentialResult.StorageError
         }
     }
 
     private fun loadIfNeeded() {
         if (state.value.loaded) return
         try {
-            val config = decodeConfig(prefs.getString(KEY_CONFIG, null))
-            passwordRecord = prefs.getString(KEY_PASSWORD, null)
-            val status = when {
-                passwordRecord == null -> PasswordStatus.ABSENT
-                vault.isValidRecord(passwordRecord!!) -> PasswordStatus.READY
-                else -> PasswordStatus.CORRUPT
+            val legacy = decodeConfig(prefs.getString(KEY_CONFIG, null))
+            CredentialKind.entries.forEach { kind -> records[kind] = prefs.getString(keyFor(kind), null) }
+            val statuses = CredentialKind.entries.associateWith { kind ->
+                when {
+                    records[kind] == null -> CredentialStatus.ABSENT
+                    vault.isValidRecord(records.getValue(kind)!!) -> CredentialStatus.READY
+                    else -> CredentialStatus.CORRUPT
+                }
             }
-            mutableState.value = SecurityState(
+            // A device without biometrics must not keep a policy it can never satisfy.
+            val degraded = !biometricSupported() && legacy.config.usesBiometric()
+            val state = SecurityState(
                 loaded = true,
-                config = config,
-                passwordStatus = status,
-                storageError = status == PasswordStatus.CORRUPT ||
-                    (config.needsPassword() && status != PasswordStatus.READY),
+                config = if (degraded) legacy.config.withoutBiometric() else legacy.config,
+                pinStatus = statuses.getValue(CredentialKind.PIN),
+                patternStatus = statuses.getValue(CredentialKind.PATTERN),
             )
+            val corrupt = statuses.values.any { it == CredentialStatus.CORRUPT }
+            val orphaned = state.config.methods().any { method ->
+                method.credential?.let { state.statusOf(it) != CredentialStatus.READY } == true
+            } || (state.config.allowCredentialFallback && !state.hasAnyCredential())
+            mutableState.value = state.copy(storageError = corrupt || orphaned)
+            // A damaged record or policy must never look like an unprotected fresh installation.
+            if (corrupt || orphaned) return
+            if (legacy.migrated || degraded || prefs.contains(LEGACY_KEY_PASSWORD)) {
+                // The free-text password is retired: rewrite the policy and drop its record.
+                val config = if (state.hasAnyCredential()) state.config else state.config.withoutCredentials()
+                if (!persist(config, records)) return
+                prefs.edit().remove(LEGACY_KEY_PASSWORD).apply()
+            }
         } catch (_: Exception) {
-            // A damaged policy must never look like an unprotected fresh installation.
             mutableState.value = SecurityState(loaded = true, storageError = true)
         }
     }
 
-    private fun verifyLocked(password: CharArray): PasswordResult {
-        if (state.value.storageError) return PasswordResult.StorageError
-        val record = passwordRecord ?: return PasswordResult.Unavailable
+    private fun verifyLocked(kind: CredentialKind, secret: CharArray): CredentialResult {
+        if (state.value.storageError) return CredentialResult.StorageError
+        if (!Credentials.isValid(kind, secret)) return CredentialResult.InvalidFormat
+        val record = records[kind] ?: return CredentialResult.Unavailable
         val remaining = retryAt - elapsedRealtime()
-        if (remaining > 0) return PasswordResult.RetryAfter(remaining)
-        if (vault.verify(password, record)) {
+        if (remaining > 0) return CredentialResult.RetryAfter(remaining)
+        if (vault.verify(secret, record)) {
             failures = 0
             retryAt = 0
-            return PasswordResult.Success
+            return CredentialResult.Success
         }
         failures = (failures + 1).coerceAtMost(10)
         if (failures >= 5) retryAt = elapsedRealtime() + (1_000L shl (failures - 5))
-        return PasswordResult.Incorrect
+        return CredentialResult.Incorrect
     }
 
-    private fun persist(config: SecurityConfig, record: String?): Boolean {
+    private fun persist(config: SecurityConfig, updated: Map<CredentialKind, String?>): Boolean {
         val written = try {
             val editor = prefs.edit().putString(KEY_CONFIG, encodeConfig(config))
-            if (record == null) editor.remove(KEY_PASSWORD) else editor.putString(KEY_PASSWORD, record)
+            CredentialKind.entries.forEach { kind ->
+                val record = updated[kind]
+                if (record == null) editor.remove(keyFor(kind)) else editor.putString(keyFor(kind), record)
+            }
             editor.commit()
         } catch (_: Exception) {
             false
@@ -132,44 +167,68 @@ class SecurityRepositoryImpl(
             mutableState.value = state.value.copy(storageError = true, revision = state.value.revision + 1)
             return false
         }
-        passwordRecord = record
+        CredentialKind.entries.forEach { records[it] = updated[it] }
         mutableState.value = SecurityState(
             loaded = true,
             config = config,
-            passwordStatus = if (record == null) PasswordStatus.ABSENT else PasswordStatus.READY,
+            pinStatus = statusFor(updated[CredentialKind.PIN]),
+            patternStatus = statusFor(updated[CredentialKind.PATTERN]),
             revision = state.value.revision + 1,
         )
         return true
     }
 
-    private fun validLength(password: CharArray) =
-        password.size in PasswordVault.MIN_PASSWORD_LENGTH..PasswordVault.MAX_PASSWORD_LENGTH
+    private fun statusFor(record: String?): CredentialStatus =
+        if (record == null) CredentialStatus.ABSENT else CredentialStatus.READY
 
     private fun encodeConfig(config: SecurityConfig): String {
         val overrides = JSONObject()
         config.targetOverrides.forEach { (target, method) -> overrides.put(target.key, method.key) }
-        return JSONObject().put("version", 1).put("default", config.defaultMethod.key)
-            .put("fallback", config.allowPasswordFallback).put("targets", overrides).toString()
+        return JSONObject().put("version", CONFIG_VERSION).put("default", config.defaultMethod.key)
+            .put("fallback", config.allowCredentialFallback).put("targets", overrides).toString()
     }
 
-    private fun decodeConfig(raw: String?): SecurityConfig {
-        if (raw == null) return SecurityConfig.create()
+    private class Decoded(val config: SecurityConfig, val migrated: Boolean)
+
+    private fun decodeConfig(raw: String?): Decoded {
+        if (raw == null) return Decoded(SecurityConfig.create(), false)
         val json = JSONObject(raw)
-        require(json.getInt("version") == 1)
-        val default = requireNotNull(AuthMethod.fromKey(json.getString("default")))
+        val version = requireNotNull(json.get("version") as? Int) { "Invalid authentication policy version" }
+        require(version in 1..CONFIG_VERSION) { "Unsupported authentication policy version" }
+        val storedDefault = json.getString("default")
+        val default = requireNotNull(
+            if (version == 1) AuthMethod.fromStoredKey(storedDefault) else AuthMethod.fromKey(storedDefault)
+        ) { "Unknown authentication method" }
         val targets = json.getJSONObject("targets")
         val overrides = buildMap {
             targets.keys().forEach { key ->
-                val target = requireNotNull(SecurityTarget.fromKey(key))
-                put(target, requireNotNull(AuthMethod.fromKey(targets.getString(key))))
+                val target = requireNotNull(SecurityTarget.fromKey(key)) { "Unknown authentication target" }
+                val storedMethod = targets.getString(key)
+                val method = requireNotNull(
+                    if (version == 1) AuthMethod.fromStoredKey(storedMethod) else AuthMethod.fromKey(storedMethod)
+                ) {
+                    "Unknown authentication override"
+                }
+                put(target, method)
             }
         }
-        return SecurityConfig.create(default, overrides, json.getBoolean("fallback"))
+        val migrated = version != CONFIG_VERSION
+        val fallback = requireNotNull(json.get("fallback") as? Boolean) { "Invalid credential fallback policy" } &&
+            version == CONFIG_VERSION
+        return Decoded(SecurityConfig.create(default, overrides, fallback), migrated)
+    }
+
+    private fun keyFor(kind: CredentialKind): String = when (kind) {
+        CredentialKind.PIN -> KEY_PIN
+        CredentialKind.PATTERN -> KEY_PATTERN
     }
 
     companion object {
         const val PREFS_NAME = "authentication"
+        private const val CONFIG_VERSION = 2
         private const val KEY_CONFIG = "config"
-        private const val KEY_PASSWORD = "password_record"
+        private const val KEY_PIN = "pin_record"
+        private const val KEY_PATTERN = "pattern_record"
+        private const val LEGACY_KEY_PASSWORD = "password_record"
     }
 }

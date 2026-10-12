@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
@@ -52,6 +53,7 @@ import me.weishu.kernelsu.ui.theme.FontMode
 fun FontScreen() {
     val navigator = LocalNavigator.current
     val context = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val snackbarHost = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -63,7 +65,7 @@ fun FontScreen() {
             scope.launch {
                 val ok = withContext(Dispatchers.IO) { FontConfig.saveFontFile(context, uri) }
                 snackbarHost.showSnackbar(
-                    context.getString(if (ok) R.string.font_applied else R.string.font_apply_failed)
+                    resources.getString(if (ok) R.string.font_applied else R.string.font_apply_failed)
                 )
             }
         }
@@ -79,7 +81,7 @@ fun FontScreen() {
                     showRestoreDialog = false
                     FontConfig.clearFont(context)
                     scope.launch {
-                        snackbarHost.showSnackbar(context.getString(R.string.font_restored))
+                        snackbarHost.showSnackbar(resources.getString(R.string.font_restored))
                     }
                 }) {
                     Text(stringResource(R.string.font_confirm))

@@ -68,6 +68,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import me.weishu.kernelsu.Natives
+import me.weishu.kernelsu.ksuApp
+import me.weishu.kernelsu.ui.component.security.AuthenticationHost
+import me.weishu.kernelsu.ui.component.security.AppLockGate
+import me.weishu.kernelsu.ui.component.security.LocalAppUnlocked
+import me.weishu.kernelsu.ui.component.security.LocalAppAuthenticator
+import me.weishu.kernelsu.ui.component.security.rememberAuthenticationSession
 import me.weishu.kernelsu.ui.component.bottombar.BottomBar
 import me.weishu.kernelsu.ui.component.bottombar.FloatingBar
 import me.weishu.kernelsu.ui.component.bottombar.FloatingBarConfig
@@ -175,7 +181,13 @@ open class MainActivity : FragmentActivity() {
         RootShell.initialize()
         CapabilityRepository.refresh()
 
-        if (savedInstanceState == null) intent?.let { intentChannel.trySend(it) }
+        @Suppress("DEPRECATION")
+        val queuedIntents = savedInstanceState?.getParcelableArrayList<Intent>("authentication_pending_intents")
+        if (queuedIntents != null) {
+            queuedIntents.forEach { intentChannel.trySend(it) }
+        } else if (savedInstanceState == null) {
+            intent?.let { intentChannel.trySend(it) }
+        }
 
         WallpaperConfig.load(this)
         FontConfig.load(this)
@@ -216,6 +228,7 @@ open class MainActivity : FragmentActivity() {
             }
 
             val capability by CapabilityRepository.state.collectAsStateWithLifecycle()
+            val authenticationSession = rememberAuthenticationSession(this@MainActivity, ksuApp.securityRepository)
 
             CompositionLocalProvider(
                 LocalNavigator provides navigator,
@@ -226,9 +239,11 @@ open class MainActivity : FragmentActivity() {
                 LocalHomeLayoutStyle provides uiState.homeLayoutStyle,
                 LocalWallpaperPage provides selectedMainPage,
                 LocalCapabilityState provides capability,
+                LocalAppAuthenticator provides authenticationSession.authenticator,
             ) {
                 KernelSUTheme(appSettings = appSettings) {
-                    IntentDispatcher(intentChannel = intentChannel)
+                    AppLockGate(authenticationSession, onCancel = { finish() }) {
+                    if (LocalAppUnlocked.current) IntentDispatcher(intentChannel = intentChannel)
                     val flashRoute = navigator.current() as? Route.Flash
                     var flashBackEnabled by remember(flashRoute) { mutableStateOf(false) }
                     val mainScreenEntry = @Composable {
@@ -305,7 +320,9 @@ open class MainActivity : FragmentActivity() {
                             }
                         ) { navDisplay() }
                     }
+                    }
                     SideEffect { contentReady = true }
+                    AuthenticationHost(authenticationSession)
                 }
             }
         }
@@ -315,6 +332,18 @@ open class MainActivity : FragmentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         intentChannel.trySend(intent)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        // Snapshot only unconsumed intents. An unlocked dispatcher has already removed its intents.
+        val queued = arrayListOf<Intent>()
+        while (true) {
+            val pending = intentChannel.tryReceive().getOrNull() ?: break
+            queued.add(pending)
+        }
+        queued.forEach { intentChannel.trySend(it) }
+        outState.putParcelableArrayList("authentication_pending_intents", queued)
+        super.onSaveInstanceState(outState)
     }
 }
 

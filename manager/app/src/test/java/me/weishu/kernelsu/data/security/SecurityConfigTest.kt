@@ -1,38 +1,79 @@
 package me.weishu.kernelsu.data.security
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class SecurityConfigTest {
-    @Test fun missingOverrideInheritsButExplicitNoneDoesNot() {
-        val config = SecurityConfig.create(AuthMethod.BIOMETRIC, mapOf(SecurityTarget.SETTINGS to AuthMethod.NONE))
-        assertEquals(AuthMethod.BIOMETRIC, config.methodFor(SecurityTarget.APP_START))
+    @Test
+    fun missingOverrideInheritsButExplicitNoneDoesNot() {
+        val config = SecurityConfig.create(AuthMethod.PIN, mapOf(SecurityTarget.SETTINGS to AuthMethod.NONE))
+        assertEquals(AuthMethod.PIN, config.methodFor(SecurityTarget.APP_START))
         assertEquals(AuthMethod.NONE, config.methodFor(SecurityTarget.SETTINGS))
     }
 
-    @Test fun clearingPasswordPreservesBiometricAndExplicitNone() {
-        val config = SecurityConfig.create(AuthMethod.PASSWORD, mapOf(
-            SecurityTarget.APP_START to AuthMethod.BIOMETRIC,
-            SecurityTarget.MODULE_INSTALL to AuthMethod.PASSWORD,
-            SecurityTarget.SETTINGS to AuthMethod.NONE,
-        ), true).withoutPassword()
+    @Test
+    fun clearingCredentialKeepsBiometricAndExplicitNone() {
+        val config = SecurityConfig.create(
+            AuthMethod.PIN,
+            mapOf(
+                SecurityTarget.APP_START to AuthMethod.BIOMETRIC,
+                SecurityTarget.MODULE_INSTALL to AuthMethod.PATTERN,
+                SecurityTarget.SETTINGS to AuthMethod.NONE,
+            ),
+            allowCredentialFallback = true,
+        ).withoutCredentials()
         assertEquals(AuthMethod.NONE, config.defaultMethod)
         assertEquals(AuthMethod.BIOMETRIC, config.methodFor(SecurityTarget.APP_START))
         assertEquals(AuthMethod.NONE, config.methodFor(SecurityTarget.MODULE_INSTALL))
-        assertFalse(config.needsPassword())
+        assertFalse(config.allowCredentialFallback)
     }
 
-    @Test fun configurationDefensivelyCopiesOverrides() {
-        val source = mutableMapOf(SecurityTarget.APP_START to AuthMethod.PASSWORD)
+    @Test
+    fun targetedMethodsAreDistinctFromInheritedOnes() {
+        val config = SecurityConfig.create(AuthMethod.PATTERN, mapOf(SecurityTarget.MODULE_INSTALL to AuthMethod.PIN))
+        assertEquals(listOf(AuthMethod.PATTERN, AuthMethod.PIN), config.methods().distinct())
+    }
+
+    @Test
+    fun configurationDefensivelyCopiesOverrides() {
+        val source = mutableMapOf(SecurityTarget.APP_START to AuthMethod.PIN)
         val config = SecurityConfig.create(targetOverrides = source)
         source.clear()
-        assertEquals(AuthMethod.PASSWORD, config.methodFor(SecurityTarget.APP_START))
+        assertEquals(AuthMethod.PIN, config.methodFor(SecurityTarget.APP_START))
     }
 
-    @Test fun keysAreStableUniqueAndUnknownKeysAreRejected() {
+    @Test
+    fun keysAreStableAndRetiredNamesDegradeToNone() {
         assertEquals(SecurityTarget.entries.size, SecurityTarget.entries.map { it.key }.toSet().size)
         assertNull(SecurityTarget.fromKey("unknown"))
         assertNull(AuthMethod.fromKey("unknown"))
-        assertEquals(AuthMethod.PASSWORD, AuthMethod.fromKey("password"))
+        assertEquals(AuthMethod.PIN, AuthMethod.fromKey("pin"))
+        assertEquals(AuthMethod.NONE, AuthMethod.fromStoredKey("password"))
+        assertNull(AuthMethod.fromStoredKey("bogus"))
+        assertEquals(CredentialKind.PIN, AuthMethod.PIN.credential)
+        assertEquals(CredentialKind.PATTERN, AuthMethod.PATTERN.credential)
+        assertNull(AuthMethod.BIOMETRIC.credential)
+    }
+
+    @Test
+    fun missingBiometricDegradesBothDefaultAndOverrides() {
+        val config = SecurityConfig.create(
+            AuthMethod.BIOMETRIC,
+            mapOf(
+                SecurityTarget.MODULE_INSTALL to AuthMethod.BIOMETRIC,
+                SecurityTarget.SETTINGS to AuthMethod.PIN,
+            ),
+            allowCredentialFallback = true,
+        )
+        assertTrue(config.usesBiometric())
+        val degraded = config.withoutBiometric()
+        assertEquals(AuthMethod.NONE, degraded.defaultMethod)
+        assertEquals(AuthMethod.NONE, degraded.methodFor(SecurityTarget.MODULE_INSTALL))
+        assertEquals(AuthMethod.PIN, degraded.methodFor(SecurityTarget.SETTINGS))
+        assertTrue(degraded.allowCredentialFallback)
+        assertFalse(degraded.usesBiometric())
     }
 }
