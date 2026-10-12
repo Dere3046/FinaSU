@@ -188,6 +188,16 @@ pub enum ScriptWait {
     Until(Instant),
 }
 
+impl ScriptWait {
+    /// The deadline of a bounded wait, when the caller has one.
+    pub const fn deadline(&self) -> Option<Instant> {
+        match self {
+            Self::Until(deadline) => Some(*deadline),
+            Self::NoWait | Self::Forever => None,
+        }
+    }
+}
+
 pub struct SigchldBlock {
     set: libc::sigset_t,
     previous: libc::sigset_t,

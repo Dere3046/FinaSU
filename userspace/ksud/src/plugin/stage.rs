@@ -10,10 +10,20 @@ use std::time::Duration;
 
 use anyhow::Result;
 
+#[cfg(target_os = "android")]
 use super::store;
 
 #[cfg(target_os = "android")]
+use std::path::PathBuf;
+
+#[cfg(target_os = "android")]
 use std::time::Instant;
+
+#[cfg(target_os = "android")]
+use anyhow::Context;
+
+#[cfg(target_os = "android")]
+use crate::defs;
 
 #[cfg(target_os = "android")]
 use super::{api, manifest, runtime};
@@ -42,6 +52,7 @@ pub fn callback_for(stage: &str) -> String {
 pub fn run(
     plugin_dir: &Path,
     lock_dir: &Path,
+    state_dir: &Path,
     stage: &str,
     deadline: Option<Instant>,
 ) -> Result<()> {
@@ -50,7 +61,9 @@ pub fn run(
     }
 
     let callback = callback_for(stage);
-    let plan = store::execution_order(&store::discover(plugin_dir)?);
+    let plugins = store::discover(plugin_dir)?;
+    let admitted = admitted_ids(plugin_dir, state_dir, &plugins);
+    let plan = store::execution_order(&plugins, |id| admitted.contains(id));
 
     for (id, reason) in &plan.skipped {
         warn(plugin_dir, id, &format!("not run at {stage}: {reason}"));
@@ -109,10 +122,34 @@ pub fn run(
 pub fn run(
     _plugin_dir: &Path,
     _lock_dir: &Path,
+    _state_dir: &Path,
     _stage: &str,
     _deadline: Option<std::time::Instant>,
 ) -> Result<()> {
     anyhow::bail!("plugin stages only run on a device")
+}
+
+/// Collects the plugins that were confirmed for the automatic stages.
+#[cfg(target_os = "android")]
+fn admitted_ids(
+    plugin_dir: &Path,
+    state_dir: &Path,
+    plugins: &[store::PluginInfo],
+) -> std::collections::BTreeSet<String> {
+    let mut admitted = std::collections::BTreeSet::new();
+    for plugin in plugins {
+        if !plugin.enabled || plugin.error.is_some() {
+            continue;
+        }
+        let Ok(fingerprint) = super::admit::fingerprint(&plugin_dir.join(&plugin.id)) else {
+            // An unreadable package is simply not admitted.
+            continue;
+        };
+        if super::admit::is_admitted(state_dir, &plugin.id, &fingerprint) {
+            admitted.insert(plugin.id.clone());
+        }
+    }
+    admitted
 }
 
 /// Records why a plugin was left out, without turning it into a stage failure.
@@ -121,4 +158,83 @@ fn warn(plugin_dir: &Path, id: &str, message: &str) {
     if let Ok(mut sink) = api::open_log(&plugin_dir.join(id)) {
         api::append_log(&mut sink, "warn", message);
     }
+}
+
+/// Dispatches `stage` in the background, at most once per boot.
+///
+/// A boot stage must not delay the boot, so the dispatch happens in a separate
+/// process that outlives the caller. The run is claimed before it starts: a
+/// callback that would not survive a repeated boot stage is never run twice for
+/// the same boot.
+///
+/// # Errors
+/// Returns an error when `stage` is not a plugin stage or the run cannot be
+/// claimed.
+#[cfg(target_os = "android")]
+pub fn background(stage: &str) -> Result<()> {
+    if !STAGES.contains(&stage) {
+        anyhow::bail!("'{stage}' is not a plugin stage");
+    }
+
+    if !claim(stage)? {
+        return Ok(());
+    }
+
+    spawn(stage)
+}
+
+/// # Errors
+/// Always fails on a host: plugin callbacks only run on a device.
+#[cfg(not(target_os = "android"))]
+pub fn background(_stage: &str) -> Result<()> {
+    anyhow::bail!("plugin stages only run on a device")
+}
+
+/// Re-executes this binary so the dispatch outlives the boot event.
+#[cfg(target_os = "android")]
+fn spawn(stage: &str) -> Result<()> {
+    use std::os::unix::process::CommandExt;
+    use std::process::{Command, Stdio};
+
+    let program = std::env::current_exe().unwrap_or_else(|_| PathBuf::from(defs::DAEMON_PATH));
+    let mut command = Command::new(program);
+    command
+        .arg("plugin")
+        .arg("stage")
+        .arg(stage)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null());
+    // SAFETY: only async-signal-safe calls are made before the exec.
+    unsafe {
+        command.pre_exec(|| {
+            libc::setsid();
+            Ok(())
+        });
+    }
+    command
+        .spawn()
+        .map(|_| ())
+        .with_context(|| format!("cannot start the {stage} dispatcher"))
+}
+
+/// Claims the one automatic run of `stage` for this boot, if it is still free.
+#[cfg(target_os = "android")]
+fn claim(stage: &str) -> Result<bool> {
+    let boot = std::fs::read_to_string("/proc/sys/kernel/random/boot_id")
+        .context("cannot read the boot id")?;
+    let boot = boot.trim();
+    let record = Path::new(defs::PLUGIN_STATE_DIR).join(format!("{stage}.ran"));
+
+    match std::fs::read_to_string(&record) {
+        Ok(previous) if previous.trim() == boot => return Ok(false),
+        Ok(_) => {}
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+        Err(error) => return Err(error).context("cannot read the stage record"),
+    }
+
+    std::fs::create_dir_all(defs::PLUGIN_STATE_DIR)
+        .context("cannot create the plugin state directory")?;
+    std::fs::write(&record, boot).context("cannot record the stage run")?;
+    Ok(true)
 }

@@ -88,10 +88,11 @@ pub struct Plan {
 
 /// Orders the enabled plugins so that every dependency runs before the plugins
 /// that need it. Ties are broken by id, so the order only depends on the set of
-/// installed plugins. A plugin whose dependency is missing, disabled or invalid
-/// is left out with the reason, and so is every plugin that needs it; a
-/// dependency cycle leaves all of its members out rather than picking one.
-pub fn execution_order(plugins: &[PluginInfo]) -> Plan {
+/// installed plugins. A plugin that `is_admitted` rejects, or whose dependency
+/// is missing, disabled or invalid, is left out with the reason, and so is every
+/// plugin that needs it; a dependency cycle leaves all of its members out rather
+/// than picking one.
+pub fn execution_order(plugins: &[PluginInfo], is_admitted: impl Fn(&str) -> bool) -> Plan {
     let enabled: BTreeMap<&str, &PluginInfo> = plugins
         .iter()
         .filter(|plugin| plugin.enabled && plugin.error.is_none())
@@ -103,6 +104,14 @@ pub fn execution_order(plugins: &[PluginInfo]) -> Plan {
         let mut changed = false;
         for (id, plugin) in &enabled {
             if skipped.contains_key(*id) {
+                continue;
+            }
+            if !is_admitted(id) {
+                skipped.insert(
+                    (*id).to_owned(),
+                    "the plugin has not been admitted".to_owned(),
+                );
+                changed = true;
                 continue;
             }
             for dependency in &plugin.depends {
@@ -319,7 +328,7 @@ mod tests {
             info("middle", true, None, &["base"]),
             info("base", true, None, &[]),
         ];
-        let plan = execution_order(&plugins);
+        let plan = execution_order(&plugins, |_| true);
         assert_eq!(plan.runnable, ["base", "middle", "top"]);
         assert!(plan.skipped.is_empty());
     }
@@ -330,7 +339,10 @@ mod tests {
             info("zeta", true, None, &[]),
             info("alpha", true, None, &[]),
         ];
-        assert_eq!(execution_order(&plugins).runnable, ["alpha", "zeta"]);
+        assert_eq!(
+            execution_order(&plugins, |_| true).runnable,
+            ["alpha", "zeta"]
+        );
     }
 
     #[test]
@@ -342,7 +354,7 @@ mod tests {
             info("child", true, None, &["absent"]),
             info("alone", true, None, &[]),
         ];
-        let plan = execution_order(&plugins);
+        let plan = execution_order(&plugins, |_| true);
         assert_eq!(plan.runnable, ["alone"]);
         let reasons: BTreeMap<_, _> = plan.skipped.iter().cloned().collect();
         assert_eq!(
@@ -362,7 +374,7 @@ mod tests {
             info("broken", true, Some("plugin.json is not valid JSON"), &[]),
             info("child", true, None, &["broken"]),
         ];
-        let plan = execution_order(&plugins);
+        let plan = execution_order(&plugins, |_| true);
         assert!(plan.runnable.is_empty());
         let reasons: BTreeMap<_, _> = plan.skipped.iter().cloned().collect();
         assert_eq!(
@@ -377,7 +389,7 @@ mod tests {
             info("left", true, None, &["right"]),
             info("right", true, None, &["left"]),
         ];
-        let plan = execution_order(&plugins);
+        let plan = execution_order(&plugins, |_| true);
         assert!(plan.runnable.is_empty());
         let reasons: BTreeMap<_, _> = plan.skipped.iter().cloned().collect();
         assert_eq!(
@@ -393,7 +405,7 @@ mod tests {
     #[test]
     fn never_runs_a_disabled_plugin() {
         let plugins = [info("off", false, None, &[])];
-        let plan = execution_order(&plugins);
+        let plan = execution_order(&plugins, |_| true);
         assert!(plan.runnable.is_empty());
         assert!(plan.skipped.is_empty());
     }
@@ -404,8 +416,29 @@ mod tests {
             info("zz-base", true, None, &[]),
             info("aa-top", true, None, &["zz-base"]),
         ];
-        let plan = execution_order(&plugins);
+        let plan = execution_order(&plugins, |_| true);
         assert_eq!(plan.runnable, ["zz-base", "aa-top"]);
         assert!(plan.skipped.is_empty());
+    }
+
+    #[test]
+    fn leaves_out_plugins_that_were_not_admitted() {
+        let plugins = [
+            info("confirmed", true, None, &[]),
+            info("stranger", true, None, &[]),
+            info("dependent", true, None, &["stranger"]),
+        ];
+        let plan = execution_order(&plugins, |id| id != "stranger");
+
+        assert_eq!(plan.runnable, ["confirmed"]);
+        let reasons: BTreeMap<_, _> = plan.skipped.iter().cloned().collect();
+        assert_eq!(
+            reasons.get("stranger").map(String::as_str),
+            Some("the plugin has not been admitted")
+        );
+        assert_eq!(
+            reasons.get("dependent").map(String::as_str),
+            Some("requires 'stranger', which is skipped (the plugin has not been admitted)")
+        );
     }
 }

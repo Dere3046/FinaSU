@@ -111,6 +111,18 @@ pub fn on_post_fs_data() -> Result<()> {
         warn!("exec post-fs-data scripts failed: {e}");
     }
 
+    // Plugin callbacks share the same boot budget as the scripts above: a plugin
+    // that no longer fits is left for the next boot rather than extending the wait.
+    if let Err(e) = crate::plugin::stage::run(
+        Path::new(defs::PLUGIN_DIR),
+        Path::new(defs::PLUGIN_LOCK_DIR),
+        Path::new(defs::PLUGIN_STATE_DIR),
+        "post-fs-data",
+        wait.deadline(),
+    ) {
+        warn!("exec plugin post-fs-data callbacks failed: {e}");
+    }
+
     // load system.prop
     if let Err(e) = crate::module::load_system_prop() {
         warn!("load system.prop failed: {e}");
@@ -162,6 +174,14 @@ pub fn run_stage(stage: &str, wait: ScriptWait) {
     // execute regular modules stage scripts
     if let Err(e) = crate::module::exec_stage_script(stage, wait) {
         warn!("Failed to exec {stage} scripts: {e}");
+    }
+
+    // Later stages do not block the boot, so plugin callbacks are dispatched in
+    // the background. The bounded stages above keep their deadline instead.
+    if matches!(wait, ScriptWait::NoWait)
+        && let Err(e) = crate::plugin::stage::background(stage)
+    {
+        warn!("Failed to dispatch plugin {stage} callbacks: {e}");
     }
 }
 

@@ -92,6 +92,7 @@ pub const PLUGIN_LOG_FILE: &str = "last_output.log";
 // directory that may hold packages installed by another manager.
 pub const PLUGIN_LOCK_DIR: &str = "/data/adb/ksu/plugin_locks/finasu/";
 pub const PLUGIN_STAGE_DIR: &str = "/data/adb/ksu/plugin_stage/finasu/";
+pub const PLUGIN_STATE_DIR: &str = "/data/adb/ksu/plugin_state/finasu/";
 
 pub const PLUGIN_MAX_ID_LEN: usize = 64;
 pub const PLUGIN_MAX_ENTRY_LEN: usize = 128;

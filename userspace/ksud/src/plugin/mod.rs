@@ -1,6 +1,7 @@
 //! Plugin packages: manifest, storage and execution.
 #![cfg_attr(not(target_os = "android"), allow(dead_code))]
 
+pub mod admit;
 pub mod api;
 pub mod config;
 pub mod daemon;
@@ -127,6 +128,7 @@ pub fn run(command: Command) -> Result<()> {
     let plugin_dir = Path::new(defs::PLUGIN_DIR);
     let lock_dir = Path::new(defs::PLUGIN_LOCK_DIR);
     let stage_dir = Path::new(defs::PLUGIN_STAGE_DIR);
+    let admission_dir = Path::new(defs::PLUGIN_STATE_DIR);
     match command {
         Command::List => store::print_list(),
         Command::Config { id, command } => {
@@ -152,16 +154,19 @@ pub fn run(command: Command) -> Result<()> {
         Command::ClearLog { id } => log::clear(plugin_dir, lock_dir, &id),
         Command::Install { zip } => {
             let id = install::install(plugin_dir, lock_dir, stage_dir, &zip)?;
+            confirm(plugin_dir, admission_dir, &id)?;
             println!("installed {id}");
             Ok(())
         }
         Command::Uninstall { id } => {
             install::uninstall(plugin_dir, lock_dir, &id)?;
+            admit::forget(admission_dir, &id)?;
             println!("uninstalled {id}");
             Ok(())
         }
         Command::Enable { id } => {
             install::set_enabled(plugin_dir, lock_dir, &id, true)?;
+            confirm(plugin_dir, admission_dir, &id)?;
             println!("enabled {id}");
             Ok(())
         }
@@ -190,9 +195,19 @@ pub fn run(command: Command) -> Result<()> {
         Command::Stage { stage, budget } => {
             let deadline =
                 budget.map(|seconds| std::time::Instant::now() + Duration::from_secs(seconds));
-            stage::run(plugin_dir, lock_dir, &stage, deadline)
+            stage::run(plugin_dir, lock_dir, admission_dir, &stage, deadline)
         }
     }
+}
+
+/// Confirms an installed package for the automatic stages.
+///
+/// Installing or enabling a package is an explicit user action, so the state it
+/// is confirmed in is the one that will run at boot. A package that is replaced
+/// later loses the confirmation until it is confirmed again.
+fn confirm(plugin_dir: &Path, admission_dir: &Path, id: &str) -> Result<()> {
+    let fingerprint = admit::fingerprint(&plugin_dir.join(id))?;
+    admit::admit(admission_dir, id, &fingerprint)
 }
 
 /// Turns a callback result into the exit code of this process.
