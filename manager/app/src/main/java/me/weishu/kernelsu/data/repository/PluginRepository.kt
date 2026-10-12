@@ -12,4 +12,10 @@ interface PluginRepository {
     suspend fun uninstall(id: String): Result<Unit>
 
     suspend fun getLog(id: String): Result<String>
+
+    suspend fun getConfig(id: String): Result<Map<String, String>>
+
+    suspend fun setConfig(id: String, key: String, value: String): Result<Unit>
+
+    suspend fun run(id: String, callback: String): Result<Unit>
 }

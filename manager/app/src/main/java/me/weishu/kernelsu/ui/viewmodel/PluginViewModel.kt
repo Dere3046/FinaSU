@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import me.weishu.kernelsu.R
 import me.weishu.kernelsu.data.model.Plugin
 import me.weishu.kernelsu.data.repository.PluginRepository
 import me.weishu.kernelsu.data.repository.PluginRepositoryImpl
@@ -89,6 +90,82 @@ class PluginViewModel(
 
     fun dismissLog() {
         _uiState.update { it.copy(logPlugin = null, logText = "") }
+    }
+
+    fun openConfig(plugin: Plugin) {
+        val defaults = plugin.config.associate { field -> field.key to field.default.orEmpty() }
+        _uiState.update {
+            it.copy(
+                configPlugin = plugin,
+                configValues = defaults,
+                savedConfigValues = defaults,
+                isLoadingConfig = true,
+            )
+        }
+        viewModelScope.launch {
+            repo.getConfig(plugin.id)
+                .onSuccess { stored ->
+                    _uiState.update { state ->
+                        val merged = state.configValues + stored
+                        state.copy(configValues = merged, savedConfigValues = merged)
+                    }
+                }
+                .onFailure { error -> fail(error) }
+            _uiState.update { state -> state.copy(isLoadingConfig = false) }
+        }
+    }
+
+    fun updateConfigValue(key: String, value: String) {
+        _uiState.update { state -> state.copy(configValues = state.configValues + (key to value)) }
+    }
+
+    fun saveConfig() {
+        val plugin = _uiState.value.configPlugin ?: return
+        val values = _uiState.value.configValues
+        _uiState.update { it.copy(pending = it.pending + plugin.id) }
+        viewModelScope.launch {
+            val failure = values.entries
+                .map { (key, value) -> repo.setConfig(plugin.id, key, value) }
+                .firstOrNull { it.isFailure }
+                ?.exceptionOrNull()
+            _uiState.update {
+                it.copy(
+                    pending = it.pending - plugin.id,
+                    configPlugin = null,
+                    configValues = emptyMap(),
+                    savedConfigValues = emptyMap(),
+                )
+            }
+            failure?.let { error -> fail(error) }
+        }
+    }
+
+    fun dismissConfig() {
+        _uiState.update {
+            it.copy(
+                configPlugin = null,
+                configValues = emptyMap(),
+                savedConfigValues = emptyMap(),
+            )
+        }
+    }
+
+    fun runCallback(plugin: Plugin) {
+        if (plugin.id in _uiState.value.running) return
+        val callback = plugin.quickAction?.function?.takeIf { it.isNotBlank() } ?: "action"
+        _uiState.update { it.copy(running = it.running + plugin.id) }
+        viewModelScope.launch {
+            repo.run(plugin.id, callback)
+                .onSuccess {
+                    _uiState.update { state -> state.copy(notice = R.string.plugin_run_done) }
+                }
+                .onFailure { error -> fail(error) }
+            _uiState.update { state -> state.copy(running = state.running - plugin.id) }
+        }
+    }
+
+    fun clearNotice() {
+        _uiState.update { it.copy(notice = null) }
     }
 
     fun reportError(message: String) {

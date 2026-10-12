@@ -740,4 +740,11 @@
     <string name="plugin_install">Install plugin</string>
     <string name="plugin_uninstall_confirm">Uninstall %1$s and delete its package?</string>
     <string name="plugin_log_empty">No output yet</string>
+    <string name="plugin_config">Configuration</string>
+    <string name="plugin_config_empty">Nothing to configure</string>
+    <string name="plugin_config_unset">Not set</string>
+    <string name="plugin_run">Run</string>
+    <string name="plugin_run_done">Callback finished</string>
+    <string name="plugin_save">Save</string>
+    <string name="plugin_config_reset">Reset</string>
 </resources>

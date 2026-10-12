@@ -40,6 +40,26 @@ class PluginRepositoryImpl : PluginRepository {
         runCatching { run("plugin log ${quote(id)}") }
     }
 
+    override suspend fun getConfig(id: String): Result<Map<String, String>> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val values = JSONObject(run("plugin config --id ${quote(id)} list"))
+                values.keys().asSequence().associateWith { key -> values.optString(key) }
+            }
+        }
+
+    override suspend fun setConfig(id: String, key: String, value: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                run("plugin config --id ${quote(id)} set ${quote(key)} ${quote(value)}")
+            }.map { Unit }
+        }
+
+    override suspend fun run(id: String, callback: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching { run("plugin run ${quote(id)} ${quote(callback)}") }.map { Unit }
+        }
+
     private suspend fun run(arguments: String): String {
         val result = execKsudResult(arguments)
         if (!result.isSuccess) {

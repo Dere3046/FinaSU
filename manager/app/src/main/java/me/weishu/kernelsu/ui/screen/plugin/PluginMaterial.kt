@@ -27,17 +27,25 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -58,11 +66,15 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import me.weishu.kernelsu.R
 import me.weishu.kernelsu.data.model.Plugin
+import me.weishu.kernelsu.data.model.PluginConfigField
 import me.weishu.kernelsu.ui.component.ScrollToTopOnChange
 import me.weishu.kernelsu.ui.component.bottombar.LocalFloatingBarReservedHeight
 import me.weishu.kernelsu.ui.component.bottombar.LocalFloatingBarVisible
@@ -74,6 +86,10 @@ import me.weishu.kernelsu.ui.component.material.FolkFilledTonalButton
 import me.weishu.kernelsu.ui.component.material.FolkSmallExtendedFloatingActionButton
 import me.weishu.kernelsu.ui.component.material.FolkTextButton
 import me.weishu.kernelsu.ui.component.material.SearchAppBar
+import me.weishu.kernelsu.ui.component.material.SegmentedColumn
+import me.weishu.kernelsu.ui.component.material.SegmentedItemContainer
+import me.weishu.kernelsu.ui.component.material.SegmentedListItem
+import me.weishu.kernelsu.ui.component.material.SegmentedSwitchItem
 import me.weishu.kernelsu.ui.component.material.SnackBarHost
 import me.weishu.kernelsu.ui.component.material.TonalCard
 import me.weishu.kernelsu.ui.screen.module.ExpandableDescriptionText
@@ -130,6 +146,13 @@ fun PluginPagerMaterial(
         val message = uiState.error ?: return@LaunchedEffect
         snackBarHost.showSnackbar(message)
         actions.onErrorShown()
+    }
+
+    val notice = uiState.notice?.let { stringResource(it) }
+    LaunchedEffect(uiState.notice) {
+        val message = notice ?: return@LaunchedEffect
+        snackBarHost.showSnackbar(message)
+        actions.onNoticeShown()
     }
 
     ExpressiveScaffold(
@@ -240,6 +263,7 @@ fun PluginPagerMaterial(
 
     PluginLogDialog(uiState = uiState, actions = actions)
     PluginUninstallDialog(uiState = uiState, actions = actions)
+    PluginConfigDialog(uiState = uiState, actions = actions)
 }
 
 @Composable
@@ -399,55 +423,95 @@ private fun PluginItem(
 
             Spacer(modifier = Modifier.height(4.dp))
 
+            val quickAction = plugin.quickAction
+            val quickLabel = quickAction?.label?.takeIf { it.isNotBlank() }
+            val showRun = actionable && (quickAction != null || plugin.callbacks.contains("action"))
+            val showConfig = actionable && plugin.config.isNotEmpty()
+            val crowded = showRun || showConfig
+
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                FolkFilledTonalButton(
-                    modifier = Modifier.defaultMinSize(52.dp, 32.dp),
-                    onClick = {
-                        actions.onOpenLog(plugin)
-                        closeSearch()
-                    },
-                    contentPadding = ButtonDefaults.TextButtonContentPadding,
-                ) {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        imageVector = Icons.Outlined.Description,
-                        contentDescription = null,
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 7.dp),
-                        fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
-                        fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                        text = stringResource(R.string.plugin_log),
-                    )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (showConfig) {
+                        PluginActionButton(
+                            icon = Icons.Outlined.Tune,
+                            label = stringResource(R.string.plugin_config),
+                            onClick = {
+                                actions.onOpenConfig(plugin)
+                                closeSearch()
+                            },
+                        )
+                    }
+                    if (showRun) {
+                        PluginActionButton(
+                            icon = Icons.Outlined.PlayArrow,
+                            label = quickLabel ?: stringResource(R.string.plugin_run),
+                            onClick = {
+                                actions.onRun(plugin)
+                                closeSearch()
+                            },
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                FolkFilledTonalButton(
-                    modifier = Modifier.defaultMinSize(52.dp, 32.dp),
-                    enabled = actionable,
-                    onClick = {
-                        actions.onRequestUninstall(plugin)
-                        closeSearch()
-                    },
-                    contentPadding = ButtonDefaults.TextButtonContentPadding,
-                ) {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        imageVector = Icons.Outlined.Delete,
-                        contentDescription = null,
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    PluginActionButton(
+                        icon = Icons.Outlined.Description,
+                        label = if (crowded) null else stringResource(R.string.plugin_log),
+                        onClick = {
+                            actions.onOpenLog(plugin)
+                            closeSearch()
+                        },
                     )
-                    Text(
-                        modifier = Modifier.padding(start = 7.dp),
-                        fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
-                        fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                        text = stringResource(R.string.uninstall),
+                    PluginActionButton(
+                        icon = Icons.Outlined.Delete,
+                        label = if (crowded) null else stringResource(R.string.uninstall),
+                        enabled = actionable,
+                        onClick = {
+                            actions.onRequestUninstall(plugin)
+                            closeSearch()
+                        },
                     )
                 }
             }
+        }
+    }
+}
+
+/**
+ * One action of a plugin card. The label is dropped when the card already shows
+ * several actions, leaving the icon and its content description.
+ */
+@Composable
+private fun PluginActionButton(
+    icon: ImageVector,
+    label: String?,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+) {
+    FolkFilledTonalButton(
+        modifier = Modifier.defaultMinSize(52.dp, 32.dp),
+        enabled = enabled,
+        onClick = onClick,
+        contentPadding = ButtonDefaults.TextButtonContentPadding,
+    ) {
+        Icon(
+            modifier = Modifier.size(20.dp),
+            imageVector = icon,
+            contentDescription = label,
+        )
+        if (label != null) {
+            Text(
+                modifier = Modifier.padding(start = 7.dp),
+                fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
+                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                text = label,
+            )
         }
     }
 }
@@ -515,6 +579,179 @@ private fun PluginUninstallDialog(
             }
         },
     )
+}
+
+@Composable
+private fun PluginConfigDialog(
+    uiState: PluginUiState,
+    actions: PluginActions,
+) {
+    val plugin = uiState.configPlugin ?: return
+    val fields = plugin.config
+    if (fields.isEmpty()) return
+
+    ExpressiveDialog(
+        onDismissRequest = actions.onDismissConfig,
+        title = { Text(plugin.name.ifBlank { plugin.id }) },
+        text = {
+            Column(
+                modifier = Modifier
+                    .heightIn(max = 420.dp)
+                    .verticalScroll(rememberScrollState()),
+            ) {
+                val rows: List<@Composable () -> Unit> = fields.map { field ->
+                    {
+                        PluginConfigRow(
+                            field = field,
+                            value = uiState.configValues[field.key] ?: field.default.orEmpty(),
+                            enabled = plugin.id !in uiState.pending,
+                            onValueChange = { value ->
+                                actions.onChangeConfigValue(field.key, value)
+                            },
+                        )
+                    }
+                }
+                SegmentedColumn(content = rows)
+            }
+        },
+        confirmButton = {
+            FolkTextButton(
+                enabled = uiState.configValues != uiState.savedConfigValues,
+                onClick = actions.onSaveConfig,
+            ) {
+                Text(stringResource(R.string.plugin_save))
+            }
+        },
+        dismissButton = {
+            FolkTextButton(onClick = actions.onDismissConfig) {
+                Text(stringResource(android.R.string.cancel))
+            }
+        },
+    )
+}
+
+/**
+ * One configuration row. A boolean is a switch, a declared list of options is a
+ * menu, and any other value is edited in place.
+ */
+@Composable
+private fun PluginConfigRow(
+    field: PluginConfigField,
+    value: String,
+    enabled: Boolean,
+    onValueChange: (String) -> Unit,
+) {
+    val title = field.label.ifBlank { field.key }
+    val summary = field.key.takeIf { field.label.isNotBlank() }
+
+    when {
+        field.type.equals("bool", ignoreCase = true) -> SegmentedSwitchItem(
+            title = title,
+            summary = summary,
+            checked = value.equals("true", ignoreCase = true),
+            enabled = enabled,
+            onCheckedChange = { onValueChange(it.toString()) },
+        )
+
+        field.options.isNotEmpty() -> {
+            var expanded by remember { mutableStateOf(false) }
+            Box {
+                SegmentedListItem(
+                    onClick = { expanded = true }.takeIf { enabled },
+                    enabled = enabled,
+                    headlineContent = { Text(title) },
+                    supportingContent = summary?.let { { Text(it) } },
+                    trailingContent = {
+                        PluginConfigValue(value = value) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowDropDown,
+                                contentDescription = null,
+                            )
+                        }
+                    },
+                )
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    field.options.forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(option) },
+                            onClick = {
+                                onValueChange(option)
+                                expanded = false
+                            },
+                        )
+                    }
+                }
+            }
+        }
+
+        else -> SegmentedItemContainer {
+            Column(modifier = Modifier.padding(top = 10.dp, bottom = 4.dp)) {
+                Text(
+                    text = title,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                ConfigTextField(
+                    value = value,
+                    enabled = enabled,
+                    numeric = field.type.equals("number", ignoreCase = true),
+                    onValueChange = onValueChange,
+                )
+            }
+        }
+    }
+}
+
+/** An editable value with no visible box, so it keeps the grouped list look. */
+@Composable
+private fun ConfigTextField(
+    value: String,
+    enabled: Boolean,
+    numeric: Boolean,
+    onValueChange: (String) -> Unit,
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        enabled = enabled,
+        singleLine = true,
+        textStyle = MaterialTheme.typography.bodyLarge,
+        placeholder = {
+            Text(
+                text = stringResource(R.string.plugin_config_unset),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = if (numeric) KeyboardType.Number else KeyboardType.Text,
+        ),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+        ),
+    )
+}
+
+@Composable
+private fun PluginConfigValue(value: String, trailing: @Composable () -> Unit = {}) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = value.ifEmpty { stringResource(R.string.plugin_config_unset) },
+            color = if (value.isEmpty()) {
+                MaterialTheme.colorScheme.outline
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            },
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        trailing()
+    }
 }
 
 private fun List<Plugin>.matching(query: String): List<Plugin> {

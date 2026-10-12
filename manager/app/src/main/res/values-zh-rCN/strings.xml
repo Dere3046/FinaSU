@@ -740,4 +740,11 @@
     <string name="plugin_install">安装插件</string>
     <string name="plugin_uninstall_confirm">确定卸载 %1$s 并删除插件包？</string>
     <string name="plugin_log_empty">暂无输出</string>
+    <string name="plugin_config">配置</string>
+    <string name="plugin_config_empty">无可配置项</string>
+    <string name="plugin_config_unset">未设置</string>
+    <string name="plugin_run">执行</string>
+    <string name="plugin_run_done">已执行</string>
+    <string name="plugin_save">保存</string>
+    <string name="plugin_config_reset">恢复默认</string>
 </resources>

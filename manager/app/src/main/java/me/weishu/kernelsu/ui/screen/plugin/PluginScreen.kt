@@ -51,6 +51,12 @@ fun PluginPager(
         onRequestUninstall = viewModel::requestUninstall,
         onConfirmUninstall = viewModel::confirmUninstall,
         onDismissUninstall = viewModel::dismissUninstall,
+        onOpenConfig = viewModel::openConfig,
+        onChangeConfigValue = viewModel::updateConfigValue,
+        onSaveConfig = viewModel::saveConfig,
+        onDismissConfig = viewModel::dismissConfig,
+        onRun = viewModel::runCallback,
+        onNoticeShown = viewModel::clearNotice,
         onErrorShown = viewModel::clearError,
     )
 
