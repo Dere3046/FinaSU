@@ -40,6 +40,11 @@ enum Commands {
         #[command(subcommand)]
         command: Module,
     },
+    /// Manage plugins
+    Plugin {
+        #[command(subcommand)]
+        command: crate::plugin::Command,
+    },
 
     /// Trigger `post-fs-data` event
     PostFsData,
@@ -622,6 +627,11 @@ pub fn run() -> Result<()> {
         Commands::SoftReboot => crate::soft_reboot::soft_reboot(),
 
         Commands::Insmod { module, params } => debug::insmod(&module, &params),
+
+        Commands::Plugin { command } => {
+            utils::switch_mnt_ns(1)?;
+            crate::plugin::run(command)
+        }
 
         Commands::Module { command } => {
             utils::switch_mnt_ns(1)?;

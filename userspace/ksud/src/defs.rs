@@ -80,5 +80,18 @@ pub const FULL_VERSION: &str = const_format::formatcp!(
     crate::ksu_uapi::KERNEL_SU_UAPI_VERSION
 );
 
+// Plugin package layout and limits. These do not depend on Android paths so
+// they stay available to host tests.
+pub const PLUGIN_DIR: &str = "/data/adb/plugins/";
+pub const PLUGIN_MANIFEST: &str = "plugin.json";
+pub const PLUGIN_ENTRY: &str = "main.lua";
+pub const PLUGIN_DISABLE_FILE: &str = "disable";
+
+pub const PLUGIN_MAX_ID_LEN: usize = 64;
+pub const PLUGIN_MAX_ENTRY_LEN: usize = 128;
+pub const PLUGIN_MAX_CALLBACK_LEN: usize = 64;
+pub const PLUGIN_MAX_CONFIG_KEY_LEN: usize = 64;
+pub const PLUGIN_MAX_MANIFEST_SIZE: u64 = 1024 * 1024;
+
 #[cfg(target_os = "android")]
 pub use android::*;
