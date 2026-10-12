@@ -164,7 +164,12 @@ class ThemeDownloader(private val context: Context) {
         while (attempt < MAX_RETRIES) {
             try {
                 val expected = downloadOnce(url, temp, taskId, onProgress)
-                validateDownloadedFile(temp, isThemeFile, expected)
+                try {
+                    validateDownloadedFile(temp, isThemeFile, expected)
+                } catch (e: Exception) {
+                    temp.delete()
+                    throw e
+                }
                 commitDownload(temp, file)
                 return DownloadFileResult(true)
             } catch (e: DownloadPausedException) {
