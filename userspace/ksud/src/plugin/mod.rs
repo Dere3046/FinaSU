@@ -1,11 +1,13 @@
 //! Plugin packages: manifest, storage and execution.
 #![cfg_attr(not(target_os = "android"), allow(dead_code))]
 
+pub mod api;
 pub mod config;
 pub mod install;
 pub mod lock;
 pub mod log;
 pub mod manifest;
+pub mod runtime;
 pub mod store;
 
 use std::path::{Path, PathBuf};
@@ -53,6 +55,18 @@ pub enum Command {
     },
     /// Stop a plugin from running
     Disable {
+        /// Plugin id
+        id: String,
+    },
+    /// Run one callback of a plugin
+    Run {
+        /// Plugin id
+        id: String,
+        /// Callback name
+        callback: String,
+    },
+    /// Run a plugin's action callback
+    Action {
         /// Plugin id
         id: String,
     },
@@ -131,5 +145,22 @@ pub fn run(command: Command) -> Result<()> {
             println!("disabled {id}");
             Ok(())
         }
+        Command::Run { id, callback } => {
+            let code = runtime::run(plugin_dir, lock_dir, &id, &callback)?;
+            report(code)
+        }
+        Command::Action { id } => {
+            let code = runtime::run(plugin_dir, lock_dir, &id, "action")?;
+            report(code)
+        }
+    }
+}
+
+/// Turns a callback result into the exit code of this process.
+fn report(code: i32) -> Result<()> {
+    if code == 0 {
+        Ok(())
+    } else {
+        std::process::exit(code)
     }
 }

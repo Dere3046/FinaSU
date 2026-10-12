@@ -188,13 +188,13 @@ pub enum ScriptWait {
     Until(Instant),
 }
 
-struct SigchldBlock {
+pub struct SigchldBlock {
     set: libc::sigset_t,
     previous: libc::sigset_t,
 }
 
 impl SigchldBlock {
-    fn block() -> std::io::Result<Self> {
+    pub fn block() -> std::io::Result<Self> {
         // Initialize both sets before passing them to libc.
         let mut set = unsafe { std::mem::zeroed() };
         let mut previous = unsafe { std::mem::zeroed() };
@@ -208,12 +208,22 @@ impl SigchldBlock {
         Ok(Self { set, previous })
     }
 
-    fn wait_until(&self, pid: libc::pid_t, deadline: Instant) -> std::io::Result<bool> {
+    pub fn wait_until(&self, pid: libc::pid_t, deadline: Instant) -> std::io::Result<bool> {
+        Ok(self.wait_status_until(pid, deadline)?.is_some())
+    }
+
+    /// Waits for one child and reports its raw wait status once it exits.
+    pub fn wait_status_until(
+        &self,
+        pid: libc::pid_t,
+        deadline: Instant,
+    ) -> std::io::Result<Option<libc::c_int>> {
         loop {
             // Only reap the script being waited for. Other children can also send SIGCHLD.
-            let result = unsafe { libc::waitpid(pid, std::ptr::null_mut(), libc::WNOHANG) };
+            let mut status: libc::c_int = 0;
+            let result = unsafe { libc::waitpid(pid, &raw mut status, libc::WNOHANG) };
             if result == pid {
-                return Ok(true);
+                return Ok(Some(status));
             }
             if result < 0 {
                 let error = std::io::Error::last_os_error();
@@ -225,7 +235,7 @@ impl SigchldBlock {
 
             let remaining = deadline.saturating_duration_since(Instant::now());
             if remaining.is_zero() {
-                return Ok(false);
+                return Ok(None);
             }
             let timeout = libc::timespec {
                 tv_sec: remaining.as_secs() as libc::time_t,
@@ -242,7 +252,7 @@ impl SigchldBlock {
             {
                 let error = std::io::Error::last_os_error();
                 match error.raw_os_error() {
-                    Some(libc::EAGAIN) => return Ok(false),
+                    Some(libc::EAGAIN) => return Ok(None),
                     Some(libc::EINTR) => {}
                     _ => return Err(error),
                 }
