@@ -7,10 +7,12 @@ import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Shield
+import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
@@ -106,6 +108,7 @@ enum class BottomBarDestination(
     val themeKey: String,
 ) {
     Home(R.string.home, Icons.Filled.Home, Icons.Outlined.Home, "Home"),
+    Plugin(R.string.plugin, Icons.Filled.Widgets, Icons.Outlined.Widgets, "KModule"),
     SuperUser(R.string.superuser, Icons.Filled.Shield, Icons.Outlined.Shield, "SuperUser"),
     Module(R.string.module, Icons.Filled.Extension, Icons.Outlined.Extension, "AModule"),
     Setting(R.string.settings, Icons.Filled.Settings, Icons.Outlined.Settings, "Settings")

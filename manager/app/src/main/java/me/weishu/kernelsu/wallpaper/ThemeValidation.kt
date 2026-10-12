@@ -1,5 +1,6 @@
 package me.weishu.kernelsu.wallpaper
 
+import me.weishu.kernelsu.ui.component.bottombar.BottomBarDestination
 import me.weishu.kernelsu.wallpaper.surface.SurfaceField
 import me.weishu.kernelsu.wallpaper.surface.SurfaceRegistry
 import me.weishu.kernelsu.wallpaper.surface.SurfaceStore
@@ -150,7 +151,7 @@ internal object ThemeValidation {
             }
             icons?.keys()?.forEach { key ->
                 if (!files.containsKey(icons.optString(key))) warnings += "Missing navigation icon: $key; current icon retained"
-                if (key !in setOf("Home", "SuperUser", "AModule", "Settings")) warnings += "Navigation destination $key has no FinaSU page; resource retained"
+                if (key !in BottomBarDestination.entries.map { it.themeKey }) warnings += "Navigation destination $key has no FinaSU page; resource retained"
             }
         }
         // FP copies resources without probing every image, font and media file. Unknown/unused

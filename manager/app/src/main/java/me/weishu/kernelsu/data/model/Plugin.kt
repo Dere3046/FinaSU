@@ -1,0 +1,39 @@
+package me.weishu.kernelsu.data.model
+
+import androidx.compose.runtime.Immutable
+
+/** A configuration control declared by a plugin manifest. */
+@Immutable
+data class PluginConfigField(
+    val key: String,
+    val label: String,
+    val type: String,
+    val default: String?,
+    val options: List<String>,
+)
+
+/** The callback a plugin exposes as its quick action. */
+@Immutable
+data class PluginQuickAction(
+    val function: String,
+    val label: String,
+)
+
+/** An installed plugin as reported by the manager daemon. */
+@Immutable
+data class Plugin(
+    val id: String,
+    val name: String,
+    val author: String,
+    val version: String,
+    val description: String,
+    val license: String,
+    val enabled: Boolean,
+    val entry: String,
+    val quickAction: PluginQuickAction?,
+    val config: List<PluginConfigField>,
+    val depends: List<String>,
+    val callbacks: List<String>,
+    /** Set when the package cannot be read, in which case the other fields are empty. */
+    val error: String?,
+)

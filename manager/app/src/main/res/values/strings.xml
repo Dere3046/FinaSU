@@ -733,4 +733,8 @@
     <string name="launcher_icon_style_default">Default</string>
     <string name="launcher_icon_style_geometry">Geometry</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">Plugin</string>
+    <string name="plugin_empty">No plugins installed</string>
+    <string name="plugin_log">Output log</string>
+    <string name="plugin_dependencies">Requires</string>
 </resources>

@@ -7,6 +7,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.weishu.kernelsu.ui.component.bottombar.BottomBarDestination
 import org.json.JSONObject
 import java.io.File
 
@@ -80,7 +81,7 @@ object ThemeExportService {
                 val ownedNames = buildSet {
                     listOf("musicFilename", "soundEffectFilename").forEach { add(original.optString(it)) }
                     original.optJSONObject("navIcons")?.let { icons ->
-                        listOf("Home", "SuperUser", "AModule", "Settings").forEach { add(icons.optString(it)) }
+                        BottomBarDestination.entries.map { it.themeKey }.forEach { add(icons.optString(it)) }
                     }
                 }
                 retained.listFiles()?.filter { it.isFile && it.name !in setOf("theme.json", "applied.json") &&
@@ -96,7 +97,7 @@ object ThemeExportService {
                 original.optJSONObject("navIcons")?.let { originalIcons ->
                     originalIcons.keys().forEach { destination ->
                         val name = originalIcons.optString(destination)
-                        if (destination !in setOf("Home", "SuperUser", "AModule", "Settings") && name in entries) {
+                        if (destination !in BottomBarDestination.entries.map { it.themeKey } && name in entries) {
                             val icons = json.optJSONObject("navIcons") ?: JSONObject().also { json.put("navIcons", it) }
                             icons.put(destination, name)
                         }

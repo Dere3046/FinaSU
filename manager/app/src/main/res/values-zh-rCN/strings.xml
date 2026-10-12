@@ -733,4 +733,8 @@
     <string name="my_themes_refresh">刷新</string>
     <string name="profile" translatable="false">App Profile</string>
     <string name="settings_adb_root" translatable="false">ADB Root</string>
+    <string name="plugin">插件</string>
+    <string name="plugin_empty">未安装插件</string>
+    <string name="plugin_log">输出日志</string>
+    <string name="plugin_dependencies">依赖</string>
 </resources>
