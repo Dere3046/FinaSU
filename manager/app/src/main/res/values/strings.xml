@@ -737,4 +737,7 @@
     <string name="plugin_empty">No plugins installed</string>
     <string name="plugin_log">Output log</string>
     <string name="plugin_dependencies">Requires</string>
+    <string name="plugin_install">Install plugin</string>
+    <string name="plugin_uninstall_confirm">Uninstall %1$s and delete its package?</string>
+    <string name="plugin_log_empty">No output yet</string>
 </resources>

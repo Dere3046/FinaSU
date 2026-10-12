@@ -737,4 +737,7 @@
     <string name="plugin_empty">未安装插件</string>
     <string name="plugin_log">输出日志</string>
     <string name="plugin_dependencies">依赖</string>
+    <string name="plugin_install">安装插件</string>
+    <string name="plugin_uninstall_confirm">确定卸载 %1$s 并删除插件包？</string>
+    <string name="plugin_log_empty">暂无输出</string>
 </resources>

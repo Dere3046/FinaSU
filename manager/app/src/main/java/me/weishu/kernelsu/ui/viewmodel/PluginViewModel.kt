@@ -27,45 +27,52 @@ class PluginViewModel(
         loadJob = viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true) }
             repo.getPlugins()
-                .onSuccess { plugins ->
-                    _uiState.update {
-                        it.copy(
-                            isRefreshing = false,
-                            hasLoaded = true,
-                            plugins = plugins,
-                            error = null,
-                        )
-                    }
-                }
-                .onFailure { error ->
-                    _uiState.update {
-                        it.copy(
-                            isRefreshing = false,
-                            hasLoaded = true,
-                            error = error.message ?: error.toString(),
-                        )
-                    }
-                }
+                .onSuccess { plugins -> applyList(plugins) }
+                .onFailure { error -> fail(error) }
         }
     }
 
     fun setEnabled(plugin: Plugin, enabled: Boolean) {
         if (plugin.id in _uiState.value.pending) return
+        _uiState.update { it.copy(pending = it.pending + plugin.id) }
         viewModelScope.launch {
-            _uiState.update { it.copy(pending = it.pending + plugin.id, error = null) }
             repo.setEnabled(plugin.id, enabled)
                 .onSuccess {
                     _uiState.update { state ->
-                        state.copy(
-                            plugins = state.plugins.map { existing ->
-                                if (existing.id == plugin.id) existing.copy(enabled = enabled) else existing
-                            },
-                        )
+                        state.copy(plugins = state.plugins.withEnabled(plugin.id, enabled))
                     }
                 }
-                .onFailure { error ->
-                    _uiState.update { it.copy(error = error.message ?: error.toString()) }
-                }
+                .onFailure { error -> fail(error) }
+            _uiState.update { it.copy(pending = it.pending - plugin.id) }
+        }
+    }
+
+    fun install(path: String) {
+        if (_uiState.value.isInstalling) return
+        _uiState.update { it.copy(isInstalling = true) }
+        viewModelScope.launch {
+            repo.install(path)
+                .onSuccess { reload() }
+                .onFailure { error -> fail(error) }
+            _uiState.update { it.copy(isInstalling = false) }
+        }
+    }
+
+    fun requestUninstall(plugin: Plugin) {
+        _uiState.update { it.copy(confirmUninstall = plugin) }
+    }
+
+    fun dismissUninstall() {
+        _uiState.update { it.copy(confirmUninstall = null) }
+    }
+
+    fun confirmUninstall() {
+        val plugin = _uiState.value.confirmUninstall ?: return
+        _uiState.update { it.copy(confirmUninstall = null, pending = it.pending + plugin.id) }
+        viewModelScope.launch {
+            repo.uninstall(plugin.id)
+                .onSuccess { reload() }
+                .onFailure { error -> fail(error) }
             _uiState.update { it.copy(pending = it.pending - plugin.id) }
         }
     }
@@ -74,15 +81,47 @@ class PluginViewModel(
         viewModelScope.launch {
             repo.getLog(plugin.id)
                 .onSuccess { text ->
-                    _uiState.update { it.copy(logPlugin = plugin.id, logText = text, error = null) }
+                    _uiState.update { it.copy(logPlugin = plugin.id, logText = text) }
                 }
-                .onFailure { error ->
-                    _uiState.update { it.copy(error = error.message ?: error.toString()) }
-                }
+                .onFailure { error -> fail(error) }
         }
     }
 
     fun dismissLog() {
         _uiState.update { it.copy(logPlugin = null, logText = "") }
     }
+
+    fun reportError(message: String) {
+        _uiState.update { it.copy(error = message) }
+    }
+
+    fun clearError() {
+        _uiState.update { it.copy(error = null) }
+    }
+
+    private suspend fun reload() {
+        loadJob?.join()
+        repo.getPlugins()
+            .onSuccess { plugins -> applyList(plugins) }
+            .onFailure { error -> fail(error) }
+    }
+
+    private fun applyList(plugins: List<Plugin>) {
+        _uiState.update {
+            it.copy(isRefreshing = false, hasLoaded = true, plugins = plugins)
+        }
+    }
+
+    private fun fail(error: Throwable) {
+        _uiState.update {
+            it.copy(
+                isRefreshing = false,
+                isInstalling = false,
+                error = error.message ?: error.toString(),
+            )
+        }
+    }
 }
+
+private fun List<Plugin>.withEnabled(id: String, enabled: Boolean): List<Plugin> =
+    map { plugin -> if (plugin.id == id) plugin.copy(enabled = enabled) else plugin }

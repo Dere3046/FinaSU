@@ -16,19 +16,25 @@ class PluginRepositoryImpl : PluginRepository {
 
     override suspend fun getPlugins(): Result<List<Plugin>> = withContext(Dispatchers.IO) {
         runCatching {
-            val plugins = JSONArray(run("plugin list"))
-            (0 until plugins.length()).map { index -> plugins.getJSONObject(index).toPlugin() }
+            val array = JSONArray(run("plugin list"))
+            (0 until array.length()).map { index -> array.getJSONObject(index).toPlugin() }
         }
     }
 
     override suspend fun setEnabled(id: String, enabled: Boolean): Result<Unit> =
         withContext(Dispatchers.IO) {
             runCatching {
-                val action = if (enabled) "enable" else "disable"
-                run("plugin $action ${quote(id)}")
-                Unit
-            }
+                run("plugin ${if (enabled) "enable" else "disable"} ${quote(id)}")
+            }.map { Unit }
         }
+
+    override suspend fun install(path: String): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching { run("plugin install ${quote(path)}") }.map { Unit }
+    }
+
+    override suspend fun uninstall(id: String): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching { run("plugin uninstall ${quote(id)}") }.map { Unit }
+    }
 
     override suspend fun getLog(id: String): Result<String> = withContext(Dispatchers.IO) {
         runCatching { run("plugin log ${quote(id)}") }
@@ -45,13 +51,16 @@ class PluginRepositoryImpl : PluginRepository {
         }
         return result.out.joinToString("\n")
     }
-
-    /** Returns the token quoted for a POSIX shell, so it cannot split into more arguments. */
-    private fun quote(value: String): String = "'" + value.replace("'", "'\"'\"'") + "'"
 }
 
+/**
+ * Quotes one argument so a package id can never reach the shell as a command
+ * fragment of its own.
+ */
+private fun quote(value: String): String = "'" + value.replace("'", "'\"'\"'") + "'"
+
 private fun JSONObject.toPlugin(): Plugin = Plugin(
-    id = optString("id"),
+    id = getString("id"),
     name = optString("name"),
     author = optString("author"),
     version = optString("version"),
@@ -59,8 +68,11 @@ private fun JSONObject.toPlugin(): Plugin = Plugin(
     license = optString("license"),
     enabled = optBoolean("enabled"),
     entry = optString("entry"),
-    quickAction = optJSONObject("quick_action")?.let { quick ->
-        PluginQuickAction(function = quick.optString("function"), label = quick.optString("label"))
+    quickAction = optJSONObject("quick_action")?.let {
+        PluginQuickAction(
+            function = it.optString("function"),
+            label = it.optString("label"),
+        )
     },
     config = optJSONArray("config").toConfigFields(),
     depends = optJSONArray("depends").toStringList(),
