@@ -72,6 +72,7 @@ fun CategorySettingsScreen(categoryKey: String) {
                 SettingsCategory.SECURITY -> SecurityCategoryContent(uiState, actions)
                 SettingsCategory.AUTHENTICATION -> AuthenticationSettingsContent()
                 SettingsCategory.MULTIMEDIA -> MultimediaCategoryContent()
+                SettingsCategory.BACKUP -> BackupSettingsContent()
                 null -> Unit
             }
             Spacer(modifier = Modifier.height(8.dp))

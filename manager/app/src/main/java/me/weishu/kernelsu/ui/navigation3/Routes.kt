@@ -79,6 +79,16 @@ sealed interface Route : NavKey, Parcelable {
     @Serializable
     data class SettingsCategory(val key: String) : Route
 
+    /** Browses the configured WebDAV collection; [path] is storage-relative to the base. */
+    @Parcelize
+    @Serializable
+    data class WebDavBrowser(val path: String = "") : Route
+
+    /** Lists backups across every configured backend. */
+    @Parcelize
+    @Serializable
+    data object BackupList : Route
+
     @Parcelize
     @Serializable
     data object AppProfileTemplate : Route

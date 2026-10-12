@@ -303,6 +303,12 @@ open class MainActivity : FragmentActivity() {
                                 entry<Route.Wallpaper> { WallpaperScreen() }
                                 entry<Route.Font> { FontScreen() }
                                 entry<Route.SettingsCategory> { key -> CategorySettingsScreen(key.key) }
+                                entry<Route.WebDavBrowser> { key ->
+                                    me.weishu.kernelsu.ui.screen.settings.WebDavBrowserScreen(key.path)
+                                }
+                                entry<Route.BackupList> {
+                                    me.weishu.kernelsu.ui.screen.settings.BackupListScreen()
+                                }
                                 entry<Route.Language> { LanguagePickerScreen() }
                                 entry<Route.ThemeStore> { ThemeStoreScreen() }
                                 entry<Route.MyThemes> { MyThemesScreen() }
