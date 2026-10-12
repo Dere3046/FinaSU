@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="settings_shell_su_adb_only">限制 Shell 僅能透過 ADB 取得 Root</string>
+    <string name="settings_shell_su_adb_only_summary">授予 Shell 後的額外檢查：僅限由 adbd 或 KernelSU Root 行程（例如 ADB 模組）啟動的行程可使用，避免取得 shell 權限的應用程式進一步提升至 Root</string>
     <string name="feature_status_forced_summary">已由開機設定強制指定，無法在此變更</string>
     <string name="install_block_modules">阻擋核心模組載入</string>
+    <string name="install_block_modules_warning">啟動時阻止所列核心模組載入。封鎖系統所依賴的模組可能導致裝置卡在開機畫面或反覆重新啟動（例如部分 MediaTek 裝置上的 mkp）。請僅在確定這些模組能在你的裝置上安全封鎖時啟用。若無法開機，可透過 fastboot 刷回原廠 boot / init_boot 映像恢復。</string>
+    <string name="install_block_modules_list">要封鎖的模組</string>
     <string name="install_block_modules_summary">以逗號分隔模組名稱，下次開機時生效；清空可移除此設定。</string>
     <string name="install_block_modules_invalid">僅限字母、數字與底線；單一名稱不超過 64 個字元，總長不超過 255。</string>
     <string name="install_anykernel">刷入 AnyKernel3 ZIP</string>
