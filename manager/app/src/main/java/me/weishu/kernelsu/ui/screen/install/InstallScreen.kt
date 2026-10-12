@@ -30,6 +30,7 @@ import me.weishu.kernelsu.ui.component.dialog.rememberLoadingDialog
 import me.weishu.kernelsu.ui.component.dialog.rememberConfirmDialog
 import me.weishu.kernelsu.ui.navigation3.LocalNavigator
 import me.weishu.kernelsu.ui.navigation3.Route
+import me.weishu.kernelsu.data.repository.SettingsRepositoryImpl
 import me.weishu.kernelsu.ui.screen.flash.FlashIt
 import me.weishu.kernelsu.ui.util.LkmSelection
 import me.weishu.kernelsu.ui.util.getAvailablePartitions
@@ -68,6 +69,8 @@ fun InstallScreen() {
     var blockModules by rememberSaveable { mutableStateOf("") }
     var blockModulesPrefilled by rememberSaveable { mutableStateOf(false) }
     var blockModulesEdited by rememberSaveable { mutableStateOf(false) }
+    val settings = remember { SettingsRepositoryImpl() }
+    var backupBeforeFlash by rememberSaveable { mutableStateOf(settings.backupBeforeFlash) }
     // Blocking a module the device needs can bootloop it; prefill is only a suggestion.
     val effectiveBlockModules = if (blockModulesEnabled) blockModules else ""
     LaunchedEffect(Unit) {
@@ -258,6 +261,7 @@ fun InstallScreen() {
         enableAdb = enableAdb,
         forceBackup = forceBackup,
         canForceBackup = installMethod is InstallMethod.SelectFile,
+        backupBeforeFlash = backupBeforeFlash,
         blockModulesEnabled = blockModulesEnabled,
         blockModules = blockModules,
         blockModulesValid = isBlockModulesValid(effectiveBlockModules),
@@ -315,6 +319,10 @@ fun InstallScreen() {
         },
         onSelectForceBackup = {
             forceBackup = it
+        },
+        onSelectBackupBeforeFlash = {
+            backupBeforeFlash = it
+            settings.backupBeforeFlash = it
         },
         onSelectBlockModules = {
             blockModulesEnabled = it

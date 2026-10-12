@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,11 +32,18 @@ import me.weishu.kernelsu.ui.component.dialog.rememberConfirmDialog
 import androidx.compose.ui.platform.LocalResources
 import kotlinx.parcelize.Parcelize
 import me.weishu.kernelsu.R
+import me.weishu.kernelsu.data.backup.BackupKind
+import me.weishu.kernelsu.data.backup.PreFlashBackup
+import me.weishu.kernelsu.data.backup.backupResult
+import me.weishu.kernelsu.data.backup.source.ModuleInstaller
+import me.weishu.kernelsu.data.repository.SettingsRepositoryImpl
+import me.weishu.kernelsu.ksuApp
 import me.weishu.kernelsu.ui.component.material.FolkTextButton
 import me.weishu.kernelsu.ui.util.FlashResult
 import me.weishu.kernelsu.ui.util.LkmSelection
 import me.weishu.kernelsu.ui.util.downloadBoot
 import me.weishu.kernelsu.ui.util.flashModuleBatch
+import me.weishu.kernelsu.ui.util.getFileName
 import me.weishu.kernelsu.ui.util.installBoot
 import me.weishu.kernelsu.ui.util.restoreBoot
 import me.weishu.kernelsu.ui.util.uninstallPermanently
@@ -122,6 +130,7 @@ suspend fun flashIt(
     onStderr: (String) -> Unit,
     confirmExternal: suspend (List<String>, Boolean) -> Boolean = { _, _ -> false },
 ): FlashResult {
+    snapshotBeforeFlash(flashIt, onStdout)
     return when (flashIt) {
         is FlashIt.FlashAnyKernel -> me.weishu.kernelsu.ui.util.flashAnyKernel(
             flashIt.uri, onStdout, onStderr
@@ -157,6 +166,71 @@ suspend fun flashIt(
 
         FlashIt.FlashRestore -> restoreBoot(onStdout, onStderr)
         FlashIt.FlashUninstall -> uninstallPermanently(onStdout, onStderr)
+    }
+}
+
+/** Kinds of content a flash may overwrite, and therefore should be snapshotted first. */
+private fun FlashIt.preliminaryBackupKinds(): Set<BackupKind> = when (this) {
+    is FlashIt.FlashAnyKernel -> setOf(BackupKind.BOOT)
+    is FlashIt.FlashBoot -> setOf(BackupKind.BOOT)
+    is FlashIt.DownloadBoot -> setOf(BackupKind.BOOT)
+    is FlashIt.FlashModules -> setOf(BackupKind.MODULE)
+    FlashIt.FlashRestore, FlashIt.FlashUninstall -> emptySet()
+}
+
+/** Partitions a flash is about to write, so the snapshot can cover them even if not selected. */
+private fun FlashIt.overwrittenPartitions(): Set<String> = when (this) {
+    is FlashIt.FlashBoot -> setOfNotNull(partition)
+    is FlashIt.DownloadBoot -> setOf(partition)
+    else -> emptySet()
+}
+
+/** Backup failures must not abort flashing, but coroutine cancellation must still propagate. */
+private suspend fun snapshotBeforeFlash(flashIt: FlashIt, onStdout: (String) -> Unit) {
+    val kinds = flashIt.preliminaryBackupKinds()
+    val settings = SettingsRepositoryImpl()
+    if (kinds.isEmpty() || !settings.backupBeforeFlash) return
+    if (!settings.backupLocalEnabled && !settings.backupWebDavEnabled) return
+    var installers = emptyList<ModuleInstaller>()
+    try {
+        if (settings.backupModulesEnabled) installers = stageModuleInstallers(flashIt)
+        PreFlashBackup(settings = settings).run(kinds, flashIt.overwrittenPartitions(), installers, onStdout)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        onStdout("Pre-flash backup failed: ${e.message ?: e.toString()}")
+    } finally {
+        installers.forEach { it.file.delete() }
+    }
+}
+
+/** Copies selected ZIPs without changing the user's documents; unreadable picks are skipped. */
+private suspend fun stageModuleInstallers(flashIt: FlashIt): List<ModuleInstaller> {
+    val modules = flashIt as? FlashIt.FlashModules ?: return emptyList()
+    if (modules.uris.isEmpty()) return emptyList()
+    val created = mutableListOf<File>()
+    return try {
+        withContext(Dispatchers.IO) {
+            modules.uris.mapNotNull { uri ->
+                backupResult {
+                    val name = uri.getFileName(ksuApp) ?: "module.zip"
+                    val file = File.createTempFile("module-installer-", ".zip", ksuApp.cacheDir)
+                    created += file
+                    try {
+                        requireNotNull(ksuApp.contentResolver.openInputStream(uri)) {
+                            "Cannot read module archive"
+                        }.use { input -> file.outputStream().use { input.copyTo(it) } }
+                        ModuleInstaller(file, originalName = name)
+                    } catch (t: Throwable) {
+                        file.delete()
+                        throw t
+                    }
+                }.getOrNull()
+            }
+        }
+    } catch (t: Throwable) {
+        created.forEach { it.delete() }
+        throw t
     }
 }
 

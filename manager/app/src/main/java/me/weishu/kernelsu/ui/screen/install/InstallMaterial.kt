@@ -200,6 +200,14 @@ internal fun InstallScreenMaterial(
                 }
                 item(visible = uiState.advancedOptionsShown) {
                     SegmentedCheckboxItem(
+                        title = stringResource(id = R.string.install_backup_before_flash),
+                        summary = stringResource(id = R.string.install_backup_before_flash_summary),
+                        checked = uiState.backupBeforeFlash,
+                        onCheckedChange = actions.onSelectBackupBeforeFlash,
+                    )
+                }
+                item(visible = uiState.advancedOptionsShown) {
+                    SegmentedCheckboxItem(
                         title = stringResource(id = R.string.install_block_modules),
                         summary = stringResource(id = R.string.install_block_modules_warning),
                         checked = uiState.blockModulesEnabled,
