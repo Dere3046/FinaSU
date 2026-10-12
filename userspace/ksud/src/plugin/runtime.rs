@@ -7,8 +7,10 @@
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
+use std::sync::Arc;
+
 use anyhow::{Result, bail};
-use mlua::{Lua, LuaOptions, StdLib, Table, Value};
+use mlua::{Function, Lua, LuaOptions, StdLib, Table, Value};
 
 #[cfg(target_os = "android")]
 use std::fs::File;
@@ -178,25 +180,45 @@ fn worker(
 }
 
 #[derive(Debug, PartialEq, Eq)]
-enum Failure {
+pub enum Failure {
     MissingCallback,
     Other(String),
 }
 
 impl Failure {
-    fn other(error: impl std::fmt::Display) -> Self {
+    pub fn other(error: impl std::fmt::Display) -> Self {
         Self::Other(error.to_string())
     }
 }
 
-/// Loads the package in a fresh interpreter and calls the named callback.
-fn evaluate(
+/// A package that has been loaded but whose callback has not run yet.
+pub struct Prepared {
+    function: Function,
+    /// Kept alive because the callback belongs to this interpreter.
+    _lua: Lua,
+    state: Arc<api::Context>,
+}
+
+impl Prepared {
+    /// Calls the prepared callback.
+    pub fn invoke(&self) -> Result<(), Failure> {
+        self.function.call(()).map_err(Failure::other)
+    }
+
+    /// Writes one line to the plugin log.
+    pub fn log(&self, level: &str, message: &str) {
+        self.state.log(level, message);
+    }
+}
+
+/// Loads the package in a fresh interpreter and resolves the named callback.
+pub fn prepare(
     plugin_dir: &Path,
     lock_dir: &Path,
     id: &str,
     callback: &str,
     entry: &str,
-) -> Result<(), Failure> {
+) -> Result<Prepared, Failure> {
     let state = api::Context::new(plugin_dir, lock_dir, id).map_err(Failure::other)?;
     let lua = Lua::new_with(StdLib::ALL_SAFE, LuaOptions::default()).map_err(Failure::other)?;
     lua.set_memory_limit(api::MAX_MEMORY)
@@ -211,14 +233,32 @@ fn evaluate(
         .eval()
         .map_err(Failure::other)?;
 
-    match module.get::<Value>(callback).map_err(Failure::other)? {
-        Value::Function(function) => function.call(()).map_err(Failure::other),
-        Value::Nil => Err(Failure::MissingCallback),
-        other => Err(Failure::Other(format!(
-            "callback '{callback}' is {}, not a function",
-            other.type_name()
-        ))),
-    }
+    let function = match module.get::<Value>(callback).map_err(Failure::other)? {
+        Value::Function(function) => function,
+        Value::Nil => return Err(Failure::MissingCallback),
+        other => {
+            return Err(Failure::Other(format!(
+                "callback '{callback}' is {}, not a function",
+                other.type_name()
+            )));
+        }
+    };
+    Ok(Prepared {
+        function,
+        _lua: lua,
+        state,
+    })
+}
+
+/// Loads the package in a fresh interpreter and calls the named callback.
+fn evaluate(
+    plugin_dir: &Path,
+    lock_dir: &Path,
+    id: &str,
+    callback: &str,
+    entry: &str,
+) -> Result<(), Failure> {
+    prepare(plugin_dir, lock_dir, id, callback, entry)?.invoke()
 }
 
 #[cfg(test)]

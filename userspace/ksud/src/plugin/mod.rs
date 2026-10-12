@@ -3,6 +3,7 @@
 
 pub mod api;
 pub mod config;
+pub mod daemon;
 pub mod install;
 pub mod lock;
 pub mod log;
@@ -69,6 +70,19 @@ pub enum Command {
     Action {
         /// Plugin id
         id: String,
+    },
+    /// Run a plugin daemon in the foreground
+    #[command(hide = true)]
+    Daemon {
+        /// Plugin id
+        id: String,
+        /// Callback name
+        callback: String,
+        /// Seconds to wait after each round
+        interval: u64,
+        /// Descriptor that receives the readiness byte
+        #[arg(long)]
+        ready_fd: Option<i32>,
     },
 }
 
@@ -151,6 +165,15 @@ pub fn run(command: Command) -> Result<()> {
         }
         Command::Action { id } => {
             let code = runtime::run(plugin_dir, lock_dir, &id, "action")?;
+            report(code)
+        }
+        Command::Daemon {
+            id,
+            callback,
+            interval,
+            ready_fd,
+        } => {
+            let code = daemon::run(plugin_dir, lock_dir, &id, &callback, interval, ready_fd)?;
             report(code)
         }
     }

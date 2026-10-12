@@ -13,6 +13,8 @@ use std::collections::BTreeSet;
 use std::fs::{self, File, OpenOptions};
 use std::io::{Read, Write};
 use std::os::unix::fs::{OpenOptionsExt, PermissionsExt};
+#[cfg(target_os = "android")]
+use std::os::unix::process::CommandExt;
 use std::os::unix::process::ExitStatusExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
@@ -78,10 +80,14 @@ impl Context {
     }
 
     /// Appends one line to the plugin log.
+    /// Returns a handle on the log, for redirecting worker output into it.
+    pub fn log_handle(&self) -> Option<File> {
+        self.log.lock().ok()?.try_clone().ok()
+    }
+
     pub fn log(&self, level: &str, message: &str) {
-        let text = message.replace('\n', " ");
         if let Ok(mut file) = self.log.lock() {
-            let _ = writeln!(file, "[{level}] {text}");
+            append_log(&mut file, level, message);
         }
     }
 }
@@ -100,6 +106,12 @@ pub fn open_log(dir: &Path) -> Result<File> {
             .with_context(|| format!("cannot truncate {}", path.display()))?;
     }
     Ok(file)
+}
+
+/// Appends one `[level] message` line, folding newlines so one entry stays one line.
+pub fn append_log(sink: &mut File, level: &str, message: &str) {
+    let text = message.replace('\n', " ");
+    let _ = writeln!(sink, "[{level}] {text}");
 }
 
 /// Registers every public function and global on a fresh Lua state.
@@ -166,13 +178,121 @@ pub fn bind(lua: &Lua, state: &Arc<Context>) -> mlua::Result<()> {
     let sink = Arc::clone(state);
     globals.set(
         "start_daemon",
-        lua.create_function(move |_, (_callback, _interval): (String, i64)| {
-            sink.log("warn", "start_daemon is not available");
-            Ok(false)
+        lua.create_function(move |_, (callback, interval): (String, i64)| {
+            launch_daemon(&sink, &callback, interval)
         })?,
     )?;
 
     Ok(())
+}
+
+/// Seconds-scale timeout for a launcher waiting on a daemon's readiness byte.
+#[cfg(target_os = "android")]
+const DAEMON_READY_TIMEOUT_MS: i32 = 10_000;
+
+#[cfg(target_os = "android")]
+fn launch_daemon(state: &Arc<Context>, callback: &str, interval: i64) -> mlua::Result<bool> {
+    if let Err(error) = manifest::validate_callback(callback) {
+        return Err(runtime_error(error.to_string()));
+    }
+    if state.dir().join(defs::PLUGIN_DISABLE_FILE).exists() {
+        state.log("warn", "start_daemon refused: the plugin is disabled");
+        return Ok(false);
+    }
+
+    let mut fds = [0_i32; 2];
+    // SAFETY: the array is writable and holds exactly two descriptors.
+    if unsafe { libc::pipe2(fds.as_mut_ptr(), 0) } != 0 {
+        state.log(
+            "warn",
+            &format!(
+                "cannot create the readiness pipe: {}",
+                std::io::Error::last_os_error()
+            ),
+        );
+        return Ok(false);
+    }
+    let [read_fd, write_fd] = fds;
+
+    // Re-execute this very binary so the daemon always matches the running
+    // build, and the fixed daemon path stays only as a fallback.
+    let program = std::env::current_exe().unwrap_or_else(|_| PathBuf::from(defs::DAEMON_PATH));
+    let mut command = Command::new(program);
+    command
+        .arg("plugin")
+        .arg("daemon")
+        .arg(&state.id)
+        .arg(callback)
+        .arg(interval.max(1).to_string())
+        .arg("--ready-fd")
+        .arg(write_fd.to_string())
+        .stdin(Stdio::null());
+    if let Some(handle) = state.log_handle() {
+        if let Ok(clone) = handle.try_clone() {
+            let _ = command.stdout(Stdio::from(clone));
+        }
+        if let Ok(clone) = handle.try_clone() {
+            let _ = command.stderr(Stdio::from(clone));
+        }
+    }
+    // SAFETY: the closure only calls async-signal-safe functions, and the
+    // readiness descriptor stays open across the exec so it can be written to.
+    unsafe {
+        command.pre_exec(move || {
+            libc::close(read_fd);
+            libc::fcntl(write_fd, libc::F_SETFD, 0);
+            libc::setsid();
+            Ok(())
+        });
+    }
+
+    let spawned = command.spawn();
+    // The reader never sees the end of the pipe while this process still holds
+    // the write end, so it is closed here rather than in the child path above.
+    // SAFETY: the descriptor is owned by this process.
+    unsafe { libc::close(write_fd) };
+
+    let ready = match spawned {
+        Ok(_) => await_ready(read_fd),
+        Err(error) => {
+            state.log("warn", &format!("cannot start a daemon: {error}"));
+            false
+        }
+    };
+    // SAFETY: the descriptor is owned by this process.
+    unsafe { libc::close(read_fd) };
+
+    if ready {
+        state.log("info", &format!("daemon '{callback}' is running"));
+    } else {
+        state.log("warn", &format!("daemon '{callback}' did not become ready"));
+    }
+    Ok(ready)
+}
+
+#[cfg(target_os = "android")]
+fn await_ready(descriptor: i32) -> bool {
+    let mut entry = libc::pollfd {
+        fd: descriptor,
+        events: libc::POLLIN,
+        revents: 0,
+    };
+    // SAFETY: the descriptor and the structure are valid for the call.
+    if unsafe { libc::poll(&raw mut entry, 1, DAEMON_READY_TIMEOUT_MS) } != 1 {
+        return false;
+    }
+    let mut byte = 0_u8;
+    // SAFETY: the descriptor is open and the one-byte buffer is writable.
+    let read = unsafe { libc::read(descriptor, (&raw mut byte).cast(), 1) };
+    read == 1 && byte == crate::plugin::daemon::READY_BYTE
+}
+
+#[cfg(not(target_os = "android"))]
+fn launch_daemon(state: &Arc<Context>, callback: &str, interval: i64) -> mlua::Result<bool> {
+    let _ = interval;
+    let _ = callback;
+    state.log("warn", "start_daemon is not available");
+    Ok(false)
 }
 
 fn runtime_error(message: impl Into<String>) -> mlua::Error {
