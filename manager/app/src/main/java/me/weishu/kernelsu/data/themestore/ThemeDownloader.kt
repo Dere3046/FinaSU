@@ -241,19 +241,6 @@ class ThemeDownloader(private val context: Context) {
         }
     }
 
-    private fun validateDownloadedFile(file: File, isThemeFile: Boolean, expectedSize: Long) {
-        if (!file.exists() || file.length() == 0L) throw IOException("Downloaded file is empty")
-        if (expectedSize > 0 && file.length() != expectedSize) throw IOException("Size mismatch")
-        if (isThemeFile) {
-            if (file.length() < MIN_THEME_SIZE) throw IOException("Theme file too small")
-            val header = ByteArray(HEADER_SIZE)
-            file.inputStream().use { it.read(header) }
-            val first = header[0].toInt()
-            if (first == '<'.code || first == '{'.code) throw IOException("Invalid theme file")
-            if (header.all { it == 0.toByte() }) throw IOException("Incomplete theme file")
-        }
-    }
-
     private fun estimateUnknownProgress(downloaded: Long): Float =
         (1.0 - 1.0 / (1.0 + downloaded / 256.0 / 1024.0)).toFloat().coerceIn(0f, 0.99f)
 
@@ -329,8 +316,18 @@ class ThemeDownloader(private val context: Context) {
         const val MAX_RETRIES = 3
         const val RETRY_DELAY_MS = 2000L
         const val MAX_CONCURRENT = 3
-        const val MIN_THEME_SIZE = 32L
-        const val HEADER_SIZE = 16
         const val TEMP_SUFFIX = ".tmp"
+    }
+}
+
+internal fun validateDownloadedFile(file: File, isThemeFile: Boolean, expectedSize: Long) {
+    val size = file.length()
+    if (!file.isFile || size == 0L) throw IOException("Downloaded file is empty")
+    if (expectedSize > 0 && size != expectedSize) throw IOException("Size mismatch")
+    if (isThemeFile) {
+        if (size < 32L) throw IOException("Theme file too small")
+        // FPT starts with an unrestricted 16-byte IV, followed by AES-CBC ciphertext.
+        // Only check framing here; import validates the decrypted ZIP and theme.json.
+        if ((size - 16L) % 16L != 0L) throw IOException("Invalid theme file length")
     }
 }
