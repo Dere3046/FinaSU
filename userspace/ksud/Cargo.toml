@@ -66,4 +66,4 @@ encoding_rs = "0.8"
 
 [build-dependencies]
 cc = "1"
-bindgen = "0.72"
+bindgen = "0.73"
