@@ -3,6 +3,7 @@
 
 pub mod config;
 pub mod lock;
+pub mod log;
 pub mod manifest;
 pub mod store;
 
@@ -23,6 +24,18 @@ pub enum Command {
         id: String,
         #[command(subcommand)]
         command: ConfigCommand,
+    },
+    /// Print a plugin's output log
+    Log {
+        /// Plugin id
+        #[arg(long)]
+        id: String,
+    },
+    /// Remove a plugin's output log
+    ClearLog {
+        /// Plugin id
+        #[arg(long)]
+        id: String,
     },
 }
 
@@ -73,5 +86,10 @@ pub fn run(command: Command) -> Result<()> {
             }
             Ok(())
         }
+        Command::Log { id } => {
+            print!("{}", log::read(plugin_dir, &id)?);
+            Ok(())
+        }
+        Command::ClearLog { id } => log::clear(plugin_dir, lock_dir, &id),
     }
 }

@@ -87,6 +87,7 @@ pub const PLUGIN_MANIFEST: &str = "plugin.json";
 pub const PLUGIN_ENTRY: &str = "main.lua";
 pub const PLUGIN_DISABLE_FILE: &str = "disable";
 pub const PLUGIN_CONFIG_FILE: &str = "config.json";
+pub const PLUGIN_LOG_FILE: &str = "last_output.log";
 // Private state owned by this manager, so it stays out of the shared package
 // directory that may hold packages installed by another manager.
 pub const PLUGIN_LOCK_DIR: &str = "/data/adb/ksu/plugin_locks/finasu/";
@@ -97,6 +98,7 @@ pub const PLUGIN_MAX_CALLBACK_LEN: usize = 64;
 pub const PLUGIN_MAX_CONFIG_KEY_LEN: usize = 64;
 pub const PLUGIN_MAX_MANIFEST_SIZE: u64 = 1024 * 1024;
 pub const PLUGIN_MAX_CONFIG_SIZE: u64 = 4 * 1024 * 1024;
+pub const PLUGIN_MAX_LOG_SIZE: u64 = 64 * 1024;
 
 #[cfg(target_os = "android")]
 pub use android::*;
