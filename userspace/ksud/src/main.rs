@@ -37,6 +37,8 @@ mod late_load;
 mod lkm_image;
 mod lkm_image_btf;
 #[cfg(target_os = "android")]
+mod lua_probe;
+#[cfg(target_os = "android")]
 mod magic_mount;
 #[cfg(target_os = "android")]
 mod magica;

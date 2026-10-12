@@ -54,6 +54,10 @@ enum Commands {
     /// Trigger `boot-complete` event
     BootCompleted,
 
+    /// Probes the plugin Lua engine.
+    #[command(hide = true)]
+    LuaProbe,
+
     /// Load kernelsu.ko and execute late-load stage scripts
     LateLoad {
         /// Use adb root to execute late-load for jailbreaking by Magica
@@ -763,6 +767,7 @@ pub fn run() -> Result<()> {
             Ok(())
         }
         Commands::Sulogd => sulog::run_sulogd(),
+        Commands::LuaProbe => crate::lua_probe::run(),
         Commands::Profile { command } => match command {
             Profile::GetSepolicy { package } => crate::profile::get_sepolicy(package),
             Profile::SetSepolicy { package, policy } => {
