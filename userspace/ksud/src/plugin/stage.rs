@@ -26,10 +26,14 @@ use anyhow::Context;
 use crate::defs;
 
 #[cfg(target_os = "android")]
-use super::{api, manifest, runtime};
+use super::{api, daemon, manifest, runtime};
 
 /// Seconds a single stage callback may run before it is stopped.
 pub const CALLBACK_TIMEOUT: Duration = Duration::from_secs(120);
+
+/// Interval of the long-running callback started together with the service stage.
+#[cfg(target_os = "android")]
+const MAIN_INTERVAL: i64 = 1;
 
 /// The stages a plugin may hook automatically.
 pub const STAGES: [&str; 3] = ["post-fs-data", "service", "boot-completed"];
@@ -111,9 +115,30 @@ pub fn run(
                 &format!("cannot run callback '{callback}': {error}"),
             ),
         }
+
+        // A package may declare one callback that keeps running for the rest of
+        // the boot. It is started here and never probed.
+        if stage == "service"
+            && declares_main(&plugins, id)
+            && let Err(error) = daemon::launch(&dir, id, "main", MAIN_INTERVAL)
+        {
+            warn(
+                plugin_dir,
+                id,
+                &format!("cannot start the main callback: {error}"),
+            );
+        }
     }
 
     Ok(())
+}
+
+/// Whether a plugin declares the long-running callback in its manifest.
+#[cfg(target_os = "android")]
+fn declares_main(plugins: &[store::PluginInfo], id: &str) -> bool {
+    plugins
+        .iter()
+        .any(|plugin| plugin.id == id && plugin.callbacks.iter().any(|callback| callback == "main"))
 }
 
 /// # Errors
