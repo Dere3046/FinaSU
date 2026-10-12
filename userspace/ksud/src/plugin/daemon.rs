@@ -8,7 +8,7 @@
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use anyhow::{Result, bail};
+use anyhow::{Context, Result, bail};
 
 use crate::defs;
 use crate::plugin::api;
@@ -86,9 +86,29 @@ pub fn run(
             }
         }
         round += 1;
-        std::thread::sleep(interval);
+        if wait(plugin_dir, id, interval) {
+            break;
+        }
     }
     Ok(0)
+}
+
+/// Waits one interval in short slices, so a stop request is noticed quickly.
+///
+/// Returns whether the plugin was stopped while waiting.
+fn wait(plugin_dir: &Path, id: &str, interval: Duration) -> bool {
+    const SLICE: Duration = Duration::from_millis(200);
+
+    let mut left = interval;
+    while !left.is_zero() {
+        let slice = left.min(SLICE);
+        std::thread::sleep(slice);
+        if stopped(plugin_dir, id) {
+            return true;
+        }
+        left = left.saturating_sub(slice);
+    }
+    false
 }
 
 fn lock_path(lock_dir: &Path, id: &str, callback: &str) -> PathBuf {
@@ -244,4 +264,135 @@ fn await_ready(descriptor: i32) -> bool {
     // SAFETY: the descriptor is open and the one-byte buffer is writable.
     let read = unsafe { libc::read(descriptor, (&raw mut byte).cast(), 1) };
     read == 1 && byte == READY_BYTE
+}
+
+/// The lock files of the daemons that belong to one plugin.
+///
+/// A lock file exists for every daemon that has ever run, so this reports the
+/// candidates rather than the instances that are running right now.
+///
+/// # Errors
+/// Returns an error when the lock directory cannot be read.
+pub fn locks_of(lock_dir: &Path, id: &str) -> Result<Vec<PathBuf>> {
+    let entries = match std::fs::read_dir(lock_dir) {
+        Ok(entries) => entries,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+        Err(error) => {
+            return Err(error).with_context(|| format!("cannot read {}", lock_dir.display()));
+        }
+    };
+
+    let prefix = format!("{id}.");
+    let mut locks = Vec::new();
+    for entry in entries.flatten() {
+        let name = entry.file_name();
+        let Some(name) = name.to_str() else {
+            continue;
+        };
+        if name.starts_with(&prefix) && name.ends_with(".daemon.lock") {
+            locks.push(entry.path());
+        }
+    }
+    Ok(locks)
+}
+
+/// Refuses to change a package while one of its daemons still runs its code.
+///
+/// # Errors
+/// Returns an error when a daemon holds one of the locks, so the caller reports
+/// a busy plugin instead of replacing code under a running callback.
+pub fn ensure_stopped(lock_dir: &Path, id: &str) -> Result<()> {
+    for path in locks_of(lock_dir, id)? {
+        // Taking the lock proves that no daemon holds it, and dropping it
+        // releases it again right away.
+        lock::exclusive(&path)
+            .with_context(|| format!("plugin '{id}' is still running; stop it and retry"))?;
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs;
+
+    use super::*;
+
+    struct Fixture {
+        root: tempfile::TempDir,
+    }
+
+    impl Fixture {
+        fn new() -> Self {
+            let root = tempfile::tempdir().unwrap();
+            fs::create_dir_all(root.path().join("plugins/demo")).unwrap();
+            fs::create_dir_all(root.path().join("locks")).unwrap();
+            Self { root }
+        }
+
+        fn plugins(&self) -> PathBuf {
+            self.root.path().join("plugins")
+        }
+
+        fn locks(&self) -> PathBuf {
+            self.root.path().join("locks")
+        }
+    }
+
+    #[test]
+    fn waiting_stops_early_when_the_plugin_is_disabled() {
+        let fixture = Fixture::new();
+        let plugins = fixture.plugins();
+
+        assert!(!wait(&plugins, "demo", Duration::from_millis(300)));
+
+        fs::write(fixture.root.path().join("plugins/demo/disable"), "").unwrap();
+        assert!(wait(&plugins, "demo", Duration::from_millis(300)));
+    }
+
+    #[test]
+    fn running_instances_are_reported_by_their_lock() {
+        let fixture = Fixture::new();
+        let held = lock::exclusive(&fixture.locks().join("demo.main.daemon.lock")).unwrap();
+
+        let error = ensure_stopped(&fixture.locks(), "demo").unwrap_err();
+        assert!(error.to_string().contains("still running"), "{error}");
+
+        drop(held);
+        ensure_stopped(&fixture.locks(), "demo").unwrap();
+    }
+
+    #[test]
+    fn only_the_locks_of_the_named_plugin_are_considered() {
+        let fixture = Fixture::new();
+        let locks = fixture.locks();
+
+        let other = lock::exclusive(&locks.join("other.main.daemon.lock")).unwrap();
+        let _install = lock::exclusive(&locks.join("demo.install.lock")).unwrap();
+        let _log = lock::exclusive(&locks.join("demo.log.lock")).unwrap();
+
+        assert_eq!(locks_of(&locks, "demo").unwrap().len(), 0);
+        ensure_stopped(&locks, "demo").unwrap();
+
+        drop(other);
+    }
+
+    #[test]
+    fn every_declared_callback_holds_its_own_lock() {
+        let fixture = Fixture::new();
+        let locks = fixture.locks();
+        fs::write(locks.join("demo.tick.daemon.lock"), "").unwrap();
+        fs::write(locks.join("demo.clean_now.daemon.lock"), "").unwrap();
+        fs::write(locks.join("other.tick.daemon.lock"), "").unwrap();
+
+        let mut names: Vec<String> = locks_of(&locks, "demo")
+            .unwrap()
+            .iter()
+            .map(|path| path.file_name().unwrap().to_string_lossy().into_owned())
+            .collect();
+        names.sort();
+        assert_eq!(
+            names,
+            ["demo.clean_now.daemon.lock", "demo.tick.daemon.lock"]
+        );
+    }
 }

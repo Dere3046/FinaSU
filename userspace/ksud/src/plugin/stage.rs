@@ -6,9 +6,11 @@
 //! plugins still run.
 
 use std::path::Path;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use anyhow::Result;
+
+use crate::plugin::lock;
 
 #[cfg(target_os = "android")]
 use super::store;
@@ -16,10 +18,6 @@ use super::store;
 #[cfg(target_os = "android")]
 use std::path::PathBuf;
 
-#[cfg(target_os = "android")]
-use std::time::Instant;
-
-#[cfg(target_os = "android")]
 use anyhow::Context;
 
 #[cfg(target_os = "android")]
@@ -74,20 +72,13 @@ pub fn run(
     }
 
     for id in &plan.runnable {
-        let timeout = match deadline {
-            Some(deadline) => {
-                let remaining = deadline.saturating_duration_since(Instant::now());
-                if remaining.is_zero() {
-                    warn(
-                        plugin_dir,
-                        id,
-                        &format!("not run at {stage}: the stage budget is exhausted"),
-                    );
-                    continue;
-                }
-                remaining.min(CALLBACK_TIMEOUT)
-            }
-            None => CALLBACK_TIMEOUT,
+        let Some(timeout) = remaining_timeout(deadline, CALLBACK_TIMEOUT, Instant::now()) else {
+            warn(
+                plugin_dir,
+                id,
+                &format!("not run at {stage}: the stage budget is exhausted"),
+            );
+            continue;
         };
 
         let dir = plugin_dir.join(id);
@@ -248,8 +239,21 @@ fn spawn(stage: &str) -> Result<()> {
 fn claim(stage: &str) -> Result<bool> {
     let boot = std::fs::read_to_string("/proc/sys/kernel/random/boot_id")
         .context("cannot read the boot id")?;
-    let boot = boot.trim();
-    let record = Path::new(defs::PLUGIN_STATE_DIR).join(format!("{stage}.ran"));
+    claim_for(
+        Path::new(defs::PLUGIN_STATE_DIR),
+        Path::new(defs::PLUGIN_LOCK_DIR),
+        stage,
+        boot.trim(),
+    )
+}
+
+/// Claims the one automatic run of `stage` for `boot`.
+///
+/// The record only guards anything if two callers cannot both claim it, so the
+/// check and the write happen under one lock.
+fn claim_for(state_dir: &Path, lock_dir: &Path, stage: &str, boot: &str) -> Result<bool> {
+    let _guard = lock::exclusive(&lock_dir.join(format!("{stage}.claim.lock")))?;
+    let record = state_dir.join(format!("{stage}.ran"));
 
     match std::fs::read_to_string(&record) {
         Ok(previous) if previous.trim() == boot => return Ok(false),
@@ -258,8 +262,94 @@ fn claim(stage: &str) -> Result<bool> {
         Err(error) => return Err(error).context("cannot read the stage record"),
     }
 
-    std::fs::create_dir_all(defs::PLUGIN_STATE_DIR)
-        .context("cannot create the plugin state directory")?;
+    std::fs::create_dir_all(state_dir).context("cannot create the plugin state directory")?;
     std::fs::write(&record, boot).context("cannot record the stage run")?;
     Ok(true)
+}
+
+/// The timeout for one callback of a dispatch that is bounded by `deadline`.
+///
+/// Returns `None` when the budget is already spent, so the plugin is left out
+/// instead of being started with no time left.
+fn remaining_timeout(deadline: Option<Instant>, cap: Duration, now: Instant) -> Option<Duration> {
+    deadline.map_or(Some(cap), |deadline| {
+        let remaining = deadline.saturating_duration_since(now);
+        if remaining.is_zero() {
+            None
+        } else {
+            Some(remaining.min(cap))
+        }
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs;
+    use std::path::PathBuf;
+
+    use super::*;
+
+    struct Fixture {
+        root: tempfile::TempDir,
+    }
+
+    impl Fixture {
+        fn new() -> Self {
+            let root = tempfile::tempdir().unwrap();
+            fs::create_dir_all(root.path().join("state")).unwrap();
+            fs::create_dir_all(root.path().join("locks")).unwrap();
+            Self { root }
+        }
+
+        fn state(&self) -> PathBuf {
+            self.root.path().join("state")
+        }
+
+        fn locks(&self) -> PathBuf {
+            self.root.path().join("locks")
+        }
+    }
+
+    #[test]
+    fn a_stage_callback_is_capped_by_the_shared_budget() {
+        let cap = Duration::from_secs(120);
+        let now = Instant::now();
+
+        assert_eq!(remaining_timeout(None, cap, now), Some(cap));
+        assert_eq!(
+            remaining_timeout(Some(now + Duration::from_secs(5)), cap, now),
+            Some(Duration::from_secs(5))
+        );
+        assert_eq!(
+            remaining_timeout(Some(now + Duration::from_secs(600)), cap, now),
+            Some(cap)
+        );
+        assert_eq!(
+            remaining_timeout(Some(now - Duration::from_secs(1)), cap, now),
+            None
+        );
+    }
+
+    #[test]
+    fn a_stage_is_only_claimed_once_per_boot() {
+        let fixture = Fixture::new();
+        let (state, locks) = (fixture.state(), fixture.locks());
+
+        assert!(claim_for(&state, &locks, "service", "boot-a").unwrap());
+        assert!(!claim_for(&state, &locks, "service", "boot-a").unwrap());
+        assert!(claim_for(&state, &locks, "boot-completed", "boot-a").unwrap());
+        assert!(claim_for(&state, &locks, "service", "boot-b").unwrap());
+        assert_eq!(
+            fs::read_to_string(state.join("service.ran")).unwrap(),
+            "boot-b"
+        );
+    }
+
+    #[test]
+    fn a_damaged_stage_record_is_reported() {
+        let fixture = Fixture::new();
+        fs::create_dir_all(fixture.state().join("service.ran")).unwrap();
+
+        assert!(claim_for(&fixture.state(), &fixture.locks(), "service", "boot-a").is_err());
+    }
 }

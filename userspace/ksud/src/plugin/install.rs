@@ -17,7 +17,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use anyhow::{Context, Result, bail, ensure};
 
 use crate::defs;
-use crate::plugin::{lock, manifest, store};
+use crate::plugin::{daemon, lock, manifest, store};
 
 /// Files that belong to the user. A package never provides them, and an update
 /// carries the installed copies over instead of letting the archive replace
@@ -57,6 +57,7 @@ pub fn install(
     let id = parsed.id.clone();
 
     let _guard = lock::exclusive(&lock_dir.join(format!("{id}.install.lock")))?;
+    daemon::ensure_stopped(lock_dir, &id)?;
     let plan = plan_entries(&mut zip, &prefix, &parsed.entry)?;
 
     fs::create_dir_all(plugin_dir)
@@ -90,13 +91,14 @@ pub fn install(
 /// Removes an installed plugin.
 ///
 /// # Errors
-/// Fails when the plugin is not installed, when its manifest is unreadable, or
-/// when another enabled plugin depends on it.
+/// Fails when the plugin is not installed, when its manifest is unreadable, when
+/// a daemon still runs it, or when another enabled plugin depends on it.
 pub fn uninstall(plugin_dir: &Path, lock_dir: &Path, id: &str) -> Result<()> {
     manifest::validate_plugin_id(id)?;
     let _guard = lock::exclusive(&lock_dir.join(format!("{id}.install.lock")))?;
     let target = plugin_dir.join(id);
     ensure!(target.is_dir(), "plugin '{id}' is not installed");
+    daemon::ensure_stopped(lock_dir, id)?;
     ensure_no_dependents(plugin_dir, id)?;
     fs::remove_dir_all(&target).with_context(|| format!("cannot remove {}", target.display()))?;
     sync_dir(plugin_dir)?;
@@ -523,6 +525,37 @@ mod tests {
             write_zip(&archive, entries);
             install(&self.plugins(), &self.locks(), &self.stage(), &archive)
         }
+    }
+
+    #[test]
+    fn refuses_to_change_a_running_plugin() {
+        let fixture = Fixture::new();
+        install_package(&fixture, "demo", "return {}").unwrap();
+        let held =
+            crate::plugin::lock::exclusive(&fixture.locks().join("demo.main.daemon.lock")).unwrap();
+
+        let error = uninstall(&fixture.plugins(), &fixture.locks(), "demo").unwrap_err();
+        assert!(error.to_string().contains("still running"), "{error}");
+        assert!(fixture.plugins().join("demo").is_dir());
+
+        drop(held);
+        uninstall(&fixture.plugins(), &fixture.locks(), "demo").unwrap();
+        assert!(!fixture.plugins().join("demo").is_dir());
+    }
+
+    #[test]
+    fn an_update_is_refused_while_a_daemon_runs() {
+        let fixture = Fixture::new();
+        install_package(&fixture, "demo", "return {}").unwrap();
+        let held =
+            crate::plugin::lock::exclusive(&fixture.locks().join("demo.main.daemon.lock")).unwrap();
+
+        let error = install_package(&fixture, "demo", "return { v = 2 }").unwrap_err();
+        assert!(error.to_string().contains("still running"), "{error}");
+
+        drop(held);
+        let id = install_package(&fixture, "demo", "return { v = 2 }").unwrap();
+        assert_eq!(id, "demo");
     }
 
     fn write_zip(path: &Path, entries: &[(&str, &str, Option<u32>)]) {
