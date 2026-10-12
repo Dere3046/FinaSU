@@ -84,23 +84,60 @@ class AppAuthenticatorTest {
         assertFalse(pending.await())
     }
 
-    @Test fun policyChangeVerifiesTheCurrentMethodOnlyOnce() = runBlocking {
+    @Test fun policyChangeAndTargetSwitchesNeverPrompt() = runBlocking {
         val repo = repository()
-        val methods = mutableListOf<AuthMethod>()
-        val auth = AppAuthenticatorImpl(repo, { 0 }, { true }) { method, fallback ->
-            assertFalse(fallback)
-            methods += method
-            true
-        }
-        assertTrue(auth.require(SecurityTarget.SETTINGS))
+        var calls = 0
+        val auth = AppAuthenticatorImpl(repo, { 0 }, { true }) { _, _ -> calls++; true }
+        assertTrue(auth.require(SecurityTarget.THEME_IMPORT))
+        assertEquals(1, calls)
         assertTrue(auth.changeDefault(AuthMethod.BIOMETRIC))
-        // The settings entry prompt plus one confirmation: the new method is checked for enrollment
-        // rather than proved by a second prompt.
-        assertEquals(listOf(AuthMethod.PIN, AuthMethod.PIN), methods)
+        assertEquals(AuthMethod.BIOMETRIC, repo.state.value.config.defaultMethod)
+        assertTrue(auth.setTargetProtected(SecurityTarget.MODULE_INSTALL, true))
+        assertEquals(AuthMethod.BIOMETRIC, repo.state.value.config.methodFor(SecurityTarget.MODULE_INSTALL))
+        assertTrue(auth.setTargetProtected(SecurityTarget.MODULE_INSTALL, false))
+        assertEquals(AuthMethod.NONE, repo.state.value.config.methodFor(SecurityTarget.MODULE_INSTALL))
         assertTrue(auth.changeDefault(AuthMethod.NONE))
-        assertEquals(3, methods.size)
-        assertEquals(AuthMethod.BIOMETRIC, methods.last())
         assertEquals(AuthMethod.NONE, repo.state.value.config.defaultMethod)
+        assertEquals(1, calls)
+    }
+
+    @Test fun targetSwitchNeedsAGlobalMethodAndACredential() = runBlocking {
+        val none = repository(SecurityConfig.create())
+        val auth = AppAuthenticatorImpl(none, { 0 }, { true }) { _, _ -> true }
+        assertFalse(auth.setTargetProtected(SecurityTarget.MODULE_INSTALL, true))
+        assertTrue(auth.setTargetProtected(SecurityTarget.MODULE_INSTALL, false))
+        val noPin = repository(SecurityConfig.create(AuthMethod.PIN), CredentialStatus.ABSENT)
+        val missing = AppAuthenticatorImpl(noPin, { 0 }, { true }) { _, _ -> true }
+        assertFalse(missing.setTargetProtected(SecurityTarget.MODULE_INSTALL, true))
+    }
+
+    @Test fun targetSwitchInvalidatesCachedAuthorizationAndFollowsTheDefault() = runBlocking {
+        val repo = repository()
+        var calls = 0
+        val auth = AppAuthenticatorImpl(repo, { 0 }, { true }) { _, _ -> calls++; true }
+        assertTrue(auth.require(SecurityTarget.MODULE_INSTALL))
+        assertTrue(auth.setTargetProtected(SecurityTarget.MODULE_INSTALL, false))
+        assertTrue(auth.require(SecurityTarget.MODULE_INSTALL))
+        assertEquals(1, calls)
+        assertTrue(auth.setTargetProtected(SecurityTarget.MODULE_INSTALL, true))
+        assertTrue(auth.require(SecurityTarget.MODULE_INSTALL))
+        assertEquals(2, calls)
+        assertTrue(auth.changeDefault(AuthMethod.BIOMETRIC))
+        assertEquals(AuthMethod.BIOMETRIC, repo.state.value.config.methodFor(SecurityTarget.MODULE_INSTALL))
+        assertFalse(repo.state.value.config.targetOverrides.containsKey(SecurityTarget.MODULE_INSTALL))
+    }
+
+    @Test fun unavailableSessionRejectsPolicyChanges() = runBlocking {
+        val repo = repository()
+        var foreground = false
+        val auth = AppAuthenticatorImpl(repo, { 0 }, { foreground }) { _, _ -> error("Unexpected prompt") }
+        assertFalse(auth.changeDefault(AuthMethod.NONE))
+        assertFalse(auth.setTargetProtected(SecurityTarget.APP_START, false))
+        foreground = true
+        repo.state.value = repo.state.value.copy(storageError = true)
+        assertFalse(auth.changeDefault(AuthMethod.NONE))
+        assertFalse(auth.setTargetProtected(SecurityTarget.APP_START, false))
+        assertEquals(AuthMethod.PIN, repo.state.value.config.defaultMethod)
     }
 
     @Test fun missingOrUnprovedCredentialsPreserveThePolicy() = runBlocking {

@@ -5,11 +5,15 @@ import android.os.PowerManager
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import kotlinx.coroutines.launch
 import me.weishu.kernelsu.Natives
 import me.weishu.kernelsu.R
+import me.weishu.kernelsu.data.security.SecurityTarget
 import me.weishu.kernelsu.ui.component.dialog.rememberConfirmDialog
+import me.weishu.kernelsu.ui.component.security.LocalAppAuthenticator
 import me.weishu.kernelsu.ui.util.reboot
 
 data class RebootListOption(
@@ -42,14 +46,22 @@ fun getRebootListOption(): List<RebootListOption> {
 fun rememberRebootAction(): (String) -> Unit {
     val title = stringResource(R.string.reboot)
     val message = stringResource(R.string.jailbreak_reboot_warning)
-    val confirmDialog = rememberConfirmDialog(onConfirm = { reboot() })
+    val scope = rememberCoroutineScope()
+    val authenticator = LocalAppAuthenticator.current
+    val confirmDialog = rememberConfirmDialog(onConfirm = {
+        scope.launch {
+            if (authenticator.require(SecurityTarget.REBOOT)) reboot()
+        }
+    })
 
-    return remember(title, message, confirmDialog) {
+    return remember(title, message, confirmDialog, authenticator) {
         { reason ->
             if (Natives.isLateLoadMode && reason.isEmpty()) {
                 confirmDialog.showConfirm(title = title, content = message)
             } else {
-                reboot(reason)
+                scope.launch {
+                    if (authenticator.require(SecurityTarget.REBOOT)) reboot(reason)
+                }
             }
         }
     }

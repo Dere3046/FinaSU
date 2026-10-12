@@ -202,19 +202,24 @@ class SecurityRepositoryImpl(
         val targets = json.getJSONObject("targets")
         val overrides = buildMap {
             targets.keys().forEach { key ->
-                val target = requireNotNull(SecurityTarget.fromKey(key)) { "Unknown authentication target" }
                 val storedMethod = targets.getString(key)
                 val method = requireNotNull(
                     if (version == 1) AuthMethod.fromStoredKey(storedMethod) else AuthMethod.fromKey(storedMethod)
-                ) {
-                    "Unknown authentication override"
+                ) { "Unknown authentication override" }
+                if (version < CONFIG_VERSION && key == "module_manage") {
+                    put(SecurityTarget.MODULE_UNINSTALL, method)
+                    put(SecurityTarget.MODULE_DISABLE, method)
+                } else if (version < CONFIG_VERSION && key == "settings") {
+                    // Settings is no longer a protected trigger.
+                } else {
+                    val target = requireNotNull(SecurityTarget.fromKey(key)) { "Unknown authentication target" }
+                    put(target, method)
                 }
-                put(target, method)
             }
         }
         val migrated = version != CONFIG_VERSION
         val fallback = requireNotNull(json.get("fallback") as? Boolean) { "Invalid credential fallback policy" } &&
-            version == CONFIG_VERSION
+            version >= 2
         return Decoded(SecurityConfig.create(default, overrides, fallback), migrated)
     }
 
@@ -225,7 +230,7 @@ class SecurityRepositoryImpl(
 
     companion object {
         const val PREFS_NAME = "authentication"
-        private const val CONFIG_VERSION = 2
+        private const val CONFIG_VERSION = 3
         private const val KEY_CONFIG = "config"
         private const val KEY_PIN = "pin_record"
         private const val KEY_PATTERN = "pattern_record"

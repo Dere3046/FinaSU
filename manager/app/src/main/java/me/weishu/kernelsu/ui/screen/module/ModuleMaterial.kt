@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import me.weishu.kernelsu.ui.component.bottombar.LocalFloatingBarReservedHeight
 import me.weishu.kernelsu.ui.component.bottombar.LocalFloatingBarVisible
 import me.weishu.kernelsu.ui.component.bottombar.LocalIsFloatingNavMode
+import me.weishu.kernelsu.ui.component.security.LocalAppAuthenticator
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -123,6 +124,7 @@ import kotlinx.coroutines.launch
 import me.weishu.kernelsu.R
 import me.weishu.kernelsu.data.model.Module
 import me.weishu.kernelsu.data.model.ModuleUpdateInfo
+import me.weishu.kernelsu.data.security.SecurityTarget
 import me.weishu.kernelsu.data.repository.isSoftRebootPreferred
 import me.weishu.kernelsu.ui.component.ObserveAsEvents
 import me.weishu.kernelsu.ui.component.ScrollToTopOnChange
@@ -244,6 +246,7 @@ fun ModulePagerMaterial(
     }
 
     val scope = rememberCoroutineScope()
+    val authenticator = LocalAppAuthenticator.current
     val snackbarJob = remember { mutableStateOf<Job?>(null) }
     ObserveAsEvents(moduleEvent) { event ->
         when (event) {
@@ -264,7 +267,9 @@ fun ModulePagerMaterial(
                         duration = SnackbarDuration.Long
                     )
                     if (result == SnackbarResult.ActionPerformed) {
-                        reboot(if (softReboot) "soft_reboot" else "")
+                        if (authenticator.require(SecurityTarget.REBOOT)) {
+                            reboot(if (softReboot) "soft_reboot" else "")
+                        }
                     }
                 }
             }

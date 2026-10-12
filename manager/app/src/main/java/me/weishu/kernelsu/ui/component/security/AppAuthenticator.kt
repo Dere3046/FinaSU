@@ -14,6 +14,7 @@ interface AppAuthenticator {
     fun isProtected(target: SecurityTarget): Boolean
     suspend fun require(target: SecurityTarget, fresh: Boolean = false): Boolean
     suspend fun changeDefault(method: AuthMethod): Boolean
+    suspend fun setTargetProtected(target: SecurityTarget, protected: Boolean): Boolean
     fun invalidate()
 }
 
@@ -33,6 +34,31 @@ class AppAuthenticatorImpl(
     private val verifiedAt = mutableMapOf<SecurityTarget, Long>()
     private var revision = -1L
     private var generation = 0L
+
+    override suspend fun setTargetProtected(target: SecurityTarget, protected: Boolean): Boolean =
+        mutex.withLock {
+            repository.initialize()
+            syncRevision()
+            val state = repository.state.value
+            if (state.storageError || !isForeground()) return@withLock false
+            val method = state.config.defaultMethod
+            if (protected && (method == AuthMethod.NONE || !enrollable(method, state))) return@withLock false
+            val existing = state.config.targetOverrides[target]
+            if (if (protected) existing == null else existing == AuthMethod.NONE) return@withLock true
+            val token = generation
+            if (!unchanged(token, state.revision)) return@withLock false
+            val overrides = HashMap(state.config.targetOverrides)
+            if (protected) overrides.remove(target) else overrides[target] = AuthMethod.NONE
+            val saved = repository.updateConfig(
+                SecurityConfig.create(
+                    state.config.defaultMethod,
+                    overrides,
+                    state.config.allowCredentialFallback,
+                )
+            )
+            invalidate()
+            saved
+        }
 
     override fun invalidate() {
         generation++
@@ -63,7 +89,6 @@ class AppAuthenticatorImpl(
         true
     }
 
-    /** Verifies the current policy once; a new method is checked for enrollment, never re-prompted. */
     override suspend fun changeDefault(method: AuthMethod): Boolean = mutex.withLock {
         repository.initialize()
         syncRevision()
@@ -72,9 +97,6 @@ class AppAuthenticatorImpl(
         if (method == state.config.defaultMethod) return@withLock true
         if (!enrollable(method, state)) return@withLock false
         val token = generation
-        val current = state.config.methodFor(SecurityTarget.SETTINGS).takeUnless { it == AuthMethod.NONE }
-            ?: state.config.defaultMethod
-        if (current != AuthMethod.NONE && !authenticate(current, fallbackGranted(state))) return@withLock false
         if (!unchanged(token, state.revision)) return@withLock false
         val saved = repository.updateConfig(
             SecurityConfig.create(method, state.config.targetOverrides, state.config.allowCredentialFallback)

@@ -168,7 +168,7 @@ class SecurityRepositoryTest {
             val remainingMethod = if (removed == CredentialKind.PIN) AuthMethod.PATTERN else AuthMethod.PIN
             assertTrue(repo.updateConfig(SecurityConfig.create(
                 removedMethod,
-                mapOf(SecurityTarget.SETTINGS to remainingMethod, SecurityTarget.APP_START to removedMethod),
+                mapOf(SecurityTarget.THEME_IMPORT to remainingMethod, SecurityTarget.APP_START to removedMethod),
                 allowCredentialFallback = true,
             )))
             val secret = if (removed == CredentialKind.PIN) pin else pattern
@@ -178,7 +178,7 @@ class SecurityRepositoryTest {
             assertFalse(restored.state.value.storageError)
             assertEquals(AuthMethod.NONE, restored.state.value.config.defaultMethod)
             assertEquals(AuthMethod.NONE, restored.state.value.config.methodFor(SecurityTarget.APP_START))
-            assertEquals(remainingMethod, restored.state.value.config.methodFor(SecurityTarget.SETTINGS))
+            assertEquals(remainingMethod, restored.state.value.config.methodFor(SecurityTarget.THEME_IMPORT))
             assertTrue(restored.state.value.config.allowCredentialFallback)
             assertEquals(CredentialStatus.ABSENT, restored.state.value.statusOf(removed))
         }
@@ -187,7 +187,7 @@ class SecurityRepositoryTest {
     @Test fun malformedOrUnsupportedPoliciesFailClosedWithoutBeingOverwritten() = runBlocking {
         listOf(
             "{\"version\":2,\"default\":\"unknown\",\"fallback\":false,\"targets\":{}}",
-            "{\"version\":3,\"default\":\"none\",\"fallback\":false,\"targets\":{}}",
+            "{\"version\":4,\"default\":\"none\",\"fallback\":false,\"targets\":{}}",
             "{\"version\":2.5,\"default\":\"none\",\"fallback\":false,\"targets\":{}}",
             "{\"version\":\"2\",\"default\":\"none\",\"fallback\":false,\"targets\":{}}",
             "{\"version\":2,\"default\":\"password\",\"fallback\":false,\"targets\":{}}",
@@ -196,6 +196,9 @@ class SecurityRepositoryTest {
             "{\"version\":2,\"default\":\"none\",\"fallback\":false,\"targets\":{\"app_start\":\"unknown\"}}",
             "{\"version\":2,\"default\":\"none\",\"fallback\":false,\"targets\":[]}",
             "{\"version\":2,\"default\":\"none\",\"fallback\":false,\"targets\":{\"unknown\":\"none\"}}",
+            "{\"version\":1,\"default\":\"none\",\"fallback\":false,\"targets\":{\"app_start\":\"unknown\"}}",
+            "{\"version\":1,\"default\":\"none\",\"fallback\":false,\"targets\":{\"unknown\":\"none\"}}",
+            "{\"version\":3,\"default\":\"none\",\"fallback\":false,\"targets\":{\"settings\":\"none\"}}",
         ).forEach { raw ->
             val prefs = Prefs().also { it.values["config"] = raw }
             val repo = repository(prefs)
@@ -216,9 +219,56 @@ class SecurityRepositoryTest {
         assertFalse(repo.state.value.storageError)
         assertEquals(AuthMethod.NONE, repo.state.value.config.defaultMethod)
         assertEquals(AuthMethod.BIOMETRIC, repo.state.value.config.methodFor(SecurityTarget.APP_START))
-        assertEquals(AuthMethod.NONE, repo.state.value.config.methodFor(SecurityTarget.SETTINGS))
+        assertEquals(AuthMethod.NONE, repo.state.value.config.methodFor(SecurityTarget.THEME_IMPORT))
         assertFalse(repo.state.value.config.allowCredentialFallback)
         assertFalse(prefs.values.containsKey("password_record"))
-        assertTrue(prefs.values.getValue("config").contains("\"version\":2"))
+        assertTrue(prefs.values.getValue("config").contains("\"version\":3"))
+    }
+
+    @Test fun legacyModuleManagementPolicyMigratesToBothTriggers() = runBlocking {
+        for (version in 1..2) {
+            for (method in listOf(AuthMethod.NONE, AuthMethod.BIOMETRIC)) {
+                val prefs = Prefs()
+                prefs.values["config"] = "{\"version\":$version,\"default\":\"biometric\",\"fallback\":false," +
+                    "\"targets\":{\"module_manage\":\"${method.key}\",\"settings\":\"biometric\"}}"
+                val repo = repository(prefs)
+                repo.initialize()
+                assertFalse(repo.state.value.storageError)
+                assertEquals(method, repo.state.value.config.methodFor(SecurityTarget.MODULE_UNINSTALL))
+                assertEquals(method, repo.state.value.config.methodFor(SecurityTarget.MODULE_DISABLE))
+                assertFalse(prefs.values.getValue("config").contains("settings"))
+                assertFalse(prefs.values.getValue("config").contains("module_manage"))
+                val restored = repository(prefs)
+                restored.initialize()
+                assertFalse(restored.state.value.storageError)
+                assertEquals(repo.state.value.config, restored.state.value.config)
+            }
+        }
+    }
+
+    @Test fun versionTwoMigrationPreservesCredentialFallback() = runBlocking {
+        val prefs = Prefs()
+        val repo = repository(prefs)
+        repo.set(CredentialKind.PIN, pin)
+        repo.updateConfig(SecurityConfig.create(AuthMethod.BIOMETRIC, allowCredentialFallback = true))
+        prefs.values["config"] = prefs.values.getValue("config").replace("\"version\":3", "\"version\":2")
+        val restored = repository(prefs)
+        restored.initialize()
+        assertFalse(restored.state.value.storageError)
+        assertTrue(restored.state.value.config.allowCredentialFallback)
+        assertTrue(prefs.values.getValue("config").contains("\"version\":3"))
+    }
+
+    @Test fun failedPolicyMigrationDoesNotGrantAccessOrOverwriteTheOldPolicy() = runBlocking {
+        val prefs = Prefs()
+        val raw = "{\"version\":2,\"default\":\"biometric\",\"fallback\":false," +
+            "\"targets\":{\"module_manage\":\"none\",\"settings\":\"biometric\"}}"
+        prefs.values["config"] = raw
+        prefs.canCommit = false
+        val repo = repository(prefs)
+        repo.initialize()
+        assertTrue(repo.state.value.storageError)
+        assertFalse(repo.updateConfig(SecurityConfig.create()))
+        assertEquals(raw, prefs.values["config"])
     }
 }

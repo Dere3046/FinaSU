@@ -9,9 +9,9 @@ import org.junit.Test
 class SecurityConfigTest {
     @Test
     fun missingOverrideInheritsButExplicitNoneDoesNot() {
-        val config = SecurityConfig.create(AuthMethod.PIN, mapOf(SecurityTarget.SETTINGS to AuthMethod.NONE))
+        val config = SecurityConfig.create(AuthMethod.PIN, mapOf(SecurityTarget.THEME_IMPORT to AuthMethod.NONE))
         assertEquals(AuthMethod.PIN, config.methodFor(SecurityTarget.APP_START))
-        assertEquals(AuthMethod.NONE, config.methodFor(SecurityTarget.SETTINGS))
+        assertEquals(AuthMethod.NONE, config.methodFor(SecurityTarget.THEME_IMPORT))
     }
 
     @Test
@@ -21,7 +21,7 @@ class SecurityConfigTest {
             mapOf(
                 SecurityTarget.APP_START to AuthMethod.BIOMETRIC,
                 SecurityTarget.MODULE_INSTALL to AuthMethod.PATTERN,
-                SecurityTarget.SETTINGS to AuthMethod.NONE,
+                SecurityTarget.THEME_IMPORT to AuthMethod.NONE,
             ),
             allowCredentialFallback = true,
         ).withoutCredentials()
@@ -64,7 +64,7 @@ class SecurityConfigTest {
             AuthMethod.BIOMETRIC,
             mapOf(
                 SecurityTarget.MODULE_INSTALL to AuthMethod.BIOMETRIC,
-                SecurityTarget.SETTINGS to AuthMethod.PIN,
+                SecurityTarget.THEME_IMPORT to AuthMethod.PIN,
             ),
             allowCredentialFallback = true,
         )
@@ -72,7 +72,7 @@ class SecurityConfigTest {
         val degraded = config.withoutBiometric()
         assertEquals(AuthMethod.NONE, degraded.defaultMethod)
         assertEquals(AuthMethod.NONE, degraded.methodFor(SecurityTarget.MODULE_INSTALL))
-        assertEquals(AuthMethod.PIN, degraded.methodFor(SecurityTarget.SETTINGS))
+        assertEquals(AuthMethod.PIN, degraded.methodFor(SecurityTarget.THEME_IMPORT))
         assertTrue(degraded.allowCredentialFallback)
         assertFalse(degraded.usesBiometric())
     }

@@ -23,10 +23,12 @@ import me.weishu.kernelsu.R
 import me.weishu.kernelsu.data.security.AuthMethod
 import me.weishu.kernelsu.data.security.CredentialKind
 import me.weishu.kernelsu.data.security.CredentialStatus
+import me.weishu.kernelsu.data.security.SecurityTarget
 import me.weishu.kernelsu.ksuApp
 import me.weishu.kernelsu.ui.component.material.SegmentedColumn
 import me.weishu.kernelsu.ui.component.material.SegmentedDropdownItem
 import me.weishu.kernelsu.ui.component.material.SegmentedListItem
+import me.weishu.kernelsu.ui.component.material.SegmentedSwitchItem
 import me.weishu.kernelsu.ui.component.security.BiometricAuthenticator
 import me.weishu.kernelsu.ui.component.security.CredentialRemovalDialog
 import me.weishu.kernelsu.ui.component.security.CredentialSetupDialog
@@ -43,6 +45,7 @@ fun AuthenticationSettingsContent() {
     var removal by remember { mutableStateOf<CredentialKind?>(null) }
     var writing by remember { mutableStateOf(false) }
     var changeFailed by remember { mutableStateOf(false) }
+    var failedTarget by remember { mutableStateOf<SecurityTarget?>(null) }
     LaunchedEffect(repository) { repository.initialize() }
 
     val editable = state.loaded && !state.storageError && !writing
@@ -132,6 +135,42 @@ fun AuthenticationSettingsContent() {
                     enabled = editable,
                     headlineContent = { Text(stringResource(R.string.security_pattern_clear)) },
                 )
+            }
+        },
+    )
+
+    SegmentedColumn(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 13.dp),
+        content = buildList {
+            SecurityTarget.entries.forEach { target ->
+                add {
+                    val protected = state.config.methodFor(target) != AuthMethod.NONE
+                    SegmentedSwitchItem(
+                        title = stringResource(target.titleRes),
+                        summary = stringResource(
+                            when {
+                                failedTarget == target -> R.string.security_method_change_failed
+                                protected -> R.string.security_target_protected_summary
+                                else -> R.string.security_target_unprotected_summary
+                            }
+                        ),
+                        checked = protected,
+                        enabled = editable,
+                        onCheckedChange = { wanted ->
+                            if (!writing) {
+                                writing = true
+                                failedTarget = null
+                                scope.launch {
+                                    try {
+                                        if (!authenticator.setTargetProtected(target, wanted)) failedTarget = target
+                                    } finally {
+                                        writing = false
+                                    }
+                                }
+                            }
+                        },
+                    )
+                }
             }
         },
     )

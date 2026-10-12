@@ -52,6 +52,8 @@ import kotlinx.coroutines.launch
 import android.app.Activity
 import android.os.Build
 import me.weishu.kernelsu.R
+import me.weishu.kernelsu.data.security.SecurityTarget
+import me.weishu.kernelsu.ui.component.security.LocalAppAuthenticator
 import me.weishu.kernelsu.wallpaper.PreparedTheme
 import me.weishu.kernelsu.wallpaper.ThemeImportService
 import me.weishu.kernelsu.wallpaper.ThemeMetadata
@@ -61,9 +63,16 @@ import me.weishu.kernelsu.wallpaper.ThemeMetadata
 fun rememberThemeImportRequest(onResult: (Result<Unit>) -> Unit): (Uri) -> Unit {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val authenticator = LocalAppAuthenticator.current
     var pending by remember { mutableStateOf<PreparedTheme?>(null) }
     var busy by remember { mutableStateOf(false) }
-    DisposableEffect(Unit) { onDispose { if (!busy) pending?.close() } }
+    var disposed by remember { mutableStateOf(false) }
+    DisposableEffect(Unit) {
+        onDispose {
+            disposed = true
+            if (!busy) pending?.close()
+        }
+    }
     pending?.let { theme ->
         ThemeImportDialog(
             theme = theme,
@@ -73,6 +82,7 @@ fun rememberThemeImportRequest(onResult: (Result<Unit>) -> Unit): (Uri) -> Unit 
                 if (!busy) scope.launch {
                     busy = true
                     try {
+                        if (!authenticator.require(SecurityTarget.THEME_IMPORT)) return@launch
                         val result = ThemeImportService.apply(context.applicationContext, theme)
                         onResult(result)
                         if (result.isSuccess && Build.VERSION.SDK_INT < 33) (context as? Activity)?.recreate()
@@ -89,11 +99,18 @@ fun rememberThemeImportRequest(onResult: (Result<Unit>) -> Unit): (Uri) -> Unit 
         if (!busy) scope.launch {
             busy = true
             try {
+                if (!authenticator.require(SecurityTarget.THEME_IMPORT)) return@launch
                 ThemeImportService.prepare(context.applicationContext, uri).onSuccess {
                     pending?.close()
                     pending = it
                 }.onFailure { onResult(Result.failure(it)) }
-            } finally { busy = false }
+            } finally {
+                busy = false
+                if (disposed) {
+                    pending?.close()
+                    pending = null
+                }
+            }
         }
     }
 }

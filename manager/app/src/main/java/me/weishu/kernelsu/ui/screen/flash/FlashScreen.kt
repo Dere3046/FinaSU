@@ -2,6 +2,7 @@ package me.weishu.kernelsu.ui.screen.flash
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,8 @@ import kotlinx.coroutines.withContext
 import me.weishu.kernelsu.Natives
 import me.weishu.kernelsu.R
 import me.weishu.kernelsu.data.repository.isSoftRebootPreferred
+import me.weishu.kernelsu.data.security.SecurityTarget
+import me.weishu.kernelsu.ui.component.security.LocalAppAuthenticator
 import me.weishu.kernelsu.ui.navigation3.LocalNavigator
 import me.weishu.kernelsu.ui.util.reboot
 
@@ -34,9 +37,17 @@ fun FlashScreen(flashIt: FlashIt, onBackEnabledChange: (Boolean) -> Unit) {
     // Soft reboot keeps the jailbreak and still applies modules
     val softReboot = flashIt is FlashIt.FlashModules && isSoftRebootPreferred()
     var flashingEnabled by rememberSaveable { mutableStateOf(!needJailbreakWarning) }
+    val target = if (flashIt is FlashIt.FlashModules) SecurityTarget.MODULE_INSTALL
+    else SecurityTarget.MODULE_FLASH
+    val authenticator = LocalAppAuthenticator.current
+    var authorized by remember(flashIt, authenticator) { mutableStateOf(false) }
     val snackbarHost = remember { SnackbarHostState() }
-    // The warning can be cancelled before flashing actually starts.
-    val backEnabled = !flashingEnabled || flashingStatus != FlashingStatus.FLASHING
+    val backEnabled = !flashingEnabled || !authorized || flashingStatus != FlashingStatus.FLASHING
+
+    LaunchedEffect(flashIt, authenticator, flashingEnabled, authorized) {
+        if (!flashingEnabled || authorized) return@LaunchedEffect
+        if (authenticator.require(target)) authorized = true else navigator.pop()
+    }
 
     SideEffect { onBackEnabledChange(backEnabled) }
     NavigationBackHandler(
@@ -58,7 +69,7 @@ fun FlashScreen(flashIt: FlashIt, onBackEnabledChange: (Boolean) -> Unit) {
         onTextUpdate = { text = it },
         onShowRebootChange = { showRebootAction = it },
         onFlashingStatusChange = { flashingStatus = it },
-        enabled = flashingEnabled,
+        enabled = flashingEnabled && authorized,
     )
 
     val state = FlashUiState(
@@ -73,6 +84,7 @@ fun FlashScreen(flashIt: FlashIt, onBackEnabledChange: (Boolean) -> Unit) {
         onSaveLog = saveLog(logContent, scope) { showMessage(it) },
         onReboot = {
             scope.launch {
+                if (!authenticator.require(SecurityTarget.REBOOT)) return@launch
                 withContext(Dispatchers.IO) {
                     reboot(if (softReboot) "soft_reboot" else "")
                 }
