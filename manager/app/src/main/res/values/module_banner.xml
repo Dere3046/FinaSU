@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">Module display</string>
+    <string name="module_card_show_more_info">Show module details</string>
+    <string name="module_card_show_more_info_summary">Show version, author and description on the module card.</string>
+    <string name="module_card_fold_system">Fold module cards</string>
+    <string name="module_card_fold_system_summary">Collapse action buttons until the card is expanded.</string>
+    <string name="module_card_spliced">Spliced card layout</string>
+    <string name="module_card_spliced_summary">Join adjacent module cards into one continuous group.</string>
+    <string name="module_card_button_style">Action button style</string>
+    <string name="module_card_button_style_summary">Choose between full buttons and icon-only buttons.</string>
+    <string name="module_card_style_full">Full</string>
+    <string name="module_card_style_icon">Icon</string>
+
+    <string name="settings_module_banner">Module banner</string>
+    <string name="module_banner_title">Module banner</string>
+    <string name="module_banner_enabled">Enable module banner</string>
+    <string name="module_banner_enabled_summary">Show a banner image on module cards.</string>
+    <string name="module_banner_folk">Customize module banner</string>
+    <string name="module_banner_folk_summary">Long press a module card to select its banner image.</string>
+    <string name="module_banner_api_mode">Banner API mode</string>
+    <string name="module_banner_api_mode_summary">Fetch banners from an API or a local directory.</string>
+    <string name="module_banner_api_source">Banner API source</string>
+    <string name="module_banner_api_source_not_configured">Not configured</string>
+    <string name="module_banner_api_source_dialog_title">Banner API source</string>
+    <string name="module_banner_api_source_hint">API URL or local directory</string>
+    <string name="module_banner_clear_cache">Clear banner cache</string>
+    <string name="module_banner_cache_cleared">Banner cache cleared</string>
+    <string name="module_banner_marketplace">API marketplace</string>
+    <string name="module_banner_marketplace_summary">Browse and apply shared banner APIs.</string>
+    <string name="module_banner_custom_opacity">Custom banner opacity</string>
+    <string name="module_banner_custom_opacity_summary">Override the banner opacity instead of following the wallpaper.</string>
+    <string name="module_banner_opacity">Banner opacity</string>
+
+    <string name="module_banner_select">Select banner</string>
+    <string name="module_banner_clear">Clear banner</string>
+    <string name="module_banner_custom_info">Customize info</string>
+    <string name="module_banner_name">Name</string>
+    <string name="module_banner_version">Version</string>
+    <string name="module_banner_author">Author</string>
+    <string name="module_banner_description">Description</string>
+    <string name="module_banner_save">Save</string>
+    <string name="module_banner_reset">Reset</string>
+
+    <string name="api_marketplace_title">API marketplace</string>
+    <string name="api_marketplace_subtitle">Shared banner APIs</string>
+    <string name="api_marketplace_empty">Nothing available right now</string>
+    <string name="api_marketplace_error">Failed to load the marketplace</string>
+    <string name="api_marketplace_retry">Retry</string>
+    <string name="api_marketplace_apply">Apply</string>
+    <string name="api_marketplace_applied">Applied</string>
+    <string name="api_marketplace_url">URL</string>
+    <string name="api_marketplace_verify_failed">The source did not return a valid image</string>
+</resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">招牌菜摆设</string>
+    <string name="module_card_show_more_info">看招牌菜配料</string>
+    <string name="module_card_show_more_info_summary">在菜牌上写明版本、大厨和说明。</string>
+    <string name="module_card_fold_system">折起菜牌</string>
+    <string name="module_card_fold_system_summary">菜牌摊开前先把按钮收起来。</string>
+    <string name="module_card_spliced">拼桌式菜牌</string>
+    <string name="module_card_spliced_summary">把挨着的菜牌拼成一长条。</string>
+    <string name="module_card_button_style">按钮样式</string>
+    <string name="module_card_button_style_summary">在整套按钮和纯图标按钮里挑一个。</string>
+    <string name="module_card_style_full">整套</string>
+    <string name="module_card_style_icon">图标</string>
+
+    <string name="settings_module_banner">招牌</string>
+    <string name="module_banner_title">招牌</string>
+    <string name="module_banner_enabled">挂上招牌</string>
+    <string name="module_banner_enabled_summary">在菜牌上挂招牌图。</string>
+    <string name="module_banner_folk">定做招牌</string>
+    <string name="module_banner_folk_summary">长按菜牌就能自己定做招牌。</string>
+    <string name="module_banner_api_mode">招牌 API 模式</string>
+    <string name="module_banner_api_mode_summary">从 API 或本地文件夹取招牌。</string>
+    <string name="module_banner_api_source">招牌 API 来源</string>
+    <string name="module_banner_api_source_not_configured">还没定</string>
+    <string name="module_banner_api_source_dialog_title">招牌 API 来源</string>
+    <string name="module_banner_api_source_hint">API 网址或本地文件夹</string>
+    <string name="module_banner_clear_cache">清掉招牌缓存</string>
+    <string name="module_banner_cache_cleared">招牌缓存清好了</string>
+    <string name="module_banner_marketplace">API 菜市场</string>
+    <string name="module_banner_marketplace_summary">逛逛别人的招牌 API 并套上。</string>
+    <string name="module_banner_custom_opacity">招牌浓淡自己定</string>
+    <string name="module_banner_custom_opacity_summary">直接定招牌浓淡，不跟着壁纸走。</string>
+    <string name="module_banner_opacity">招牌浓淡</string>
+
+    <string name="module_banner_select">选招牌</string>
+    <string name="module_banner_clear">撤招牌</string>
+    <string name="module_banner_custom_info">改说明</string>
+    <string name="module_banner_name">名儿</string>
+    <string name="module_banner_version">版本</string>
+    <string name="module_banner_author">大厨</string>
+    <string name="module_banner_description">说明</string>
+    <string name="module_banner_save">存好</string>
+    <string name="module_banner_reset">恢复原样</string>
+
+    <string name="api_marketplace_title">API 菜市场</string>
+    <string name="api_marketplace_subtitle">共享招牌 API</string>
+    <string name="api_marketplace_empty">眼下啥也没有</string>
+    <string name="api_marketplace_error">菜市场没打开</string>
+    <string name="api_marketplace_retry">再试试</string>
+    <string name="api_marketplace_apply">套上</string>
+    <string name="api_marketplace_applied">已套上</string>
+    <string name="api_marketplace_url">网址</string>
+    <string name="api_marketplace_verify_failed">来源没端出正经图</string>
+</resources>

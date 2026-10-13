@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">عرض الوحدات</string>
+    <string name="module_card_show_more_info">إظهار تفاصيل الوحدة</string>
+    <string name="module_card_show_more_info_summary">إظهار الإصدار والمطوّر والوصف على بطاقة الوحدة.</string>
+    <string name="module_card_fold_system">طي بطاقات الوحدات</string>
+    <string name="module_card_fold_system_summary">إخفاء أزرار الإجراءات حتى تُوسَّع البطاقة.</string>
+    <string name="module_card_spliced">تخطيط بطاقات متّصلة</string>
+    <string name="module_card_spliced_summary">دمج بطاقات الوحدات المتجاورة في مجموعة واحدة متّصلة.</string>
+    <string name="module_card_button_style">نمط أزرار الإجراءات</string>
+    <string name="module_card_button_style_summary">الاختيار بين أزرار كاملة وأزرار بالأيقونات فقط.</string>
+    <string name="module_card_style_full">كامل</string>
+    <string name="module_card_style_icon">أيقونة</string>
+
+    <string name="settings_module_banner">لافتة الوحدة</string>
+    <string name="module_banner_title">لافتة الوحدة</string>
+    <string name="module_banner_enabled">تفعيل لافتة الوحدة</string>
+    <string name="module_banner_enabled_summary">إظهار صورة لافتة على بطاقات الوحدات.</string>
+    <string name="module_banner_folk">تخصيص لافتة الوحدة</string>
+    <string name="module_banner_folk_summary">اضغط مطوّلًا على بطاقة وحدة لاختيار صورة اللافتة.</string>
+    <string name="module_banner_api_mode">وضع واجهة برمجة اللافتات</string>
+    <string name="module_banner_api_mode_summary">جلب اللافتات من واجهة برمجة أو مجلد محلي.</string>
+    <string name="module_banner_api_source">مصدر واجهة برمجة اللافتات</string>
+    <string name="module_banner_api_source_not_configured">غير مهيّأ</string>
+    <string name="module_banner_api_source_dialog_title">مصدر واجهة برمجة اللافتات</string>
+    <string name="module_banner_api_source_hint">رابط API أو مجلد محلي</string>
+    <string name="module_banner_clear_cache">مسح ذاكرة اللافتات المؤقتة</string>
+    <string name="module_banner_cache_cleared">تم مسح ذاكرة اللافتات المؤقتة</string>
+    <string name="module_banner_marketplace">متجر واجهات البرمجة</string>
+    <string name="module_banner_marketplace_summary">تصفّح واجهات اللافتات المشتركة وطبّقها.</string>
+    <string name="module_banner_custom_opacity">شفافية اللافتة المخصّصة</string>
+    <string name="module_banner_custom_opacity_summary">تجاوز شفافية اللافتة بدلًا من اتباع الخلفية.</string>
+    <string name="module_banner_opacity">شفافية اللافتة</string>
+
+    <string name="module_banner_select">اختيار لافتة</string>
+    <string name="module_banner_clear">إزالة اللافتة</string>
+    <string name="module_banner_custom_info">تخصيص المعلومات</string>
+    <string name="module_banner_name">الاسم</string>
+    <string name="module_banner_version">الإصدار</string>
+    <string name="module_banner_author">المطوّر</string>
+    <string name="module_banner_description">الوصف</string>
+    <string name="module_banner_save">حفظ</string>
+    <string name="module_banner_reset">إعادة تعيين</string>
+
+    <string name="api_marketplace_title">متجر واجهات البرمجة</string>
+    <string name="api_marketplace_subtitle">واجهات لافتات مشتركة</string>
+    <string name="api_marketplace_empty">لا يوجد شيء متاح الآن</string>
+    <string name="api_marketplace_error">تعذّر تحميل المتجر</string>
+    <string name="api_marketplace_retry">إعادة المحاولة</string>
+    <string name="api_marketplace_apply">تطبيق</string>
+    <string name="api_marketplace_applied">تم التطبيق</string>
+    <string name="api_marketplace_url">الرابط</string>
+    <string name="api_marketplace_verify_failed">لم يُرجع المصدر صورة صالحة</string>
+</resources>

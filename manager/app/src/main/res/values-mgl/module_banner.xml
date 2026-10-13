@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">魔法阵外观</string>
+    <string name="module_card_show_more_info">显示魔法阵详情</string>
+    <string name="module_card_show_more_info_summary">在魔法阵卡牌上显示版本、缔造者与描述。</string>
+    <string name="module_card_fold_system">折叠魔法阵卡牌</string>
+    <string name="module_card_fold_system_summary">在卡牌展开前收起操作按钮。</string>
+    <string name="module_card_spliced">拼接卡牌布局</string>
+    <string name="module_card_spliced_summary">将相邻的魔法阵卡牌拼接为一段连续的整体。</string>
+    <string name="module_card_button_style">操作按钮样式</string>
+    <string name="module_card_button_style_summary">在完整按钮与纯图标按钮之间选择。</string>
+    <string name="module_card_style_full">完整</string>
+    <string name="module_card_style_icon">图标</string>
+
+    <string name="settings_module_banner">魔法旗</string>
+    <string name="module_banner_title">魔法旗</string>
+    <string name="module_banner_enabled">启用魔法旗</string>
+    <string name="module_banner_enabled_summary">在魔法阵卡牌上显示魔法旗。</string>
+    <string name="module_banner_folk">自定义魔法旗</string>
+    <string name="module_banner_folk_summary">长按魔法阵卡牌即可自选魔法旗。</string>
+    <string name="module_banner_api_mode">魔法旗 API 模式</string>
+    <string name="module_banner_api_mode_summary">从 API 或本地目录获取魔法旗。</string>
+    <string name="module_banner_api_source">魔法旗 API 来源</string>
+    <string name="module_banner_api_source_not_configured">未配置</string>
+    <string name="module_banner_api_source_dialog_title">魔法旗 API 来源</string>
+    <string name="module_banner_api_source_hint">API 网址或本地目录</string>
+    <string name="module_banner_clear_cache">清除魔法旗缓存</string>
+    <string name="module_banner_cache_cleared">魔法旗缓存已清除</string>
+    <string name="module_banner_marketplace">API 集市</string>
+    <string name="module_banner_marketplace_summary">浏览并应用共享的魔法旗 API。</string>
+    <string name="module_banner_custom_opacity">自定义魔法旗不透明度</string>
+    <string name="module_banner_custom_opacity_summary">覆盖魔法旗的不透明度，而不再跟随壁纸。</string>
+    <string name="module_banner_opacity">魔法旗不透明度</string>
+
+    <string name="module_banner_select">选择魔法旗</string>
+    <string name="module_banner_clear">解除魔法旗</string>
+    <string name="module_banner_custom_info">自定义信息</string>
+    <string name="module_banner_name">名字</string>
+    <string name="module_banner_version">版本</string>
+    <string name="module_banner_author">缔造者</string>
+    <string name="module_banner_description">描述</string>
+    <string name="module_banner_save">保存</string>
+    <string name="module_banner_reset">重置</string>
+
+    <string name="api_marketplace_title">API 集市</string>
+    <string name="api_marketplace_subtitle">共享魔法旗 API</string>
+    <string name="api_marketplace_empty">此刻没有可用的内容</string>
+    <string name="api_marketplace_error">集市加载失败</string>
+    <string name="api_marketplace_retry">重试</string>
+    <string name="api_marketplace_apply">应用</string>
+    <string name="api_marketplace_applied">已应用</string>
+    <string name="api_marketplace_url">网址</string>
+    <string name="api_marketplace_verify_failed">来源未返回有效的图像</string>
+</resources>

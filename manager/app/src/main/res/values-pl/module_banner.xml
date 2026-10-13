@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">Wygląd modułów</string>
+    <string name="module_card_show_more_info">Pokaż szczegóły modułu</string>
+    <string name="module_card_show_more_info_summary">Pokazuje wersję, autora i opis na karcie modułu.</string>
+    <string name="module_card_fold_system">Zwijanie kart modułów</string>
+    <string name="module_card_fold_system_summary">Ukrywa przyciski akcji, dopóki karta nie zostanie rozwinięta.</string>
+    <string name="module_card_spliced">Połączony układ kart</string>
+    <string name="module_card_spliced_summary">Łączy sąsiadujące karty modułów w jedną ciągłą grupę.</string>
+    <string name="module_card_button_style">Styl przycisków akcji</string>
+    <string name="module_card_button_style_summary">Wybierz między pełnymi przyciskami a przyciskami z samą ikoną.</string>
+    <string name="module_card_style_full">Pełne</string>
+    <string name="module_card_style_icon">Ikona</string>
+
+    <string name="settings_module_banner">Baner modułu</string>
+    <string name="module_banner_title">Baner modułu</string>
+    <string name="module_banner_enabled">Włącz baner modułu</string>
+    <string name="module_banner_enabled_summary">Pokazuje obraz banera na kartach modułów.</string>
+    <string name="module_banner_folk">Dostosuj baner modułu</string>
+    <string name="module_banner_folk_summary">Przytrzymaj kartę modułu, aby wybrać jej baner.</string>
+    <string name="module_banner_api_mode">Tryb API banerów</string>
+    <string name="module_banner_api_mode_summary">Pobieraj banery z API lub folderu lokalnego.</string>
+    <string name="module_banner_api_source">Źródło API banerów</string>
+    <string name="module_banner_api_source_not_configured">Nie skonfigurowano</string>
+    <string name="module_banner_api_source_dialog_title">Źródło API banerów</string>
+    <string name="module_banner_api_source_hint">Adres API lub folder lokalny</string>
+    <string name="module_banner_clear_cache">Wyczyść pamięć podręczną banerów</string>
+    <string name="module_banner_cache_cleared">Pamięć podręczna banerów wyczyszczona</string>
+    <string name="module_banner_marketplace">Sklep z API</string>
+    <string name="module_banner_marketplace_summary">Przeglądaj i stosuj współdzielone API banerów.</string>
+    <string name="module_banner_custom_opacity">Własna nieprzezroczystość banera</string>
+    <string name="module_banner_custom_opacity_summary">Nadpisuje nieprzezroczystość banera zamiast podążać za tapetą.</string>
+    <string name="module_banner_opacity">Nieprzezroczystość banera</string>
+
+    <string name="module_banner_select">Wybierz baner</string>
+    <string name="module_banner_clear">Usuń baner</string>
+    <string name="module_banner_custom_info">Dostosuj informacje</string>
+    <string name="module_banner_name">Nazwa</string>
+    <string name="module_banner_version">Wersja</string>
+    <string name="module_banner_author">Autor</string>
+    <string name="module_banner_description">Opis</string>
+    <string name="module_banner_save">Zapisz</string>
+    <string name="module_banner_reset">Resetuj</string>
+
+    <string name="api_marketplace_title">Sklep z API</string>
+    <string name="api_marketplace_subtitle">Współdzielone API banerów</string>
+    <string name="api_marketplace_empty">Na razie nic tu nie ma</string>
+    <string name="api_marketplace_error">Nie udało się wczytać sklepu</string>
+    <string name="api_marketplace_retry">Ponów</string>
+    <string name="api_marketplace_apply">Zastosuj</string>
+    <string name="api_marketplace_applied">Zastosowano</string>
+    <string name="api_marketplace_url">URL</string>
+    <string name="api_marketplace_verify_failed">Źródło nie zwróciło prawidłowego obrazu</string>
+</resources>

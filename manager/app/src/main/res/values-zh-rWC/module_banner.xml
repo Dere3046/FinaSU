@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">仙符显化</string>
+    <string name="module_card_show_more_info">显露仙符详情</string>
+    <string name="module_card_show_more_info_summary">于符牌之上显露篇次、符祖与叙略。</string>
+    <string name="module_card_fold_system">收拢符牌</string>
+    <string name="module_card_fold_system_summary">符牌展露之前，先收起法印按钮。</string>
+    <string name="module_card_spliced">符牌连缀之法</string>
+    <string name="module_card_spliced_summary">将相邻符牌连缀为一体。</string>
+    <string name="module_card_button_style">法印样式</string>
+    <string name="module_card_button_style_summary">于全形法印与独符法印之间择一。</string>
+    <string name="module_card_style_full">全形</string>
+    <string name="module_card_style_icon">独符</string>
+
+    <string name="settings_module_banner">旗幡</string>
+    <string name="module_banner_title">旗幡</string>
+    <string name="module_banner_enabled">开启旗幡</string>
+    <string name="module_banner_enabled_summary">于符牌之上显化旗幡图影。</string>
+    <string name="module_banner_folk">自炼旗幡</string>
+    <string name="module_banner_folk_summary">长按符牌，即可自炼旗幡。</string>
+    <string name="module_banner_api_mode">旗幡 API 之法</string>
+    <string name="module_banner_api_mode_summary">自 API 或本地法库取旗幡。</string>
+    <string name="module_banner_api_source">旗幡 API 之源</string>
+    <string name="module_banner_api_source_not_configured">尚未订立</string>
+    <string name="module_banner_api_source_dialog_title">旗幡 API 之源</string>
+    <string name="module_banner_api_source_hint">API 法址或本地法库</string>
+    <string name="module_banner_clear_cache">涤除旗幡贮灵</string>
+    <string name="module_banner_cache_cleared">旗幡贮灵已涤除</string>
+    <string name="module_banner_marketplace">API 坊市</string>
+    <string name="module_banner_marketplace_summary">览取共享旗幡 API 而施展之。</string>
+    <string name="module_banner_custom_opacity">自炼旗幡明暗</string>
+    <string name="module_banner_custom_opacity_summary">覆盖旗幡明暗，不复随道图。</string>
+    <string name="module_banner_opacity">旗幡明暗</string>
+
+    <string name="module_banner_select">择取旗幡</string>
+    <string name="module_banner_clear">撤去旗幡</string>
+    <string name="module_banner_custom_info">镌刻叙略</string>
+    <string name="module_banner_name">名讳</string>
+    <string name="module_banner_version">篇次</string>
+    <string name="module_banner_author">符祖</string>
+    <string name="module_banner_description">叙略</string>
+    <string name="module_banner_save">封存</string>
+    <string name="module_banner_reset">重炼</string>
+
+    <string name="api_marketplace_title">API 坊市</string>
+    <string name="api_marketplace_subtitle">共享旗幡 API</string>
+    <string name="api_marketplace_empty">此际空无一物</string>
+    <string name="api_marketplace_error">坊市未能显现</string>
+    <string name="api_marketplace_retry">再试</string>
+    <string name="api_marketplace_apply">施法</string>
+    <string name="api_marketplace_applied">已施法</string>
+    <string name="api_marketplace_url">法址</string>
+    <string name="api_marketplace_verify_failed">其源未归正图</string>
+</resources>

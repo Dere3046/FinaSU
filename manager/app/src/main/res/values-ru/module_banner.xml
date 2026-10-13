@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">Отображение модулей</string>
+    <string name="module_card_show_more_info">Показывать сведения о модуле</string>
+    <string name="module_card_show_more_info_summary">Показывает версию, автора и описание на карточке модуля.</string>
+    <string name="module_card_fold_system">Сворачивать карточки модулей</string>
+    <string name="module_card_fold_system_summary">Скрывает кнопки действий, пока карточка не развёрнута.</string>
+    <string name="module_card_spliced">Объединённый вид карточек</string>
+    <string name="module_card_spliced_summary">Соединяет соседние карточки модулей в одну непрерывную группу.</string>
+    <string name="module_card_button_style">Стиль кнопок действий</string>
+    <string name="module_card_button_style_summary">Выбор между полными кнопками и кнопками только со значком.</string>
+    <string name="module_card_style_full">Полный</string>
+    <string name="module_card_style_icon">Значок</string>
+
+    <string name="settings_module_banner">Баннер модуля</string>
+    <string name="module_banner_title">Баннер модуля</string>
+    <string name="module_banner_enabled">Включить баннер модуля</string>
+    <string name="module_banner_enabled_summary">Показывает баннер на карточках модулей.</string>
+    <string name="module_banner_folk">Настроить баннер модуля</string>
+    <string name="module_banner_folk_summary">Удерживайте карточку модуля, чтобы выбрать её баннер.</string>
+    <string name="module_banner_api_mode">Режим API баннеров</string>
+    <string name="module_banner_api_mode_summary">Загружает баннеры из API или локальной папки.</string>
+    <string name="module_banner_api_source">Источник API баннеров</string>
+    <string name="module_banner_api_source_not_configured">Не настроено</string>
+    <string name="module_banner_api_source_dialog_title">Источник API баннеров</string>
+    <string name="module_banner_api_source_hint">URL API или локальная папка</string>
+    <string name="module_banner_clear_cache">Очистить кеш баннеров</string>
+    <string name="module_banner_cache_cleared">Кеш баннеров очищен</string>
+    <string name="module_banner_marketplace">Магазин API</string>
+    <string name="module_banner_marketplace_summary">Просматривайте и применяйте общие API баннеров.</string>
+    <string name="module_banner_custom_opacity">Своя непрозрачность баннера</string>
+    <string name="module_banner_custom_opacity_summary">Задаёт непрозрачность баннера вместо следования обоям.</string>
+    <string name="module_banner_opacity">Непрозрачность баннера</string>
+
+    <string name="module_banner_select">Выбрать баннер</string>
+    <string name="module_banner_clear">Убрать баннер</string>
+    <string name="module_banner_custom_info">Настроить сведения</string>
+    <string name="module_banner_name">Название</string>
+    <string name="module_banner_version">Версия</string>
+    <string name="module_banner_author">Автор</string>
+    <string name="module_banner_description">Описание</string>
+    <string name="module_banner_save">Сохранить</string>
+    <string name="module_banner_reset">Сбросить</string>
+
+    <string name="api_marketplace_title">Магазин API</string>
+    <string name="api_marketplace_subtitle">Общие API баннеров</string>
+    <string name="api_marketplace_empty">Сейчас ничего нет</string>
+    <string name="api_marketplace_error">Не удалось загрузить магазин</string>
+    <string name="api_marketplace_retry">Повторить</string>
+    <string name="api_marketplace_apply">Применить</string>
+    <string name="api_marketplace_applied">Применено</string>
+    <string name="api_marketplace_url">URL</string>
+    <string name="api_marketplace_verify_failed">Источник не вернул допустимое изображение</string>
+</resources>

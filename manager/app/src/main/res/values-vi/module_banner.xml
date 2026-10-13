@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">Hiển thị mô-đun</string>
+    <string name="module_card_show_more_info">Hiện chi tiết mô-đun</string>
+    <string name="module_card_show_more_info_summary">Hiện phiên bản, tác giả và mô tả trên thẻ mô-đun.</string>
+    <string name="module_card_fold_system">Thu gọn thẻ mô-đun</string>
+    <string name="module_card_fold_system_summary">Ẩn các nút thao tác cho đến khi thẻ được mở rộng.</string>
+    <string name="module_card_spliced">Bố cục thẻ nối liền</string>
+    <string name="module_card_spliced_summary">Nối các thẻ mô-đun liền kề thành một nhóm liền mạch.</string>
+    <string name="module_card_button_style">Kiểu nút thao tác</string>
+    <string name="module_card_button_style_summary">Chọn giữa nút đầy đủ và nút chỉ có biểu tượng.</string>
+    <string name="module_card_style_full">Đầy đủ</string>
+    <string name="module_card_style_icon">Biểu tượng</string>
+
+    <string name="settings_module_banner">Băng-rôn mô-đun</string>
+    <string name="module_banner_title">Băng-rôn mô-đun</string>
+    <string name="module_banner_enabled">Bật băng-rôn mô-đun</string>
+    <string name="module_banner_enabled_summary">Hiện ảnh băng-rôn trên thẻ mô-đun.</string>
+    <string name="module_banner_folk">Tùy chỉnh băng-rôn mô-đun</string>
+    <string name="module_banner_folk_summary">Nhấn giữ thẻ mô-đun để chọn ảnh băng-rôn.</string>
+    <string name="module_banner_api_mode">Chế độ API băng-rôn</string>
+    <string name="module_banner_api_mode_summary">Lấy băng-rôn từ API hoặc thư mục cục bộ.</string>
+    <string name="module_banner_api_source">Nguồn API băng-rôn</string>
+    <string name="module_banner_api_source_not_configured">Chưa cấu hình</string>
+    <string name="module_banner_api_source_dialog_title">Nguồn API băng-rôn</string>
+    <string name="module_banner_api_source_hint">URL API hoặc thư mục cục bộ</string>
+    <string name="module_banner_clear_cache">Xóa bộ nhớ đệm băng-rôn</string>
+    <string name="module_banner_cache_cleared">Đã xóa bộ nhớ đệm băng-rôn</string>
+    <string name="module_banner_marketplace">Chợ API</string>
+    <string name="module_banner_marketplace_summary">Duyệt và áp dụng các API băng-rôn chia sẻ.</string>
+    <string name="module_banner_custom_opacity">Độ mờ băng-rôn tùy chỉnh</string>
+    <string name="module_banner_custom_opacity_summary">Ghi đè độ mờ băng-rôn thay vì bám theo hình nền.</string>
+    <string name="module_banner_opacity">Độ mờ băng-rôn</string>
+
+    <string name="module_banner_select">Chọn băng-rôn</string>
+    <string name="module_banner_clear">Xóa băng-rôn</string>
+    <string name="module_banner_custom_info">Tùy chỉnh thông tin</string>
+    <string name="module_banner_name">Tên</string>
+    <string name="module_banner_version">Phiên bản</string>
+    <string name="module_banner_author">Tác giả</string>
+    <string name="module_banner_description">Mô tả</string>
+    <string name="module_banner_save">Lưu</string>
+    <string name="module_banner_reset">Đặt lại</string>
+
+    <string name="api_marketplace_title">Chợ API</string>
+    <string name="api_marketplace_subtitle">API băng-rôn chia sẻ</string>
+    <string name="api_marketplace_empty">Hiện chưa có gì</string>
+    <string name="api_marketplace_error">Không tải được chợ</string>
+    <string name="api_marketplace_retry">Thử lại</string>
+    <string name="api_marketplace_apply">Áp dụng</string>
+    <string name="api_marketplace_applied">Đã áp dụng</string>
+    <string name="api_marketplace_url">URL</string>
+    <string name="api_marketplace_verify_failed">Nguồn không trả về ảnh hợp lệ</string>
+</resources>

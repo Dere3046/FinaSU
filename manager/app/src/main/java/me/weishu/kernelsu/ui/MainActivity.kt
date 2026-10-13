@@ -195,6 +195,8 @@ open class MainActivity : FragmentActivity() {
         WallpaperConfig.load(this)
         FontConfig.load(this)
         ProfileConfig.load(this)
+        me.weishu.kernelsu.modulebanner.ModuleBannerConfig.load()
+        me.weishu.kernelsu.modulebanner.ModuleCardConfig.load()
         me.weishu.kernelsu.media.MusicConfig.load(this)
         me.weishu.kernelsu.media.SoundEffectConfig.load(this)
         me.weishu.kernelsu.media.VibrationConfig.load(this)
@@ -316,6 +318,9 @@ open class MainActivity : FragmentActivity() {
                                 entry<Route.Language> { LanguagePickerScreen() }
                                 entry<Route.ThemeStore> { ThemeStoreScreen() }
                                 entry<Route.MyThemes> { MyThemesScreen() }
+                                entry<Route.ApiMarketplace> {
+                                    me.weishu.kernelsu.ui.screen.bannerapi.ApiMarketplaceScreen()
+                                }
                             },
                         )
                     }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">圣光阵现形</string>
+    <string name="module_card_show_more_info">昭示圣光阵详情</string>
+    <string name="module_card_show_more_info_summary">于圣契卡之上昭示版本、创造者与圣光描述。</string>
+    <string name="module_card_fold_system">折叠圣契卡</string>
+    <string name="module_card_fold_system_summary">圣契卡展开之前，收起操作圣纹。</string>
+    <string name="module_card_spliced">圣契卡相连之仪</string>
+    <string name="module_card_spliced_summary">将相邻圣契卡连为一体。</string>
+    <string name="module_card_button_style">圣纹样貌</string>
+    <string name="module_card_button_style_summary">于全形圣纹与独符圣纹之间择一。</string>
+    <string name="module_card_style_full">全形</string>
+    <string name="module_card_style_icon">独符</string>
+
+    <string name="settings_module_banner">圣旗</string>
+    <string name="module_banner_title">圣旗</string>
+    <string name="module_banner_enabled">启明圣旗</string>
+    <string name="module_banner_enabled_summary">于圣契卡之上昭示圣旗。</string>
+    <string name="module_banner_folk">铸圣旗</string>
+    <string name="module_banner_folk_summary">长按圣契卡以择其圣旗。</string>
+    <string name="module_banner_api_mode">圣旗 API 之仪</string>
+    <string name="module_banner_api_mode_summary">自 API 或本地圣库取圣旗。</string>
+    <string name="module_banner_api_source">圣旗 API 之源</string>
+    <string name="module_banner_api_source_not_configured">尚未铭定</string>
+    <string name="module_banner_api_source_dialog_title">圣旗 API 之源</string>
+    <string name="module_banner_api_source_hint">API 圣址或本地圣库</string>
+    <string name="module_banner_clear_cache">涤净圣旗贮忆</string>
+    <string name="module_banner_cache_cleared">圣旗贮忆已涤净</string>
+    <string name="module_banner_marketplace">API 圣殿</string>
+    <string name="module_banner_marketplace_summary">览取共享圣旗 API 而施之。</string>
+    <string name="module_banner_custom_opacity">铸圣旗明度</string>
+    <string name="module_banner_custom_opacity_summary">覆圣旗明度，不复随圣像。</string>
+    <string name="module_banner_opacity">圣旗明度</string>
+
+    <string name="module_banner_select">择圣旗</string>
+    <string name="module_banner_clear">撤圣旗</string>
+    <string name="module_banner_custom_info">镌刻圣谕</string>
+    <string name="module_banner_name">圣名</string>
+    <string name="module_banner_version">神恩等级</string>
+    <string name="module_banner_author">创造者</string>
+    <string name="module_banner_description">圣光描述</string>
+    <string name="module_banner_save">封存</string>
+    <string name="module_banner_reset">归元</string>
+
+    <string name="api_marketplace_title">API 圣殿</string>
+    <string name="api_marketplace_subtitle">共享圣旗 API</string>
+    <string name="api_marketplace_empty">此刻空无一物</string>
+    <string name="api_marketplace_error">圣殿未能显现</string>
+    <string name="api_marketplace_retry">再祈</string>
+    <string name="api_marketplace_apply">施展</string>
+    <string name="api_marketplace_applied">已施展</string>
+    <string name="api_marketplace_url">圣址</string>
+    <string name="api_marketplace_verify_failed">其源未归正图</string>
+</resources>

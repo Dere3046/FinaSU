@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">Visualización de módulos</string>
+    <string name="module_card_show_more_info">Mostrar detalles del módulo</string>
+    <string name="module_card_show_more_info_summary">Muestra la versión, el autor y la descripción en la tarjeta del módulo.</string>
+    <string name="module_card_fold_system">Plegar tarjetas de módulo</string>
+    <string name="module_card_fold_system_summary">Oculta los botones de acción hasta que se expanda la tarjeta.</string>
+    <string name="module_card_spliced">Diseño de tarjetas unidas</string>
+    <string name="module_card_spliced_summary">Une tarjetas de módulo adyacentes en un solo grupo continuo.</string>
+    <string name="module_card_button_style">Estilo de los botones de acción</string>
+    <string name="module_card_button_style_summary">Elige entre botones completos y botones solo con icono.</string>
+    <string name="module_card_style_full">Completo</string>
+    <string name="module_card_style_icon">Icono</string>
+
+    <string name="settings_module_banner">Banner del módulo</string>
+    <string name="module_banner_title">Banner del módulo</string>
+    <string name="module_banner_enabled">Activar banner del módulo</string>
+    <string name="module_banner_enabled_summary">Muestra una imagen de banner en las tarjetas de módulo.</string>
+    <string name="module_banner_folk">Personalizar banner del módulo</string>
+    <string name="module_banner_folk_summary">Mantén pulsada una tarjeta de módulo para elegir su banner.</string>
+    <string name="module_banner_api_mode">Modo API de banners</string>
+    <string name="module_banner_api_mode_summary">Obtén banners desde una API o una carpeta local.</string>
+    <string name="module_banner_api_source">Fuente de la API de banners</string>
+    <string name="module_banner_api_source_not_configured">Sin configurar</string>
+    <string name="module_banner_api_source_dialog_title">Fuente de la API de banners</string>
+    <string name="module_banner_api_source_hint">URL de la API o carpeta local</string>
+    <string name="module_banner_clear_cache">Borrar caché de banners</string>
+    <string name="module_banner_cache_cleared">Caché de banners borrada</string>
+    <string name="module_banner_marketplace">Tienda de APIs</string>
+    <string name="module_banner_marketplace_summary">Explora y aplica APIs de banners compartidas.</string>
+    <string name="module_banner_custom_opacity">Opacidad personalizada del banner</string>
+    <string name="module_banner_custom_opacity_summary">Anula la opacidad del banner en lugar de seguir el fondo.</string>
+    <string name="module_banner_opacity">Opacidad del banner</string>
+
+    <string name="module_banner_select">Seleccionar banner</string>
+    <string name="module_banner_clear">Quitar banner</string>
+    <string name="module_banner_custom_info">Personalizar información</string>
+    <string name="module_banner_name">Nombre</string>
+    <string name="module_banner_version">Versión</string>
+    <string name="module_banner_author">Autor</string>
+    <string name="module_banner_description">Descripción</string>
+    <string name="module_banner_save">Guardar</string>
+    <string name="module_banner_reset">Restablecer</string>
+
+    <string name="api_marketplace_title">Tienda de APIs</string>
+    <string name="api_marketplace_subtitle">APIs de banners compartidas</string>
+    <string name="api_marketplace_empty">No hay nada disponible ahora mismo</string>
+    <string name="api_marketplace_error">No se pudo cargar la tienda</string>
+    <string name="api_marketplace_retry">Reintentar</string>
+    <string name="api_marketplace_apply">Aplicar</string>
+    <string name="api_marketplace_applied">Aplicado</string>
+    <string name="api_marketplace_url">URL</string>
+    <string name="api_marketplace_verify_failed">La fuente no devolvió una imagen válida</string>
+</resources>

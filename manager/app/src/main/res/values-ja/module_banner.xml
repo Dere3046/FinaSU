@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">モジュール表示</string>
+    <string name="module_card_show_more_info">モジュールの詳細を表示</string>
+    <string name="module_card_show_more_info_summary">モジュールカードにバージョン、作者、説明を表示します。</string>
+    <string name="module_card_fold_system">モジュールカードを折りたたむ</string>
+    <string name="module_card_fold_system_summary">カードを展開するまで操作ボタンを隠します。</string>
+    <string name="module_card_spliced">連結カードレイアウト</string>
+    <string name="module_card_spliced_summary">隣り合うモジュールカードをひとつながりのグループにします。</string>
+    <string name="module_card_button_style">操作ボタンのスタイル</string>
+    <string name="module_card_button_style_summary">通常のボタンとアイコンのみのボタンから選びます。</string>
+    <string name="module_card_style_full">通常</string>
+    <string name="module_card_style_icon">アイコン</string>
+
+    <string name="settings_module_banner">モジュールバナー</string>
+    <string name="module_banner_title">モジュールバナー</string>
+    <string name="module_banner_enabled">モジュールバナーを有効化</string>
+    <string name="module_banner_enabled_summary">モジュールカードにバナー画像を表示します。</string>
+    <string name="module_banner_folk">モジュールバナーをカスタマイズ</string>
+    <string name="module_banner_folk_summary">モジュールカードを長押ししてバナー画像を選択します。</string>
+    <string name="module_banner_api_mode">バナーAPIモード</string>
+    <string name="module_banner_api_mode_summary">APIまたはローカルフォルダからバナーを取得します。</string>
+    <string name="module_banner_api_source">バナーAPIソース</string>
+    <string name="module_banner_api_source_not_configured">未設定</string>
+    <string name="module_banner_api_source_dialog_title">バナーAPIソース</string>
+    <string name="module_banner_api_source_hint">APIのURLまたはローカルフォルダ</string>
+    <string name="module_banner_clear_cache">バナーのキャッシュを消去</string>
+    <string name="module_banner_cache_cleared">バナーのキャッシュを消去しました</string>
+    <string name="module_banner_marketplace">APIマーケット</string>
+    <string name="module_banner_marketplace_summary">共有バナーAPIを閲覧して適用します。</string>
+    <string name="module_banner_custom_opacity">バナー不透明度をカスタマイズ</string>
+    <string name="module_banner_custom_opacity_summary">壁紙に追従せずバナーの不透明度を上書きします。</string>
+    <string name="module_banner_opacity">バナーの不透明度</string>
+
+    <string name="module_banner_select">バナーを選択</string>
+    <string name="module_banner_clear">バナーを解除</string>
+    <string name="module_banner_custom_info">情報をカスタマイズ</string>
+    <string name="module_banner_name">名前</string>
+    <string name="module_banner_version">バージョン</string>
+    <string name="module_banner_author">制作者</string>
+    <string name="module_banner_description">説明</string>
+    <string name="module_banner_save">保存</string>
+    <string name="module_banner_reset">リセット</string>
+
+    <string name="api_marketplace_title">APIマーケット</string>
+    <string name="api_marketplace_subtitle">共有バナーAPI</string>
+    <string name="api_marketplace_empty">現在利用できるものはありません</string>
+    <string name="api_marketplace_error">マーケットを読み込めませんでした</string>
+    <string name="api_marketplace_retry">再試行</string>
+    <string name="api_marketplace_apply">適用</string>
+    <string name="api_marketplace_applied">適用済み</string>
+    <string name="api_marketplace_url">URL</string>
+    <string name="api_marketplace_verify_failed">ソースが有効な画像を返しませんでした</string>
+</resources>

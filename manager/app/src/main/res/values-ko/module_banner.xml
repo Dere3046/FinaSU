@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">모듈 표시</string>
+    <string name="module_card_show_more_info">모듈 세부정보 표시</string>
+    <string name="module_card_show_more_info_summary">모듈 카드에 버전, 제작자, 설명을 표시합니다.</string>
+    <string name="module_card_fold_system">모듈 카드 접기</string>
+    <string name="module_card_fold_system_summary">카드를 펼칠 때까지 작업 버튼을 숨깁니다.</string>
+    <string name="module_card_spliced">이어붙인 카드 레이아웃</string>
+    <string name="module_card_spliced_summary">인접한 모듈 카드를 하나의 연속된 그룹으로 이어 붙입니다.</string>
+    <string name="module_card_button_style">작업 버튼 스타일</string>
+    <string name="module_card_button_style_summary">전체 버튼과 아이콘 전용 버튼 중에서 선택합니다.</string>
+    <string name="module_card_style_full">전체</string>
+    <string name="module_card_style_icon">아이콘</string>
+
+    <string name="settings_module_banner">모듈 배너</string>
+    <string name="module_banner_title">모듈 배너</string>
+    <string name="module_banner_enabled">모듈 배너 사용</string>
+    <string name="module_banner_enabled_summary">모듈 카드에 배너 이미지를 표시합니다.</string>
+    <string name="module_banner_folk">모듈 배너 사용자 지정</string>
+    <string name="module_banner_folk_summary">모듈 카드를 길게 눌러 배너 이미지를 선택합니다.</string>
+    <string name="module_banner_api_mode">배너 API 모드</string>
+    <string name="module_banner_api_mode_summary">API 또는 로컬 폴더에서 배너를 가져옵니다.</string>
+    <string name="module_banner_api_source">배너 API 소스</string>
+    <string name="module_banner_api_source_not_configured">설정되지 않음</string>
+    <string name="module_banner_api_source_dialog_title">배너 API 소스</string>
+    <string name="module_banner_api_source_hint">API URL 또는 로컬 폴더</string>
+    <string name="module_banner_clear_cache">배너 캐시 지우기</string>
+    <string name="module_banner_cache_cleared">배너 캐시를 지웠습니다</string>
+    <string name="module_banner_marketplace">API 마켓</string>
+    <string name="module_banner_marketplace_summary">공유 배너 API를 둘러보고 적용합니다.</string>
+    <string name="module_banner_custom_opacity">사용자 지정 배너 불투명도</string>
+    <string name="module_banner_custom_opacity_summary">배경화면을 따르지 않고 배너 불투명도를 재정의합니다.</string>
+    <string name="module_banner_opacity">배너 불투명도</string>
+
+    <string name="module_banner_select">배너 선택</string>
+    <string name="module_banner_clear">배너 지우기</string>
+    <string name="module_banner_custom_info">정보 사용자 지정</string>
+    <string name="module_banner_name">이름</string>
+    <string name="module_banner_version">버전</string>
+    <string name="module_banner_author">제작자</string>
+    <string name="module_banner_description">설명</string>
+    <string name="module_banner_save">저장</string>
+    <string name="module_banner_reset">초기화</string>
+
+    <string name="api_marketplace_title">API 마켓</string>
+    <string name="api_marketplace_subtitle">공유 배너 API</string>
+    <string name="api_marketplace_empty">지금은 사용할 수 있는 항목이 없습니다</string>
+    <string name="api_marketplace_error">마켓을 불러오지 못했습니다</string>
+    <string name="api_marketplace_retry">재시도</string>
+    <string name="api_marketplace_apply">적용</string>
+    <string name="api_marketplace_applied">적용됨</string>
+    <string name="api_marketplace_url">URL</string>
+    <string name="api_marketplace_verify_failed">소스가 올바른 이미지를 반환하지 않았습니다</string>
+</resources>

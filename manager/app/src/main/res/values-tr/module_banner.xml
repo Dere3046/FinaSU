@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">Modül görünümü</string>
+    <string name="module_card_show_more_info">Modül ayrıntılarını göster</string>
+    <string name="module_card_show_more_info_summary">Sürümü, geliştiriciyi ve açıklamayı modül kartında gösterir.</string>
+    <string name="module_card_fold_system">Modül kartlarını katla</string>
+    <string name="module_card_fold_system_summary">Kart genişletilene kadar işlem düğmelerini gizler.</string>
+    <string name="module_card_spliced">Birleşik kart düzeni</string>
+    <string name="module_card_spliced_summary">Bitişik modül kartlarını tek bir sürekli grupta birleştirir.</string>
+    <string name="module_card_button_style">İşlem düğmesi stili</string>
+    <string name="module_card_button_style_summary">Tam düğmeler ile yalnızca simgeli düğmeler arasında seçim yapın.</string>
+    <string name="module_card_style_full">Tam</string>
+    <string name="module_card_style_icon">Simge</string>
+
+    <string name="settings_module_banner">Modül afişi</string>
+    <string name="module_banner_title">Modül afişi</string>
+    <string name="module_banner_enabled">Modül afişini etkinleştir</string>
+    <string name="module_banner_enabled_summary">Modül kartlarında afiş görseli gösterir.</string>
+    <string name="module_banner_folk">Modül afişini özelleştir</string>
+    <string name="module_banner_folk_summary">Afiş görselini seçmek için modül kartına uzun basın.</string>
+    <string name="module_banner_api_mode">Afiş API modu</string>
+    <string name="module_banner_api_mode_summary">Afişleri bir API veya yerel klasörden alır.</string>
+    <string name="module_banner_api_source">Afiş API kaynağı</string>
+    <string name="module_banner_api_source_not_configured">Yapılandırılmadı</string>
+    <string name="module_banner_api_source_dialog_title">Afiş API kaynağı</string>
+    <string name="module_banner_api_source_hint">API adresi veya yerel klasör</string>
+    <string name="module_banner_clear_cache">Afiş önbelleğini temizle</string>
+    <string name="module_banner_cache_cleared">Afiş önbelleği temizlendi</string>
+    <string name="module_banner_marketplace">API mağazası</string>
+    <string name="module_banner_marketplace_summary">Paylaşılan afiş API\'lerine göz atın ve uygulayın.</string>
+    <string name="module_banner_custom_opacity">Özel afiş saydamlığı</string>
+    <string name="module_banner_custom_opacity_summary">Duvar kağıdını izlemek yerine afiş saydamlığını geçersiz kılar.</string>
+    <string name="module_banner_opacity">Afiş saydamlığı</string>
+
+    <string name="module_banner_select">Afiş seç</string>
+    <string name="module_banner_clear">Afişi kaldır</string>
+    <string name="module_banner_custom_info">Bilgileri özelleştir</string>
+    <string name="module_banner_name">İsim</string>
+    <string name="module_banner_version">Sürüm</string>
+    <string name="module_banner_author">Geliştirici</string>
+    <string name="module_banner_description">Açıklama</string>
+    <string name="module_banner_save">Kaydet</string>
+    <string name="module_banner_reset">Sıfırla</string>
+
+    <string name="api_marketplace_title">API mağazası</string>
+    <string name="api_marketplace_subtitle">Paylaşılan afiş API\'leri</string>
+    <string name="api_marketplace_empty">Şu anda uygun bir şey yok</string>
+    <string name="api_marketplace_error">Mağaza yüklenemedi</string>
+    <string name="api_marketplace_retry">Tekrar dene</string>
+    <string name="api_marketplace_apply">Uygula</string>
+    <string name="api_marketplace_applied">Uygulandı</string>
+    <string name="api_marketplace_url">URL</string>
+    <string name="api_marketplace_verify_failed">Kaynak geçerli bir görsel döndürmedi</string>
+</resources>

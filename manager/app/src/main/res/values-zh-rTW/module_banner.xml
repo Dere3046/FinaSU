@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">模組顯示</string>
+    <string name="module_card_show_more_info">顯示模組詳情</string>
+    <string name="module_card_show_more_info_summary">在模組卡片上顯示版本、作者與描述。</string>
+    <string name="module_card_fold_system">摺疊模組卡片</string>
+    <string name="module_card_fold_system_summary">在卡片展開前收合操作按鈕。</string>
+    <string name="module_card_spliced">拼接卡片佈局</string>
+    <string name="module_card_spliced_summary">將相鄰的模組卡片拼接為一個連續的整體。</string>
+    <string name="module_card_button_style">操作按鈕樣式</string>
+    <string name="module_card_button_style_summary">在完整按鈕和純圖標按鈕之間選擇。</string>
+    <string name="module_card_style_full">完整</string>
+    <string name="module_card_style_icon">圖標</string>
+
+    <string name="settings_module_banner">模組橫幅</string>
+    <string name="module_banner_title">模組橫幅</string>
+    <string name="module_banner_enabled">啟用模組橫幅</string>
+    <string name="module_banner_enabled_summary">在模組卡片上顯示橫幅圖片。</string>
+    <string name="module_banner_folk">自訂橫幅</string>
+    <string name="module_banner_folk_summary">長按模組卡片可自選橫幅圖片</string>
+    <string name="module_banner_api_mode">橫幅 API 模式</string>
+    <string name="module_banner_api_mode_summary">從 API 或本機目錄取得橫幅。</string>
+    <string name="module_banner_api_source">橫幅 API 來源</string>
+    <string name="module_banner_api_source_not_configured">未設定</string>
+    <string name="module_banner_api_source_dialog_title">橫幅 API 來源</string>
+    <string name="module_banner_api_source_hint">API 連結或本機目錄</string>
+    <string name="module_banner_clear_cache">清除橫幅快取</string>
+    <string name="module_banner_cache_cleared">橫幅快取已清除</string>
+    <string name="module_banner_marketplace">API 市集</string>
+    <string name="module_banner_marketplace_summary">瀏覽並套用共享的橫幅 API。</string>
+    <string name="module_banner_custom_opacity">自訂橫幅不透明度</string>
+    <string name="module_banner_custom_opacity_summary">覆寫橫幅不透明度，而非跟隨桌布。</string>
+    <string name="module_banner_opacity">橫幅不透明度</string>
+
+    <string name="module_banner_select">選擇橫幅</string>
+    <string name="module_banner_clear">清除橫幅</string>
+    <string name="module_banner_custom_info">自訂資訊</string>
+    <string name="module_banner_name">名稱</string>
+    <string name="module_banner_version">版本</string>
+    <string name="module_banner_author">作者</string>
+    <string name="module_banner_description">描述</string>
+    <string name="module_banner_save">儲存</string>
+    <string name="module_banner_reset">重設</string>
+
+    <string name="api_marketplace_title">API 市集</string>
+    <string name="api_marketplace_subtitle">共享的橫幅 API</string>
+    <string name="api_marketplace_empty">暫時沒有可用的內容</string>
+    <string name="api_marketplace_error">載入市集失敗</string>
+    <string name="api_marketplace_retry">重試</string>
+    <string name="api_marketplace_apply">套用</string>
+    <string name="api_marketplace_applied">已套用</string>
+    <string name="api_marketplace_url">連結</string>
+    <string name="api_marketplace_verify_failed">該來源未回傳有效的圖片</string>
+</resources>

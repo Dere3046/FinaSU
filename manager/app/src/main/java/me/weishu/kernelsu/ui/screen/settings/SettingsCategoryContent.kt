@@ -307,6 +307,9 @@ fun BehaviorCategoryContent(uiState: SettingsUiState, actions: SettingsScreenAct
             )
         )
     }
+
+    ModuleCardSettingsSection()
+    ModuleBannerSettingsSection()
 }
 
 @Composable

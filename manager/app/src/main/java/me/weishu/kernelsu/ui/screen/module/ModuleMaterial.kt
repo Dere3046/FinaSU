@@ -12,8 +12,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -21,7 +19,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -38,9 +35,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,10 +46,10 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,15 +58,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Cloud
-import androidx.compose.material.icons.outlined.Code
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Download
-import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -99,7 +92,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -113,9 +105,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Job
@@ -126,24 +116,21 @@ import me.weishu.kernelsu.data.model.Module
 import me.weishu.kernelsu.data.model.ModuleUpdateInfo
 import me.weishu.kernelsu.data.security.SecurityTarget
 import me.weishu.kernelsu.data.repository.isSoftRebootPreferred
+import me.weishu.kernelsu.modulebanner.ModuleBannerConfig
+import me.weishu.kernelsu.modulebanner.ModuleCardConfig
 import me.weishu.kernelsu.ui.component.ObserveAsEvents
 import me.weishu.kernelsu.ui.component.ScrollToTopOnChange
 import me.weishu.kernelsu.ui.component.dialog.rememberConfirmDialog
 import me.weishu.kernelsu.ui.component.dialog.rememberLoadingDialog
 import me.weishu.kernelsu.ui.component.material.ExpressiveScaffold
-import me.weishu.kernelsu.ui.component.material.ExpressiveSwitch
 import me.weishu.kernelsu.ui.component.material.FolkButton
-import me.weishu.kernelsu.ui.component.material.FolkFilledTonalButton
 import me.weishu.kernelsu.ui.component.material.FolkIconButton
 import me.weishu.kernelsu.ui.component.material.FolkOutlinedButton
 import me.weishu.kernelsu.ui.component.material.FolkSmallExtendedFloatingActionButton
 import me.weishu.kernelsu.ui.component.material.FolkTextButton
 import me.weishu.kernelsu.ui.component.material.SearchAppBar
 import me.weishu.kernelsu.ui.component.material.SnackBarHost
-import me.weishu.kernelsu.ui.component.material.TonalCard
-import me.weishu.kernelsu.ui.component.material.folkPressScale
-import me.weishu.kernelsu.ui.component.statustag.StatusTag
-import me.weishu.kernelsu.ui.theme.LocalModuleDescriptionMaxLines
+import me.weishu.kernelsu.ui.component.module.splicedLazyColumnGroup
 import me.weishu.kernelsu.ui.util.reboot
 
 @SuppressLint("StringFormatInvalid")
@@ -203,6 +190,7 @@ fun ModulePagerMaterial(
     val shortcutState = rememberModuleShortcutState(context)
     val showShortcutDialog = remember { mutableStateOf(false) }
     var showSortSheet by remember { mutableStateOf(false) }
+    var bannerDialogModule by remember { mutableStateOf<Module?>(null) }
     val confirmDialog = rememberConfirmDialog(
         onConfirm = {
             when (val request = confirmDialogState?.request) {
@@ -298,6 +286,16 @@ fun ModulePagerMaterial(
                 },
                 actions = {
                     FolkIconButton(
+                        onClick = {
+                            ModuleBannerConfig.updateEnabled(!ModuleBannerConfig.enabled)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Image,
+                            contentDescription = stringResource(id = R.string.module_banner_title)
+                        )
+                    }
+                    FolkIconButton(
                         onClick = { showSortSheet = true }
                     ) {
                         Icon(
@@ -320,6 +318,7 @@ fun ModulePagerMaterial(
                         updateInfoMap = uiState.updateInfo,
                         actions = actions,
                         onModuleAddShortcut = { module, type -> onModuleAddShortcut(module, type) },
+                        onModuleLongPress = { bannerDialogModule = it },
                         closeSearch = closeSearch,
                     )
                 }
@@ -441,6 +440,7 @@ fun ModulePagerMaterial(
                 updateInfoMap = uiState.updateInfo,
                 actions = actions,
                 onModuleAddShortcut = { module, type -> onModuleAddShortcut(module, type) },
+                onModuleLongPress = { bannerDialogModule = it },
             )
         }
     }
@@ -472,6 +472,13 @@ fun ModulePagerMaterial(
             showShortcutDialog.value = false
         },
     )
+
+    bannerDialogModule?.let { module ->
+        ModuleBannerDialog(
+            module = module,
+            onDismiss = { bannerDialogModule = null },
+        )
+    }
 }
 
 @Composable
@@ -483,53 +490,81 @@ private fun ModuleList(
     updateInfoMap: Map<String, ModuleUpdateInfo>,
     actions: ModuleActions,
     onModuleAddShortcut: (Module, ShortcutType) -> Unit,
+    onModuleLongPress: (Module) -> Unit,
     closeSearch: () -> Unit? = {},
 ) {
     val loadingDialog = rememberLoadingDialog()
+    val spliced = ModuleCardConfig.splicedCardGroup
+    var expandedModuleId by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val itemCard: @Composable (Module) -> Unit = { module ->
+        val scope = rememberCoroutineScope()
+        val moduleUpdateInfo = updateInfoMap[module.id] ?: ModuleUpdateInfo.Empty
+
+        ModuleItemCard(
+            module = module,
+            visual = rememberModuleCardVisual(module.id),
+            updateUrl = moduleUpdateInfo.downloadUrl,
+            buttonStyle = ModuleButtonStyle.fromKey(ModuleCardConfig.buttonStyle),
+            showMoreInfo = ModuleCardConfig.showMoreInfo,
+            foldSystemModule = ModuleCardConfig.foldSystemModule,
+            expanded = expandedModuleId == module.id,
+            onExpandToggle = {
+                expandedModuleId = if (expandedModuleId == module.id) null else module.id
+            },
+            onUninstallClicked = {
+                if (module.remove) {
+                    actions.onUndoUninstallModule(module)
+                } else {
+                    actions.onRequestUninstallConfirmation(module)
+                }
+            },
+            onCheckChanged = {
+                actions.onToggleModule(module)
+            },
+            onUpdate = {
+                scope.launch {
+                    loadingDialog.withLoading {
+                        actions.onRequestUpdateConfirmation(module, moduleUpdateInfo)
+                    }
+                }
+            },
+            onAddShortcut = { type -> onModuleAddShortcut(module, type) },
+            onOpenWebUi = {
+                if (module.hasWebUi) {
+                    actions.onOpenWebUi(module)
+                }
+            },
+            onExecuteAction = { actions.onExecuteModuleAction(module) },
+            onLongPress = { onModuleLongPress(module) },
+            closeSearch = { closeSearch() }
+        )
+    }
+
     LazyColumn(
         state = listState,
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(13.dp),
-        contentPadding = PaddingValues(
-            start = 16.dp,
-            end = 16.dp,
-            bottom = 16.dp + bottomInnerPadding + 56.dp + 16.dp
-        ),
+        contentPadding = PaddingValues(bottom = 16.dp + bottomInnerPadding + 56.dp + 16.dp),
     ) {
-        items(displayModules, key = { it.id }, contentType = { "module" }) { module ->
-            val scope = rememberCoroutineScope()
-            val moduleUpdateInfo = updateInfoMap[module.id] ?: ModuleUpdateInfo.Empty
-
-            ModuleItem(
-                module = module,
-                updateUrl = moduleUpdateInfo.downloadUrl,
-                onUninstallClicked = {
-                    if (module.remove) {
-                        actions.onUndoUninstallModule(module)
-                    } else {
-                        actions.onRequestUninstallConfirmation(module)
-                    }
-                },
-                onCheckChanged = {
-                    actions.onToggleModule(module)
-                },
-                onUpdate = {
-                    scope.launch {
-                        loadingDialog.withLoading {
-                            actions.onRequestUpdateConfirmation(module, moduleUpdateInfo)
-                        }
-                    }
-                },
-                onAddShortcut = { type -> onModuleAddShortcut(module, type) },
-                onOpenWebUi = {
-                    if (module.hasWebUi) {
-                        actions.onOpenWebUi(module)
-                    }
-                },
-                onExecuteAction = { actions.onExecuteModuleAction(module) },
-                closeSearch = { closeSearch() }
-            )
+        item { Spacer(Modifier.height(8.dp)) }
+        if (spliced) {
+            splicedLazyColumnGroup(
+                items = displayModules,
+                key = { _, module -> module.id },
+                contentType = { _, _ -> "module" },
+            ) { _, module -> itemCard(module) }
+        } else {
+            itemsIndexed(
+                items = displayModules,
+                key = { _, module -> module.id },
+                contentType = { _, _ -> "module" },
+            ) { _, module ->
+                Box(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                    itemCard(module)
+                }
+            }
         }
+        item { Spacer(Modifier.height(8.dp)) }
     }
 }
 
@@ -682,290 +717,6 @@ private fun ModuleShortcutSheet(
                             stringResource(id = android.R.string.ok)
                         }
                     )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ModuleItem(
-    module: Module,
-    updateUrl: String,
-    onUninstallClicked: () -> Unit,
-    onCheckChanged: (Boolean) -> Unit,
-    onUpdate: () -> Unit,
-    onAddShortcut: (ShortcutType) -> Unit,
-    onOpenWebUi: () -> Unit,
-    onExecuteAction: () -> Unit,
-    closeSearch: () -> Unit
-) {
-    val hasDescription = module.description.isNotBlank()
-    val maxLinesLimit = LocalModuleDescriptionMaxLines.current
-    var expanded by rememberSaveable(module.id) { mutableStateOf(false) }
-    var descriptionCanExpand by remember(module.id, module.description) { mutableStateOf(true) }
-    val canOpenWebUi = module.hasWebUi && !module.remove && module.enabled
-    val cardInteractionSource = remember { MutableInteractionSource() }
-    val descriptionInteractionSource = remember { MutableInteractionSource() }
-
-    TonalCard(
-        modifier = Modifier.fillMaxWidth(),
-        interactionSource = cardInteractionSource,
-        onClick = if (canOpenWebUi) {
-            {
-                onOpenWebUi()
-                closeSearch()
-            }
-        } else if (hasDescription) {
-            { expanded = !expanded }
-        } else null
-    ) {
-        val haptic = LocalHapticFeedback.current
-        val textDecoration = if (!module.remove) null else TextDecoration.LineThrough
-
-        Column(
-            modifier = Modifier.padding(16.dp, 14.dp, 16.dp, 10.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                val moduleVersion = stringResource(id = R.string.module_version)
-                val moduleAuthor = stringResource(id = R.string.module_author)
-
-                Column(
-                    modifier = Modifier.fillMaxWidth(0.8f)
-                ) {
-                    Text(
-                        text = module.name,
-                        fontWeight = FontWeight.SemiBold,
-                        style = MaterialTheme.typography.titleMedium,
-                        lineHeight = MaterialTheme.typography.bodySmall.lineHeight,
-                        textDecoration = textDecoration,
-                    )
-
-                    Text(
-                        text = "$moduleVersion: ${module.version}",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall,
-                        textDecoration = textDecoration
-                    )
-
-                    Text(
-                        text = "$moduleAuthor: ${module.author}",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall,
-                        textDecoration = textDecoration
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    ExpressiveSwitch(
-                        enabled = !module.update,
-                        checked = module.enabled,
-                        onCheckedChange = {
-                            haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
-                            onCheckChanged(it)
-                        }
-                    )
-                }
-            }
-
-            if (hasDescription) {
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ExpandableDescriptionText(
-                    text = module.description,
-                    expanded = expanded,
-                    maxLinesLimit = maxLinesLimit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .then(
-                            if (canOpenWebUi) {
-                                Modifier
-                                    .folkPressScale(descriptionInteractionSource)
-                                    .clickable(
-                                        interactionSource = descriptionInteractionSource,
-                                        indication = null
-                                    ) {
-                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                        if (descriptionCanExpand) {
-                                            expanded = !expanded
-                                        } else if (canOpenWebUi) {
-                                            onOpenWebUi()
-                                            closeSearch()
-                                        }
-                                    }
-                            } else {
-                                Modifier
-                            }
-                        ),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textDecoration = textDecoration,
-                    onCanExpandChange = { descriptionCanExpand = it }
-                )
-            }
-
-            Row(modifier = Modifier.padding(vertical = 4.dp)) {
-                if (module.metamodule) {
-                    StatusTag(
-                        "META",
-                        modifier = Modifier.padding(bottom = 4.dp),
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        backgroundColor = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-
-            HorizontalDivider(thickness = Dp.Hairline)
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val hasUpdate = updateUrl.isNotEmpty()
-                val actionButtonsEnabled = !module.remove && module.enabled
-
-                AnimatedVisibility(
-                    visible = actionButtonsEnabled,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        if (module.hasActionScript) {
-                            CombinedClickableButton(
-                                onClick = {
-                                    onExecuteAction()
-                                    closeSearch()
-                                },
-                                onLongClick = { onAddShortcut(ShortcutType.Action) },
-                                modifier = Modifier.defaultMinSize(52.dp, 32.dp),
-                                shape = ButtonDefaults.filledTonalShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                                ),
-                                contentPadding = ButtonDefaults.TextButtonContentPadding
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(20.dp),
-                                    imageVector = Icons.Outlined.PlayArrow,
-                                    contentDescription = null
-                                )
-                                if (!module.hasWebUi && !hasUpdate) {
-                                    Text(
-                                        modifier = Modifier.padding(start = 7.dp),
-                                        text = stringResource(R.string.action),
-                                        fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
-                                        fontSize = MaterialTheme.typography.labelMedium.fontSize
-                                    )
-                                }
-                            }
-                        }
-
-                        if (module.hasWebUi) {
-                            CombinedClickableButton(
-                                onClick = {
-                                    onOpenWebUi()
-                                    closeSearch()
-                                },
-                                onLongClick = { onAddShortcut(ShortcutType.WebUI) },
-                                modifier = Modifier.defaultMinSize(52.dp, 32.dp),
-                                shape = ButtonDefaults.filledTonalShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                                ),
-                                contentPadding = ButtonDefaults.TextButtonContentPadding
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(20.dp),
-                                    imageVector = Icons.Outlined.Code,
-                                    contentDescription = null
-                                )
-                                if (!module.hasActionScript && !hasUpdate) {
-                                    Text(
-                                        modifier = Modifier.padding(start = 7.dp),
-                                        fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
-                                        fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                                        text = stringResource(R.string.open)
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.weight(1f, true))
-
-                AnimatedVisibility(
-                    visible = hasUpdate,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    Row {
-                        FolkButton(
-                            modifier = Modifier.defaultMinSize(52.dp, 32.dp),
-                            enabled = !module.remove,
-                            onClick = onUpdate,
-                            shape = ButtonDefaults.textShape,
-                            contentPadding = ButtonDefaults.TextButtonContentPadding
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(20.dp),
-                                imageVector = Icons.Outlined.Download,
-                                contentDescription = null
-                            )
-                            if (!module.hasActionScript || !module.hasWebUi) {
-                                Text(
-                                    modifier = Modifier.padding(start = 7.dp),
-                                    fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
-                                    fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                                    text = stringResource(R.string.module_update)
-                                )
-                            }
-                        }
-
-                        Spacer(Modifier.width(12.dp))
-                    }
-                }
-
-                FolkFilledTonalButton(
-                    modifier = Modifier.defaultMinSize(52.dp, 32.dp),
-                    onClick = onUninstallClicked,
-                    contentPadding = ButtonDefaults.TextButtonContentPadding
-                ) {
-                    if (!module.remove) {
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            imageVector = Icons.Outlined.Delete,
-                            contentDescription = null,
-                        )
-                    } else {
-                        Icon(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .rotate(180f),
-                            imageVector = Icons.Outlined.Refresh,
-                            contentDescription = null,
-                        )
-                    }
-                    if (!module.hasActionScript && !module.hasWebUi || !hasUpdate) {
-                        Text(
-                            modifier = Modifier.padding(start = 7.dp),
-                            fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
-                            fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                            text = stringResource(if (module.remove) R.string.undo else R.string.uninstall)
-                        )
-                    }
                 }
             }
         }

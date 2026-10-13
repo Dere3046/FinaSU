@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">模块显示喵</string>
+    <string name="module_card_show_more_info">显示模块详情喵</string>
+    <string name="module_card_show_more_info_summary">在模块卡片上显示版本、作者喵与描述喵。</string>
+    <string name="module_card_fold_system">折叠模块卡片喵</string>
+    <string name="module_card_fold_system_summary">在卡片展开前收起操作按钮喵。</string>
+    <string name="module_card_spliced">拼接卡片布局喵</string>
+    <string name="module_card_spliced_summary">把相邻的模块卡片拼成一整块喵。</string>
+    <string name="module_card_button_style">操作按钮样式喵</string>
+    <string name="module_card_button_style_summary">在完整按钮和纯图标按钮之间选一个喵。</string>
+    <string name="module_card_style_full">完整喵</string>
+    <string name="module_card_style_icon">图标喵</string>
+
+    <string name="settings_module_banner">模块横幅喵</string>
+    <string name="module_banner_title">模块横幅喵</string>
+    <string name="module_banner_enabled">启用模块横幅喵</string>
+    <string name="module_banner_enabled_summary">在模块卡片上显示横幅图片喵。</string>
+    <string name="module_banner_folk">自定义模块横幅喵</string>
+    <string name="module_banner_folk_summary">长按模块卡片就能自选横幅图片喵。</string>
+    <string name="module_banner_api_mode">横幅 API 模式喵</string>
+    <string name="module_banner_api_mode_summary">从 API 或本地目录取横幅喵。</string>
+    <string name="module_banner_api_source">横幅 API 来源喵</string>
+    <string name="module_banner_api_source_not_configured">还没配置喵</string>
+    <string name="module_banner_api_source_dialog_title">横幅 API 来源喵</string>
+    <string name="module_banner_api_source_hint">API 网址或本地目录喵</string>
+    <string name="module_banner_clear_cache">清除横幅缓存喵</string>
+    <string name="module_banner_cache_cleared">横幅缓存清掉啦喵</string>
+    <string name="module_banner_marketplace">API 集市喵</string>
+    <string name="module_banner_marketplace_summary">逛逛别人的横幅 API 并应用喵。</string>
+    <string name="module_banner_custom_opacity">自定义横幅不透明度喵</string>
+    <string name="module_banner_custom_opacity_summary">覆盖横幅不透明度，不再跟着壁纸走喵。</string>
+    <string name="module_banner_opacity">横幅不透明度喵</string>
+
+    <string name="module_banner_select">选择横幅喵</string>
+    <string name="module_banner_clear">清除横幅喵</string>
+    <string name="module_banner_custom_info">自定义信息喵</string>
+    <string name="module_banner_name">名字喵</string>
+    <string name="module_banner_version">版本喵</string>
+    <string name="module_banner_author">作者喵</string>
+    <string name="module_banner_description">描述喵</string>
+    <string name="module_banner_save">保存喵</string>
+    <string name="module_banner_reset">重置喵</string>
+
+    <string name="api_marketplace_title">API 集市喵</string>
+    <string name="api_marketplace_subtitle">共享横幅 API 喵</string>
+    <string name="api_marketplace_empty">现在还没有东西喵</string>
+    <string name="api_marketplace_error">集市加载失败了喵</string>
+    <string name="api_marketplace_retry">重试喵</string>
+    <string name="api_marketplace_apply">应用喵</string>
+    <string name="api_marketplace_applied">已应用喵</string>
+    <string name="api_marketplace_url">网址喵</string>
+    <string name="api_marketplace_verify_failed">来源没返回有效图片喵</string>
+</resources>

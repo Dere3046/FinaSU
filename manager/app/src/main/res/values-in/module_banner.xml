@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_module_display">Tampilan modul</string>
+    <string name="module_card_show_more_info">Tampilkan detail modul</string>
+    <string name="module_card_show_more_info_summary">Tampilkan versi, pembuat, dan deskripsi pada kartu modul.</string>
+    <string name="module_card_fold_system">Lipat kartu modul</string>
+    <string name="module_card_fold_system_summary">Sembunyikan tombol tindakan sampai kartu diperluas.</string>
+    <string name="module_card_spliced">Tata letak kartu tersambung</string>
+    <string name="module_card_spliced_summary">Gabungkan kartu modul yang bersebelahan menjadi satu grup berkelanjutan.</string>
+    <string name="module_card_button_style">Gaya tombol tindakan</string>
+    <string name="module_card_button_style_summary">Pilih antara tombol penuh dan tombol ikon saja.</string>
+    <string name="module_card_style_full">Penuh</string>
+    <string name="module_card_style_icon">Ikon</string>
+
+    <string name="settings_module_banner">Spanduk modul</string>
+    <string name="module_banner_title">Spanduk modul</string>
+    <string name="module_banner_enabled">Aktifkan spanduk modul</string>
+    <string name="module_banner_enabled_summary">Tampilkan gambar spanduk pada kartu modul.</string>
+    <string name="module_banner_folk">Sesuaikan spanduk modul</string>
+    <string name="module_banner_folk_summary">Tekan lama kartu modul untuk memilih gambar spanduknya.</string>
+    <string name="module_banner_api_mode">Mode API spanduk</string>
+    <string name="module_banner_api_mode_summary">Ambil spanduk dari API atau folder lokal.</string>
+    <string name="module_banner_api_source">Sumber API spanduk</string>
+    <string name="module_banner_api_source_not_configured">Belum diatur</string>
+    <string name="module_banner_api_source_dialog_title">Sumber API spanduk</string>
+    <string name="module_banner_api_source_hint">URL API atau folder lokal</string>
+    <string name="module_banner_clear_cache">Hapus cache spanduk</string>
+    <string name="module_banner_cache_cleared">Cache spanduk dihapus</string>
+    <string name="module_banner_marketplace">Toko API</string>
+    <string name="module_banner_marketplace_summary">Jelajahi dan terapkan API spanduk bersama.</string>
+    <string name="module_banner_custom_opacity">Opasitas spanduk kustom</string>
+    <string name="module_banner_custom_opacity_summary">Timpa opasitas spanduk alih-alih mengikuti wallpaper.</string>
+    <string name="module_banner_opacity">Opasitas spanduk</string>
+
+    <string name="module_banner_select">Pilih spanduk</string>
+    <string name="module_banner_clear">Hapus spanduk</string>
+    <string name="module_banner_custom_info">Sesuaikan info</string>
+    <string name="module_banner_name">Nama</string>
+    <string name="module_banner_version">Versi</string>
+    <string name="module_banner_author">Oleh</string>
+    <string name="module_banner_description">Deskripsi</string>
+    <string name="module_banner_save">Simpan</string>
+    <string name="module_banner_reset">Atur ulang</string>
+
+    <string name="api_marketplace_title">Toko API</string>
+    <string name="api_marketplace_subtitle">API spanduk bersama</string>
+    <string name="api_marketplace_empty">Belum ada yang tersedia saat ini</string>
+    <string name="api_marketplace_error">Gagal memuat toko</string>
+    <string name="api_marketplace_retry">Coba lagi</string>
+    <string name="api_marketplace_apply">Terapkan</string>
+    <string name="api_marketplace_applied">Diterapkan</string>
+    <string name="api_marketplace_url">URL</string>
+    <string name="api_marketplace_verify_failed">Sumber tidak mengembalikan gambar yang valid</string>
+</resources>
