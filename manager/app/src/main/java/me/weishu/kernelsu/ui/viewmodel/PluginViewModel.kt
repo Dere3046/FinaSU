@@ -10,9 +10,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.weishu.kernelsu.R
 import me.weishu.kernelsu.data.model.Plugin
+import me.weishu.kernelsu.data.repository.PluginCommandException
 import me.weishu.kernelsu.data.repository.PluginRepository
 import me.weishu.kernelsu.data.repository.PluginRepositoryImpl
 import me.weishu.kernelsu.ui.screen.plugin.PluginUiState
+
+/** Exit code reported when a package does not define the requested callback. */
+private const val MISSING_CALLBACK_CODE = 2
+
+/** Callback the run action falls back to when a package names no quick action. */
+private const val ACTION_CALLBACK = "action"
 
 class PluginViewModel(
     private val repo: PluginRepository = PluginRepositoryImpl(),
@@ -99,6 +106,7 @@ class PluginViewModel(
                 configPlugin = plugin,
                 configValues = defaults,
                 savedConfigValues = defaults,
+                configDeleted = emptySet(),
                 isLoadingConfig = true,
             )
         }
@@ -116,27 +124,51 @@ class PluginViewModel(
     }
 
     fun updateConfigValue(key: String, value: String) {
-        _uiState.update { state -> state.copy(configValues = state.configValues + (key to value)) }
+        _uiState.update {
+            it.copy(
+                configValues = it.configValues + (key to value),
+                configDeleted = it.configDeleted - key,
+            )
+        }
+    }
+
+    /**
+     * Brings one key back to the value its package declares, dropping the stored
+     * one when the change is saved.
+     */
+    fun resetConfigValue(key: String) {
+        val field = _uiState.value.configPlugin?.config?.firstOrNull { it.key == key } ?: return
+        _uiState.update {
+            it.copy(
+                configValues = it.configValues + (key to field.default.orEmpty()),
+                configDeleted = it.configDeleted + key,
+            )
+        }
     }
 
     fun saveConfig() {
-        val plugin = _uiState.value.configPlugin ?: return
-        val values = _uiState.value.configValues
+        val state = _uiState.value
+        val plugin = state.configPlugin ?: return
+        val deleted = state.configDeleted
+        val values = state.configValues
         _uiState.update { it.copy(pending = it.pending + plugin.id) }
         viewModelScope.launch {
             val failure = values.entries
-                .map { (key, value) -> repo.setConfig(plugin.id, key, value) }
+                .map { (key, value) ->
+                    if (key in deleted) {
+                        repo.deleteConfig(plugin.id, key)
+                    } else {
+                        repo.setConfig(plugin.id, key, value)
+                    }
+                }
                 .firstOrNull { it.isFailure }
                 ?.exceptionOrNull()
-            _uiState.update {
-                it.copy(
-                    pending = it.pending - plugin.id,
-                    configPlugin = null,
-                    configValues = emptyMap(),
-                    savedConfigValues = emptyMap(),
-                )
+            _uiState.update { it.copy(pending = it.pending - plugin.id) }
+            if (failure != null) {
+                fail(failure)
+            } else {
+                dismissConfig()
             }
-            failure?.let { error -> fail(error) }
         }
     }
 
@@ -146,22 +178,39 @@ class PluginViewModel(
                 configPlugin = null,
                 configValues = emptyMap(),
                 savedConfigValues = emptyMap(),
+                configDeleted = emptySet(),
             )
         }
     }
 
     fun runCallback(plugin: Plugin) {
         if (plugin.id in _uiState.value.running) return
-        val callback = plugin.quickAction?.function?.takeIf { it.isNotBlank() } ?: "action"
+        val callback = plugin.quickAction?.function?.takeIf { it.isNotBlank() } ?: ACTION_CALLBACK
         _uiState.update { it.copy(running = it.running + plugin.id) }
         viewModelScope.launch {
             repo.run(plugin.id, callback)
                 .onSuccess {
                     _uiState.update { state -> state.copy(notice = R.string.plugin_run_done) }
                 }
-                .onFailure { error -> fail(error) }
+                .onFailure { error -> reportRunFailure(plugin, error) }
             _uiState.update { state -> state.copy(running = state.running - plugin.id) }
         }
+    }
+
+    /**
+     * Reports why a callback stopped. A callback writes its own message to the
+     * plugin log, so the last line of it explains the exit code.
+     */
+    private suspend fun reportRunFailure(plugin: Plugin, error: Throwable) {
+        if ((error as? PluginCommandException)?.code == MISSING_CALLBACK_CODE) {
+            _uiState.update { it.copy(notice = R.string.plugin_run_missing) }
+            return
+        }
+        val reason = repo.getLog(plugin.id)
+            .getOrNull()
+            ?.lineSequence()
+            ?.lastOrNull { line -> line.isNotBlank() }
+        reportError(reason ?: error.message ?: error.toString())
     }
 
     fun clearNotice() {

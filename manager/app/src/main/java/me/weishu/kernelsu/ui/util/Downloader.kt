@@ -13,13 +13,15 @@ import okhttp3.Request
  * @author weishu
  * @date 2023/6/22.
  */
+/** Downloads [url] and returns the downloaded file, or `null` when it failed. */
 suspend fun download(
     url: String,
     fileName: String,
     onDownloaded: (Uri) -> Unit = {},
     onDownloading: () -> Unit = {},
-    onProgress: (Int) -> Unit = {}
-) {
+    onProgress: (Int) -> Unit = {},
+    onFailed: (String) -> Unit = {}
+): Uri? {
     onDownloading()
 
     val downloadId = DownloadManager.enqueue(
@@ -29,13 +31,19 @@ suspend fun download(
         onCompleted = onDownloaded,
     )
 
-    DownloadManager.downloads
+    val lastState = DownloadManager.downloads
         .onEach { map -> map[downloadId]?.let { onProgress(it.progress) } }
         .first { map ->
             val status = map[downloadId]?.status
             status == DownloadManager.Status.COMPLETED ||
                 status == DownloadManager.Status.FAILED
-        }
+        }[downloadId]
+
+    if (lastState?.status == DownloadManager.Status.FAILED) {
+        onFailed(lastState.error.orEmpty())
+        return null
+    }
+    return lastState?.resultUri
 }
 
 internal suspend fun isDownloadAvailable(uri: Uri): Boolean = withContext(Dispatchers.IO) {

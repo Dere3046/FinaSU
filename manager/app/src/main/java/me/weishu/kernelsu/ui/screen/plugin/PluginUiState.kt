@@ -18,6 +18,8 @@ data class PluginUiState(
     val configPlugin: Plugin? = null,
     val configValues: Map<String, String> = emptyMap(),
     val savedConfigValues: Map<String, String> = emptyMap(),
+    /** Keys whose stored value is dropped so the package default applies again. */
+    val configDeleted: Set<String> = emptySet(),
     val isLoadingConfig: Boolean = false,
     val running: Set<String> = emptySet(),
     /** A string resource shown once the operation it reports finished. */
@@ -32,11 +34,13 @@ data class PluginActions(
     val onOpenLog: (Plugin) -> Unit,
     val onDismissLog: () -> Unit,
     val onInstallZip: (Uri) -> Unit,
+    val onOpenStore: () -> Unit,
     val onRequestUninstall: (Plugin) -> Unit,
     val onConfirmUninstall: () -> Unit,
     val onDismissUninstall: () -> Unit,
     val onOpenConfig: (Plugin) -> Unit,
     val onChangeConfigValue: (String, String) -> Unit,
+    val onResetConfigValue: (String) -> Unit,
     val onSaveConfig: () -> Unit,
     val onDismissConfig: () -> Unit,
     val onRun: (Plugin) -> Unit,

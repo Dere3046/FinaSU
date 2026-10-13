@@ -166,7 +166,7 @@ private fun trackValue(track: JSONObject?, module: JSONObject, key: String): Str
 }
 
 /** Selects the description for [language], preferring `description_en` for non-Chinese locales. */
-private fun selectDescription(item: JSONObject, language: String): String {
+internal fun selectDescription(item: JSONObject, language: String): String {
     val localized = item.optString("description", "")
     val english = item.optString("description_en", "")
     return if (language == "zh") {

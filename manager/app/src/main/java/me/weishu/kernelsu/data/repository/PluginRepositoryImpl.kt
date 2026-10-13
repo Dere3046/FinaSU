@@ -55,6 +55,13 @@ class PluginRepositoryImpl : PluginRepository {
             }.map { Unit }
         }
 
+    override suspend fun deleteConfig(id: String, key: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                run("plugin config --id ${quote(id)} delete ${quote(key)}")
+            }.map { Unit }
+        }
+
     override suspend fun run(id: String, callback: String): Result<Unit> =
         withContext(Dispatchers.IO) {
             runCatching { run("plugin run ${quote(id)} ${quote(callback)}") }.map { Unit }

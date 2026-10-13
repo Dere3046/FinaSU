@@ -109,6 +109,7 @@ import me.weishu.kernelsu.ui.screen.module.ModulePager
 import me.weishu.kernelsu.ui.screen.plugin.PluginPager
 import me.weishu.kernelsu.ui.screen.modulerepo.ModuleRepoDetailScreen
 import me.weishu.kernelsu.ui.screen.modulerepo.ModuleRepoScreen
+import me.weishu.kernelsu.ui.screen.plugin.PluginStoreScreen
 import me.weishu.kernelsu.ui.component.settings.ProfileConfig
 import me.weishu.kernelsu.ui.screen.settings.CategorySettingsScreen
 import me.weishu.kernelsu.ui.screen.settings.LanguagePickerScreen
@@ -282,6 +283,7 @@ open class MainActivity : FragmentActivity() {
                                 entry<Route.AppProfile> { key -> AppProfileScreen(key.uid) }
                                 entry<Route.ModuleRepo> { ModuleRepoScreen() }
                                 entry<Route.ModuleRepoDetail> { key -> ModuleRepoDetailScreen(key.module) }
+                                entry<Route.PluginStore> { PluginStoreScreen() }
                                 entry<Route.Install> { InstallScreen() }
                                 entry<Route.Flash> { key ->
                                     FlashScreen(

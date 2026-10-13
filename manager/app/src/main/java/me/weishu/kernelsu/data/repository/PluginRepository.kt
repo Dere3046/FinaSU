@@ -17,5 +17,7 @@ interface PluginRepository {
 
     suspend fun setConfig(id: String, key: String, value: String): Result<Unit>
 
+    suspend fun deleteConfig(id: String, key: String): Result<Unit>
+
     suspend fun run(id: String, callback: String): Result<Unit>
 }

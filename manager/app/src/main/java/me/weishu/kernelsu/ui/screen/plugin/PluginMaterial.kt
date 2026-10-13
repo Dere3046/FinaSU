@@ -32,15 +32,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.RestartAlt
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -83,6 +86,7 @@ import me.weishu.kernelsu.ui.component.material.ExpressiveDialog
 import me.weishu.kernelsu.ui.component.material.ExpressiveScaffold
 import me.weishu.kernelsu.ui.component.material.ExpressiveSwitch
 import me.weishu.kernelsu.ui.component.material.FolkFilledTonalButton
+import me.weishu.kernelsu.ui.component.material.FolkIconButton
 import me.weishu.kernelsu.ui.component.material.FolkSmallExtendedFloatingActionButton
 import me.weishu.kernelsu.ui.component.material.FolkTextButton
 import me.weishu.kernelsu.ui.component.material.SearchAppBar
@@ -165,6 +169,14 @@ fun PluginPagerMaterial(
                 onSearchTextChange = { searchText = it },
                 onClearClick = { searchText = "" },
                 snackbarHostState = snackBarHost,
+                navigationIcon = {
+                    FolkIconButton(onClick = actions.onOpenStore) {
+                        Icon(
+                            imageVector = Icons.Outlined.Cloud,
+                            contentDescription = stringResource(R.string.plugin_store),
+                        )
+                    }
+                },
                 searchContent = { bottomPadding, closeSearch ->
                     val results = remember(searchText, uiState.plugins) {
                         uiState.plugins.matching(searchText)
@@ -608,6 +620,7 @@ private fun PluginConfigDialog(
                             onValueChange = { value ->
                                 actions.onChangeConfigValue(field.key, value)
                             },
+                            onReset = { actions.onResetConfigValue(field.key) },
                         )
                     }
                 }
@@ -616,7 +629,8 @@ private fun PluginConfigDialog(
         },
         confirmButton = {
             FolkTextButton(
-                enabled = uiState.configValues != uiState.savedConfigValues,
+                enabled = uiState.configValues != uiState.savedConfigValues ||
+                    uiState.configDeleted.isNotEmpty(),
                 onClick = actions.onSaveConfig,
             ) {
                 Text(stringResource(R.string.plugin_save))
@@ -640,9 +654,12 @@ private fun PluginConfigRow(
     value: String,
     enabled: Boolean,
     onValueChange: (String) -> Unit,
+    onReset: () -> Unit,
 ) {
     val title = field.label.ifBlank { field.key }
     val summary = field.key.takeIf { field.label.isNotBlank() }
+    val default = field.default.orEmpty()
+    val resettable = field.default != null && value != default
 
     when {
         field.type.equals("bool", ignoreCase = true) -> SegmentedSwitchItem(
@@ -685,19 +702,37 @@ private fun PluginConfigRow(
         }
 
         else -> SegmentedItemContainer {
-            Column(modifier = Modifier.padding(top = 10.dp, bottom = 4.dp)) {
-                Text(
-                    text = title,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                ConfigTextField(
-                    value = value,
-                    enabled = enabled,
-                    numeric = field.type.equals("number", ignoreCase = true),
-                    onValueChange = onValueChange,
-                )
+            Row(
+                modifier = Modifier.padding(start = 16.dp, end = 6.dp, top = 6.dp, bottom = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    ConfigTextField(
+                        value = value,
+                        enabled = enabled,
+                        numeric = field.type.equals("number", ignoreCase = true),
+                        onValueChange = onValueChange,
+                    )
+                }
+                if (resettable) {
+                    val resetLabel = stringResource(R.string.plugin_config_reset)
+                    IconButton(
+                        modifier = Modifier.size(36.dp),
+                        enabled = enabled,
+                        onClick = onReset,
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(18.dp),
+                            imageVector = Icons.Outlined.RestartAlt,
+                            contentDescription = resetLabel,
+                        )
+                    }
+                }
             }
         }
     }
