@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">Bawaan</string>
     <string name="launcher_icon_style_geometry">Geometris</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">Plugin</string>
+    <string name="plugin_empty">Belum ada plugin terpasang</string>
+    <string name="plugin_log">Log keluaran</string>
+    <string name="plugin_dependencies">Memerlukan</string>
+    <string name="plugin_install">Pasang plugin</string>
+    <string name="plugin_uninstall_confirm">Copot %1$s dan hapus paketnya?</string>
+    <string name="plugin_log_empty">Belum ada keluaran</string>
+    <string name="plugin_config">Konfigurasi</string>
+    <string name="plugin_config_unset">Belum diatur</string>
+    <string name="plugin_run">Jalankan</string>
+    <string name="plugin_run_done">Callback selesai</string>
+    <string name="plugin_run_missing">Plugin tidak punya callback ini</string>
+    <string name="plugin_save">Simpan</string>
+    <string name="plugin_config_reset">Reset</string>
+    <string name="plugin_store">Toko plugin</string>
+    <string name="plugin_store_installed">%1$s terpasang</string>
+    <string name="plugin_store_empty">Belum ada yang bisa dipasang</string>
+    <string name="plugin_store_no_matches">Tidak ada plugin yang cocok</string>
+    <string name="plugin_store_error">Gagal terhubung ke toko plugin</string>
+    <string name="plugin_store_download_failed">Unduhan gagal</string>
 </resources>

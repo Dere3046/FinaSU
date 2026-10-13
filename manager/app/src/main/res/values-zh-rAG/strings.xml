@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">默认喵</string>
     <string name="launcher_icon_style_geometry">几何喵</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">插件</string>
+    <string name="plugin_empty">还没装插件喵</string>
+    <string name="plugin_log">输出日志</string>
+    <string name="plugin_dependencies">需要</string>
+    <string name="plugin_install">安装插件</string>
+    <string name="plugin_uninstall_confirm">确定要卸载 %1$s 并删掉它的插件包吗喵？</string>
+    <string name="plugin_log_empty">还没有输出喵</string>
+    <string name="plugin_config">配置</string>
+    <string name="plugin_config_unset">还没设喵</string>
+    <string name="plugin_run">执行</string>
+    <string name="plugin_run_done">执行好啦喵</string>
+    <string name="plugin_run_missing">这个插件没有这个回调喵</string>
+    <string name="plugin_save">保存</string>
+    <string name="plugin_config_reset">恢复默认</string>
+    <string name="plugin_store">插件商店</string>
+    <string name="plugin_store_installed">已经装好 %1$s 喵</string>
+    <string name="plugin_store_empty">这阵子没有插件可以装喵</string>
+    <string name="plugin_store_no_matches">翻遍了也没找到这个插件喵</string>
+    <string name="plugin_store_error">连不上插件商店喵</string>
+    <string name="plugin_store_download_failed">下载失败了喵</string>
 </resources>

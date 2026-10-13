@@ -735,4 +735,24 @@
     <string name="launcher_icon_style_default">Padrão</string>
     <string name="launcher_icon_style_geometry">Geométrico</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">Plugin</string>
+    <string name="plugin_empty">Nenhum plugin instalado</string>
+    <string name="plugin_log">Registro de saída</string>
+    <string name="plugin_dependencies">Requer</string>
+    <string name="plugin_install">Instalar plugin</string>
+    <string name="plugin_uninstall_confirm">Desinstalar %1$s e excluir o pacote?</string>
+    <string name="plugin_log_empty">Ainda sem saída</string>
+    <string name="plugin_config">Configuração</string>
+    <string name="plugin_config_unset">Não definido</string>
+    <string name="plugin_run">Executar</string>
+    <string name="plugin_run_done">Retorno de chamada concluído</string>
+    <string name="plugin_run_missing">O plugin não tem esse retorno de chamada</string>
+    <string name="plugin_save">Salvar</string>
+    <string name="plugin_config_reset">Restaurar padrão</string>
+    <string name="plugin_store">Loja de plugins</string>
+    <string name="plugin_store_installed">%1$s instalado</string>
+    <string name="plugin_store_empty">Não há nada para instalar agora</string>
+    <string name="plugin_store_no_matches">Nenhum plugin correspondente</string>
+    <string name="plugin_store_error">Falha ao acessar a loja de plugins</string>
+    <string name="plugin_store_download_failed">Falha no download</string>
 </resources>

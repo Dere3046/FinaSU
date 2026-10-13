@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">デフォルト</string>
     <string name="launcher_icon_style_geometry">ジオメトリ</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">プラグイン</string>
+    <string name="plugin_empty">インストール済みのプラグインはありません</string>
+    <string name="plugin_log">出力ログ</string>
+    <string name="plugin_dependencies">必要</string>
+    <string name="plugin_install">プラグインをインストール</string>
+    <string name="plugin_uninstall_confirm">%1$s をアンインストールし、パッケージを削除しますか？</string>
+    <string name="plugin_log_empty">出力はまだありません</string>
+    <string name="plugin_config">設定</string>
+    <string name="plugin_config_unset">未設定</string>
+    <string name="plugin_run">実行</string>
+    <string name="plugin_run_done">コールバックを実行しました</string>
+    <string name="plugin_run_missing">このプラグインにそのコールバックはありません</string>
+    <string name="plugin_save">保存</string>
+    <string name="plugin_config_reset">初期化</string>
+    <string name="plugin_store">プラグインストア</string>
+    <string name="plugin_store_installed">%1$s をインストールしました</string>
+    <string name="plugin_store_empty">今インストールできるものはありません</string>
+    <string name="plugin_store_no_matches">一致するプラグインがありません</string>
+    <string name="plugin_store_error">プラグインストアに接続できませんでした</string>
+    <string name="plugin_store_download_failed">ダウンロードに失敗しました</string>
 </resources>

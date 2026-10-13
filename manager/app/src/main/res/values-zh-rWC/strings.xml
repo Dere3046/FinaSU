@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">循旧</string>
     <string name="launcher_icon_style_geometry">几何之形</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">法宝</string>
+    <string name="plugin_empty">尚无法宝</string>
+    <string name="plugin_log">渡劫日志</string>
+    <string name="plugin_dependencies">需</string>
+    <string name="plugin_install">祭炼法宝</string>
+    <string name="plugin_uninstall_confirm">确定废去 %1$s，并毁其符匣？</string>
+    <string name="plugin_log_empty">日志尚空</string>
+    <string name="plugin_config">符诀</string>
+    <string name="plugin_config_unset">未定</string>
+    <string name="plugin_run">行法</string>
+    <string name="plugin_run_done">法已行毕</string>
+    <string name="plugin_run_missing">此法宝无此符诀</string>
+    <string name="plugin_save">铭刻</string>
+    <string name="plugin_config_reset">归元</string>
+    <string name="plugin_store">法宝市集</string>
+    <string name="plugin_store_installed">已铭刻 %1$s</string>
+    <string name="plugin_store_empty">此刻无法宝可铭刻</string>
+    <string name="plugin_store_no_matches">无契合之法宝</string>
+    <string name="plugin_store_error">法宝市集不可达</string>
+    <string name="plugin_store_download_failed">取宝失败</string>
 </resources>

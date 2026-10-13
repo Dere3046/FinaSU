@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">Predeterminado</string>
     <string name="launcher_icon_style_geometry">Geométrico</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">Complemento</string>
+    <string name="plugin_empty">No hay complementos instalados</string>
+    <string name="plugin_log">Registro de salida</string>
+    <string name="plugin_dependencies">Requiere</string>
+    <string name="plugin_install">Instalar complemento</string>
+    <string name="plugin_uninstall_confirm">¿Desinstalar %1$s y eliminar su paquete?</string>
+    <string name="plugin_log_empty">Aún no hay salida</string>
+    <string name="plugin_config">Configuración</string>
+    <string name="plugin_config_unset">Sin definir</string>
+    <string name="plugin_run">Ejecutar</string>
+    <string name="plugin_run_done">Llamada completada</string>
+    <string name="plugin_run_missing">El complemento no tiene esa llamada</string>
+    <string name="plugin_save">Guardar</string>
+    <string name="plugin_config_reset">Restablecer</string>
+    <string name="plugin_store">Tienda de complementos</string>
+    <string name="plugin_store_installed">Se instaló %1$s</string>
+    <string name="plugin_store_empty">No hay nada para instalar por ahora</string>
+    <string name="plugin_store_no_matches">No hay complementos coincidentes</string>
+    <string name="plugin_store_error">No se pudo conectar a la tienda de complementos</string>
+    <string name="plugin_store_download_failed">Error al descargar</string>
 </resources>

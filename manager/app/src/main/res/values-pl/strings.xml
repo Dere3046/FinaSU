@@ -737,4 +737,24 @@ Przed kontynuowaniem upewnij się, że bootloader jest odblokowany!</string>
     <string name="launcher_icon_style_default">Domyślny</string>
     <string name="launcher_icon_style_geometry">Geometryczny</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">Wtyczka</string>
+    <string name="plugin_empty">Brak zainstalowanych wtyczek</string>
+    <string name="plugin_log">Dziennik wyjściowy</string>
+    <string name="plugin_dependencies">Wymaga</string>
+    <string name="plugin_install">Zainstaluj wtyczkę</string>
+    <string name="plugin_uninstall_confirm">Odinstalować %1$s i usunąć jego pakiet?</string>
+    <string name="plugin_log_empty">Brak danych wyjściowych</string>
+    <string name="plugin_config">Konfiguracja</string>
+    <string name="plugin_config_unset">Nie ustawiono</string>
+    <string name="plugin_run">Uruchom</string>
+    <string name="plugin_run_done">Wywołanie zakończone</string>
+    <string name="plugin_run_missing">Wtyczka nie ma takiego wywołania</string>
+    <string name="plugin_save">Zapisz</string>
+    <string name="plugin_config_reset">Przywróć domyślne</string>
+    <string name="plugin_store">Sklep z wtyczkami</string>
+    <string name="plugin_store_installed">Zainstalowano %1$s</string>
+    <string name="plugin_store_empty">Na razie nie ma nic do zainstalowania</string>
+    <string name="plugin_store_no_matches">Brak pasujących wtyczek</string>
+    <string name="plugin_store_error">Nie udało się połączyć ze sklepem z wtyczkami</string>
+    <string name="plugin_store_download_failed">Pobieranie nie powiodło się</string>
 </resources>

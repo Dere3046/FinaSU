@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">默认</string>
     <string name="launcher_icon_style_geometry">几何</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">插件</string>
+    <string name="plugin_empty">还没有安装插件</string>
+    <string name="plugin_log">输出日志</string>
+    <string name="plugin_dependencies">需要</string>
+    <string name="plugin_install">安装插件</string>
+    <string name="plugin_uninstall_confirm">要卸载 %1$s 并删除它的数据包吗？</string>
+    <string name="plugin_log_empty">还没有输出</string>
+    <string name="plugin_config">配置</string>
+    <string name="plugin_config_unset">未设置</string>
+    <string name="plugin_run">执行</string>
+    <string name="plugin_run_done">执行完毕</string>
+    <string name="plugin_run_missing">这个插件没有该回调</string>
+    <string name="plugin_save">保存</string>
+    <string name="plugin_config_reset">恢复默认</string>
+    <string name="plugin_store">插件商店</string>
+    <string name="plugin_store_installed">已安装 %1$s</string>
+    <string name="plugin_store_empty">暂时没有可安装的插件</string>
+    <string name="plugin_store_no_matches">没有匹配的插件</string>
+    <string name="plugin_store_error">无法连接插件商店</string>
+    <string name="plugin_store_download_failed">下载失败</string>
 </resources>

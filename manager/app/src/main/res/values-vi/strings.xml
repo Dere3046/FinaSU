@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">Mặc định</string>
     <string name="launcher_icon_style_geometry">Hình học</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">Plugin</string>
+    <string name="plugin_empty">Chưa cài đặt plugin nào</string>
+    <string name="plugin_log">Nhật ký đầu ra</string>
+    <string name="plugin_dependencies">Yêu cầu</string>
+    <string name="plugin_install">Cài đặt plugin</string>
+    <string name="plugin_uninstall_confirm">Gỡ cài đặt %1$s và xoá gói của nó?</string>
+    <string name="plugin_log_empty">Chưa có đầu ra</string>
+    <string name="plugin_config">Cấu hình</string>
+    <string name="plugin_config_unset">Chưa đặt</string>
+    <string name="plugin_run">Chạy</string>
+    <string name="plugin_run_done">Đã chạy callback</string>
+    <string name="plugin_run_missing">Plugin không có callback này</string>
+    <string name="plugin_save">Lưu</string>
+    <string name="plugin_config_reset">Khôi phục mặc định</string>
+    <string name="plugin_store">Cửa hàng plugin</string>
+    <string name="plugin_store_installed">Đã cài đặt %1$s</string>
+    <string name="plugin_store_empty">Hiện chưa có gì để cài đặt</string>
+    <string name="plugin_store_no_matches">Không có plugin phù hợp</string>
+    <string name="plugin_store_error">Không kết nối được cửa hàng plugin</string>
+    <string name="plugin_store_download_failed">Tải xuống thất bại</string>
 </resources>

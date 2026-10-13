@@ -741,10 +741,16 @@
     <string name="plugin_uninstall_confirm">确定卸载 %1$s 并删除插件包？</string>
     <string name="plugin_log_empty">暂无输出</string>
     <string name="plugin_config">配置</string>
-    <string name="plugin_config_empty">无可配置项</string>
     <string name="plugin_config_unset">未设置</string>
     <string name="plugin_run">执行</string>
     <string name="plugin_run_done">已执行</string>
+    <string name="plugin_run_missing">插件没有这个回调</string>
     <string name="plugin_save">保存</string>
     <string name="plugin_config_reset">恢复默认</string>
+    <string name="plugin_store">插件商店</string>
+    <string name="plugin_store_installed">已安装 %1$s</string>
+    <string name="plugin_store_empty">商店暂时没有可安装的插件</string>
+    <string name="plugin_store_no_matches">没有匹配的插件</string>
+    <string name="plugin_store_error">无法连接插件商店</string>
+    <string name="plugin_store_download_failed">下载失败</string>
 </resources>

@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">照旧</string>
     <string name="launcher_icon_style_geometry">几何样</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">配菜</string>
+    <string name="plugin_empty">还没上配菜</string>
+    <string name="plugin_log">账本</string>
+    <string name="plugin_dependencies">得靠</string>
+    <string name="plugin_install">上盘配菜</string>
+    <string name="plugin_uninstall_confirm">真要把 %1$s 撤了，顺带把菜谱也扔了？</string>
+    <string name="plugin_log_empty">账本还空着</string>
+    <string name="plugin_config">菜谱</string>
+    <string name="plugin_config_unset">还没定</string>
+    <string name="plugin_run">上手</string>
+    <string name="plugin_run_done">做得了</string>
+    <string name="plugin_run_missing">这道配菜没这号活儿</string>
+    <string name="plugin_save">记上</string>
+    <string name="plugin_config_reset">按老规矩来</string>
+    <string name="plugin_store">配菜市集</string>
+    <string name="plugin_store_installed">已经记上 %1$s</string>
+    <string name="plugin_store_empty">现在没有配菜可以记上</string>
+    <string name="plugin_store_no_matches">没有对上的配菜</string>
+    <string name="plugin_store_error">市集连不上</string>
+    <string name="plugin_store_download_failed">进货失败</string>
 </resources>

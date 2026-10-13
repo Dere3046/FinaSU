@@ -735,4 +735,24 @@
     <string name="launcher_icon_style_default">По умолчанию</string>
     <string name="launcher_icon_style_geometry">Геометрический</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">Плагин</string>
+    <string name="plugin_empty">Плагины не установлены</string>
+    <string name="plugin_log">Журнал вывода</string>
+    <string name="plugin_dependencies">Требуется</string>
+    <string name="plugin_install">Установить плагин</string>
+    <string name="plugin_uninstall_confirm">Удалить %1$s и его пакет?</string>
+    <string name="plugin_log_empty">Вывода пока нет</string>
+    <string name="plugin_config">Настройки</string>
+    <string name="plugin_config_unset">Не задано</string>
+    <string name="plugin_run">Запустить</string>
+    <string name="plugin_run_done">Обработчик выполнен</string>
+    <string name="plugin_run_missing">В плагине нет такого обработчика</string>
+    <string name="plugin_save">Сохранить</string>
+    <string name="plugin_config_reset">Сбросить</string>
+    <string name="plugin_store">Магазин плагинов</string>
+    <string name="plugin_store_installed">%1$s установлен</string>
+    <string name="plugin_store_empty">Пока нечего устанавливать</string>
+    <string name="plugin_store_no_matches">Нет подходящих плагинов</string>
+    <string name="plugin_store_error">Не удалось подключиться к магазину плагинов</string>
+    <string name="plugin_store_download_failed">Не удалось скачать</string>
 </resources>

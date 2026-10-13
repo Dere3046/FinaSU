@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">天意默认</string>
     <string name="launcher_icon_style_geometry">几何圣形</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">圣符</string>
+    <string name="plugin_empty">尚无圣符</string>
+    <string name="plugin_log">神谕日志</string>
+    <string name="plugin_dependencies">需</string>
+    <string name="plugin_install">请下圣符</string>
+    <string name="plugin_uninstall_confirm">确定解除 %1$s 之祝福，并抹除其圣匣？</string>
+    <string name="plugin_log_empty">尚无神谕</string>
+    <string name="plugin_config">圣谕</string>
+    <string name="plugin_config_unset">未蒙启示</string>
+    <string name="plugin_run">施行</string>
+    <string name="plugin_run_done">神谕已降</string>
+    <string name="plugin_run_missing">此圣符无此神谕</string>
+    <string name="plugin_save">铭刻</string>
+    <string name="plugin_config_reset">归元</string>
+    <string name="plugin_store">圣符市集</string>
+    <string name="plugin_store_installed">已铭刻 %1$s</string>
+    <string name="plugin_store_empty">此刻无圣符可铭刻</string>
+    <string name="plugin_store_no_matches">无契合之圣符</string>
+    <string name="plugin_store_error">圣符市集不可达</string>
+    <string name="plugin_store_download_failed">请取失败</string>
 </resources>

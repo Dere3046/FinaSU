@@ -735,4 +735,24 @@
     <string name="launcher_icon_style_default">Varsayılan</string>
     <string name="launcher_icon_style_geometry">Geometrik</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">Eklenti</string>
+    <string name="plugin_empty">Yüklü eklenti yok</string>
+    <string name="plugin_log">Çıktı günlüğü</string>
+    <string name="plugin_dependencies">Gerektirir</string>
+    <string name="plugin_install">Eklenti kur</string>
+    <string name="plugin_uninstall_confirm">%1$s kaldırılsın ve paketi silinsin mi?</string>
+    <string name="plugin_log_empty">Henüz çıktı yok</string>
+    <string name="plugin_config">Yapılandırma</string>
+    <string name="plugin_config_unset">Ayarlanmadı</string>
+    <string name="plugin_run">Çalıştır</string>
+    <string name="plugin_run_done">Geri çağırma tamamlandı</string>
+    <string name="plugin_run_missing">Eklentide bu geri çağırma yok</string>
+    <string name="plugin_save">Kaydet</string>
+    <string name="plugin_config_reset">Sıfırla</string>
+    <string name="plugin_store">Eklenti mağazası</string>
+    <string name="plugin_store_installed">%1$s kuruldu</string>
+    <string name="plugin_store_empty">Şu anda kurulacak bir şey yok</string>
+    <string name="plugin_store_no_matches">Eşleşen eklenti yok</string>
+    <string name="plugin_store_error">Eklenti mağazasına ulaşılamadı</string>
+    <string name="plugin_store_download_failed">İndirme başarısız</string>
 </resources>

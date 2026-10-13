@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">預設</string>
     <string name="launcher_icon_style_geometry">幾何</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">外掛</string>
+    <string name="plugin_empty">尚未安裝外掛</string>
+    <string name="plugin_log">輸出日誌</string>
+    <string name="plugin_dependencies">需要</string>
+    <string name="plugin_install">安裝外掛</string>
+    <string name="plugin_uninstall_confirm">要解除安裝 %1$s 並刪除外掛套件嗎？</string>
+    <string name="plugin_log_empty">尚無輸出</string>
+    <string name="plugin_config">設定</string>
+    <string name="plugin_config_unset">未設定</string>
+    <string name="plugin_run">執行</string>
+    <string name="plugin_run_done">已執行回呼</string>
+    <string name="plugin_run_missing">此外掛沒有這個回呼</string>
+    <string name="plugin_save">儲存</string>
+    <string name="plugin_config_reset">回復預設</string>
+    <string name="plugin_store">外掛商店</string>
+    <string name="plugin_store_installed">已安裝 %1$s</string>
+    <string name="plugin_store_empty">目前沒有可安裝的外掛</string>
+    <string name="plugin_store_no_matches">沒有符合的外掛</string>
+    <string name="plugin_store_error">無法連線外掛商店</string>
+    <string name="plugin_store_download_failed">下載失敗</string>
 </resources>

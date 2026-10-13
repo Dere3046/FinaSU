@@ -735,4 +735,24 @@
     <string name="launcher_icon_style_default">افتراضي</string>
     <string name="launcher_icon_style_geometry">هندسي</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">ملحق</string>
+    <string name="plugin_empty">لا توجد ملحقات مثبتة</string>
+    <string name="plugin_log">سجل المخرجات</string>
+    <string name="plugin_dependencies">يتطلب</string>
+    <string name="plugin_install">تثبيت ملحق</string>
+    <string name="plugin_uninstall_confirm">إلغاء تثبيت %1$s وحذف حزمته؟</string>
+    <string name="plugin_log_empty">لا مخرجات بعد</string>
+    <string name="plugin_config">الإعدادات</string>
+    <string name="plugin_config_unset">غير محدد</string>
+    <string name="plugin_run">تشغيل</string>
+    <string name="plugin_run_done">تم تنفيذ الاستدعاء</string>
+    <string name="plugin_run_missing">لا يملك الملحق هذا الاستدعاء</string>
+    <string name="plugin_save">حفظ</string>
+    <string name="plugin_config_reset">إعادة التعيين</string>
+    <string name="plugin_store">متجر الملحقات</string>
+    <string name="plugin_store_installed">تم تثبيت %1$s</string>
+    <string name="plugin_store_empty">لا يوجد شيء لتثبيته حالياً</string>
+    <string name="plugin_store_no_matches">لا توجد ملحقات مطابقة</string>
+    <string name="plugin_store_error">تعذّر الوصول إلى متجر الملحقات</string>
+    <string name="plugin_store_download_failed">فشل التنزيل</string>
 </resources>

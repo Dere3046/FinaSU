@@ -733,4 +733,24 @@
     <string name="launcher_icon_style_default">默认</string>
     <string name="launcher_icon_style_geometry">几何</string>
     <string name="launcher_icon_style_kernelsu">KernelSU</string>
+    <string name="plugin">魔导器</string>
+    <string name="plugin_empty">尚无魔导器</string>
+    <string name="plugin_log">魔力记录</string>
+    <string name="plugin_dependencies">需要</string>
+    <string name="plugin_install">缔结魔导器</string>
+    <string name="plugin_uninstall_confirm">确定解除 %1$s 的契约并抹除其术式包？</string>
+    <string name="plugin_log_empty">尚无魔力记录</string>
+    <string name="plugin_config">术式设定</string>
+    <string name="plugin_config_unset">未设定</string>
+    <string name="plugin_run">施法</string>
+    <string name="plugin_run_done">术式已施展</string>
+    <string name="plugin_run_missing">此魔导器没有这道术式</string>
+    <string name="plugin_save">铭刻</string>
+    <string name="plugin_config_reset">复原</string>
+    <string name="plugin_store">魔导器市集</string>
+    <string name="plugin_store_installed">已铭刻 %1$s</string>
+    <string name="plugin_store_empty">此刻无物可铭刻</string>
+    <string name="plugin_store_no_matches">无契合之魔导器</string>
+    <string name="plugin_store_error">魔导器市集不可达</string>
+    <string name="plugin_store_download_failed">召物失败</string>
 </resources>
