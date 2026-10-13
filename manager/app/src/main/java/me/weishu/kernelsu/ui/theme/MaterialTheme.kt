@@ -77,10 +77,11 @@ fun MaterialKernelSUTheme(
         generationMode = appSettings.colorGenerationMode,
     )
 
-    // In wallpaper mode the neutral roles follow the wallpaper's effective brightness so text stays
-    // legible; a dark theme never flips to light, readability there is left to the night dim.
+    // In wallpaper mode the neutral roles follow the wallpaper's intrinsic brightness so text stays
+    // legible; a dark theme never flips to light, readability there is left to the night dim. The
+    // scrim is intentionally not an input here: dragging the day dim must never invert polarity.
     val wallpaperDim = WallpaperConfig.effectiveDim(darkTheme)
-    val darkNeutral = useDarkNeutral(darkTheme, WallpaperConfig.pageLuminance(wallpaperPage), wallpaperDim)
+    val darkNeutral = useDarkNeutral(darkTheme, WallpaperConfig.pageLuminance(wallpaperPage))
     val neutralScheme = rememberKernelSUColorScheme(
         seedColor = baseSeed,
         isDark = darkNeutral,

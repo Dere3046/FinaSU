@@ -16,9 +16,10 @@ import androidx.compose.ui.graphics.luminance
 val LocalWallpaperDim = compositionLocalOf<Float?> { null }
 
 // Intrinsic perceived luminance of the wallpaper below which light-mode content switches to
-// dark-neutral roles, measured after the user's dim. Mirrors the reference implementation, which
-// decides on `luminance * (1 - dim)` with the same threshold: dimming the wallpaper must count,
-// because a heavily dimmed bright image behaves like a dark one. Dark themes always stay dark.
+// dark-neutral roles. The user's dim is deliberately NOT part of this decision: the scrim only
+// darkens the wallpaper, so letting it count would make the slider — the very control the user
+// reaches for to *improve* dark-text contrast — the cause of a full-app flip to light text.
+// Polarity follows the image itself; dark themes always stay dark.
 private const val WALLPAPER_DARK_THRESHOLD = 0.5f
 
 // Minimum contrast ratio between normal text and its background (WCAG AA).
@@ -67,15 +68,15 @@ fun adaptColorScheme(
  * dark.
  *
  * Dark themes always stay dark (never flip to light just because the wallpaper is bright);
- * readability there is left to the user's night dim. In light mode the wallpaper's luminance is
- * measured *after* the user's dim, so a dimmed bright image behaves like a dark one and the contrast
- * guard below then has a chance to keep the resulting light text legible. An unknown luminance (-1)
- * keeps the app theme's polarity.
+ * readability there is left to the user's night dim. In light mode only the wallpaper's *intrinsic*
+ * luminance counts, never the user's dim: dragging the day scrim must darken the image without
+ * ever inverting the app's content polarity. An unknown luminance (-1) keeps the app theme's
+ * polarity.
  */
-fun useDarkNeutral(darkTheme: Boolean, luminance: Float, dim: Float): Boolean {
+fun useDarkNeutral(darkTheme: Boolean, luminance: Float): Boolean {
     if (darkTheme) return true
     if (luminance < 0f) return false
-    return luminance * (1f - dim.coerceIn(0f, 1f)) < WALLPAPER_DARK_THRESHOLD
+    return luminance < WALLPAPER_DARK_THRESHOLD
 }
 
 /**
