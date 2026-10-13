@@ -104,7 +104,8 @@ pub fn open_log(dir: &Path) -> Result<File> {
 /// Appends one `[level] message` line, folding newlines so one entry stays one line.
 pub fn append_log(sink: &mut File, level: &str, message: &str) {
     let text = message.replace('\n', " ");
-    let _ = writeln!(sink, "[{level}] {text}");
+    let entry = format!("[{level}] {text}\n");
+    let _ = sink.write(entry.as_bytes());
 }
 
 /// Registers every public function and global on a fresh Lua state.
@@ -835,6 +836,49 @@ mod tests {
             .unwrap();
         assert!(text.contains("[info] started"));
         assert!(text.contains("[warn] careful"));
+    }
+
+    #[test]
+    fn concurrent_log_entries_remain_complete() {
+        let (root, state) = state();
+        let dir = state.dir();
+        // Open every append descriptor before writing, so the size policy does
+        // not truncate the test's already published entries.
+        let sinks: Vec<_> = (0..8).map(|_| open_log(&dir).unwrap()).collect();
+        std::thread::scope(|scope| {
+            for (writer, mut sink) in sinks.into_iter().enumerate() {
+                scope.spawn(move || {
+                    for sequence in 0..200 {
+                        append_log(&mut sink, "info", &format!("{writer}:{sequence}\nend"));
+                    }
+                });
+            }
+        });
+        let text = fs::read_to_string(root.path().join("plugins/demo").join(defs::PLUGIN_LOG_FILE))
+            .unwrap();
+        let actual: BTreeSet<_> = text.lines().map(str::to_owned).collect();
+        let expected: BTreeSet<_> = (0..8)
+            .flat_map(|writer| {
+                (0..200).map(move |sequence| format!("[info] {writer}:{sequence} end"))
+            })
+            .collect();
+        assert_eq!(text.lines().count(), expected.len());
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn oversized_logs_are_only_truncated_when_opened() {
+        let (_root, state) = state();
+        let dir = state.dir();
+        let mut sink = open_log(&dir).unwrap();
+        append_log(
+            &mut sink,
+            "info",
+            &"x".repeat(usize::try_from(defs::PLUGIN_MAX_LOG_SIZE).unwrap()),
+        );
+        assert!(sink.metadata().unwrap().len() > defs::PLUGIN_MAX_LOG_SIZE);
+        let fresh = open_log(&dir).unwrap();
+        assert_eq!(fresh.metadata().unwrap().len(), 0);
     }
 
     #[test]

@@ -41,7 +41,17 @@ pub fn run(
         bail!("plugin '{id}' is not installed");
     }
 
+    let guard = lock::exclusive(&lock_dir.join(format!("{id}.install.lock")))?;
+    if stopped(plugin_dir, id) {
+        bail!("plugin '{id}' is disabled or absent");
+    }
     let _held = lock::exclusive(&lock_path(lock_dir, id, callback))?;
+    #[cfg(target_os = "android")]
+    unsafe {
+        libc::setpgid(0, 0);
+    }
+    let _running = super::process::register(lock_dir, id, callback, std::process::id() as i32)?;
+    drop(guard);
     #[cfg(target_os = "android")]
     utils::switch_cgroups();
     let entry = manifest::read_manifest(&dir, id)?.entry;
@@ -218,15 +228,22 @@ pub fn launch(dir: &Path, id: &str, callback: &str, interval: i64) -> Result<boo
     // SAFETY: the descriptor is owned by this process.
     unsafe { libc::close(write_fd) };
 
-    let ready = match spawned {
-        Ok(_) => await_ready(read_fd),
+    let mut child = match spawned {
+        Ok(child) => child,
         Err(error) => {
             note(dir, "warn", &format!("cannot start a daemon: {error}"));
-            false
+            unsafe { libc::close(read_fd) };
+            return Ok(false);
         }
     };
+    let ready = await_ready(read_fd);
     // SAFETY: the descriptor is owned by this process.
     unsafe { libc::close(read_fd) };
+
+    if !ready {
+        let _ = child.kill();
+        let _ = child.wait();
+    }
 
     if ready {
         note(dir, "info", &format!("daemon '{callback}' is running"));

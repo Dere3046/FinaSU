@@ -5,10 +5,12 @@ pub mod admit;
 pub mod api;
 pub mod config;
 pub mod daemon;
+pub mod defs;
 pub mod install;
 pub mod lock;
 pub mod log;
 pub mod manifest;
+pub mod process;
 pub mod runtime;
 pub mod stage;
 pub mod store;
@@ -18,7 +20,7 @@ use std::time::Duration;
 
 use anyhow::Result;
 
-use crate::defs;
+use crate::defs as paths;
 
 #[derive(Debug, Clone, clap::Subcommand)]
 pub enum Command {
@@ -125,10 +127,10 @@ pub enum ConfigCommand {
 ///
 /// Returns an error when the requested state cannot be read or written.
 pub fn run(command: Command) -> Result<()> {
-    let plugin_dir = Path::new(defs::PLUGIN_DIR);
-    let lock_dir = Path::new(defs::PLUGIN_LOCK_DIR);
-    let stage_dir = Path::new(defs::PLUGIN_STAGE_DIR);
-    let admission_dir = Path::new(defs::PLUGIN_STATE_DIR);
+    let plugin_dir = Path::new(paths::PLUGIN_DIR);
+    let lock_dir = Path::new(paths::PLUGIN_LOCK_DIR);
+    let stage_dir = Path::new(paths::PLUGIN_STAGE_DIR);
+    let admission_dir = Path::new(paths::PLUGIN_STATE_DIR);
     match command {
         Command::List => store::print_list(),
         Command::Config { id, command } => {

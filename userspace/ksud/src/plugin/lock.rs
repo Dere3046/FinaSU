@@ -10,6 +10,18 @@ use anyhow::{Context, Result, bail};
 /// An exclusive lock held until the value is dropped.
 pub struct Lock(File);
 
+impl Lock {
+    /// Closes a forked descriptor without unlocking the parent's open-file
+    /// description.
+    #[cfg(target_os = "android")]
+    pub fn close_in_child(self) {
+        let descriptor = self.0.as_raw_fd();
+        std::mem::forget(self);
+        // SAFETY: the descriptor belongs to this forked process.
+        unsafe { libc::close(descriptor) };
+    }
+}
+
 impl Drop for Lock {
     fn drop(&mut self) {
         // Closing the descriptor also releases the lock; unlocking keeps the

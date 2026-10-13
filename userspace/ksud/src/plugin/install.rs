@@ -91,15 +91,18 @@ pub fn install(
 /// Removes an installed plugin.
 ///
 /// # Errors
-/// Fails when the plugin is not installed, when its manifest is unreadable, when
-/// a daemon still runs it, or when another enabled plugin depends on it.
+/// Fails when the plugin is not installed, its processes cannot be stopped, or
+/// another enabled plugin depends on it.
 pub fn uninstall(plugin_dir: &Path, lock_dir: &Path, id: &str) -> Result<()> {
     manifest::validate_plugin_id(id)?;
     let _guard = lock::exclusive(&lock_dir.join(format!("{id}.install.lock")))?;
     let target = plugin_dir.join(id);
     ensure!(target.is_dir(), "plugin '{id}' is not installed");
-    daemon::ensure_stopped(lock_dir, id)?;
     ensure_no_dependents(plugin_dir, id)?;
+    super::process::stop(lock_dir, id)?;
+    daemon::ensure_stopped(lock_dir, id)?;
+    File::create(target.join(defs::PLUGIN_DISABLE_FILE))?;
+    sync_dir(&target)?;
     fs::remove_dir_all(&target).with_context(|| format!("cannot remove {}", target.display()))?;
     sync_dir(plugin_dir)?;
     Ok(())
@@ -133,6 +136,8 @@ pub fn set_enabled(plugin_dir: &Path, lock_dir: &Path, id: &str, enabled: bool) 
         }
     } else {
         ensure_no_dependents(plugin_dir, id)?;
+        super::process::stop(lock_dir, id)?;
+        daemon::ensure_stopped(lock_dir, id)?;
         File::create(&marker).with_context(|| format!("cannot create {}", marker.display()))?;
     }
     sync_dir(&target)?;

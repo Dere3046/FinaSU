@@ -15,8 +15,6 @@ use mlua::{Function, Lua, LuaOptions, StdLib, Table, Value};
 #[cfg(target_os = "android")]
 use std::fs::File;
 #[cfg(target_os = "android")]
-use std::io::Write;
-#[cfg(target_os = "android")]
 use std::os::fd::AsRawFd;
 #[cfg(target_os = "android")]
 use std::time::Instant;
@@ -95,6 +93,9 @@ pub fn supervise(
     log: &File,
     timeout: Duration,
 ) -> Result<i32> {
+    let guard = super::lock::exclusive(&lock_dir.join(format!("{id}.install.lock")))?;
+    target_dir(plugin_dir, id)?;
+    let (mut reader, mut writer) = std::os::unix::net::UnixStream::pair()?;
     let sigchld = SigchldBlock::block().context("cannot block SIGCHLD")?;
     let descriptor = log.as_raw_fd();
     // SAFETY: the worker only calls code that is safe on its own, and it never
@@ -107,11 +108,39 @@ pub fn supervise(
         );
     }
     if pid == 0 {
+        // The inherited flock shares its description with the parent.
+        guard.close_in_child();
+        drop(writer);
+        let mut ready = [0_u8];
+        if std::io::Read::read_exact(&mut reader, &mut ready).is_err() {
+            unsafe { libc::_exit(1) };
+        }
+        drop(reader);
         worker(plugin_dir, lock_dir, id, callback, entry, descriptor);
     }
 
     // The worker also sets its own group; whichever call lands first wins.
     unsafe { libc::setpgid(pid, pid) };
+    drop(reader);
+    let running = super::process::register(lock_dir, id, &format!("worker-{pid}"), pid);
+    let _running = match running {
+        Ok(running) => running,
+        Err(error) => {
+            unsafe {
+                libc::kill(-pid, libc::SIGKILL);
+                libc::kill(pid, libc::SIGKILL);
+            }
+            let _ = sigchld.wait_status_until(pid, Instant::now() + super::defs::STOP_WAIT);
+            return Err(error);
+        }
+    };
+    if let Err(error) = std::io::Write::write_all(&mut writer, &[1]) {
+        unsafe { libc::kill(pid, libc::SIGKILL) };
+        let _ = sigchld.wait_status_until(pid, Instant::now() + super::defs::STOP_WAIT);
+        return Err(error.into());
+    }
+    drop(writer);
+    drop(guard);
     let deadline = Instant::now() + timeout;
     let status = sigchld
         .wait_status_until(pid, deadline)
@@ -124,11 +153,14 @@ pub fn supervise(
             libc::kill(pid, libc::SIGKILL);
         }
         let _ = sigchld.wait_status_until(pid, Instant::now() + Duration::from_secs(5));
-        let mut sink = log;
-        let _ = writeln!(
-            sink,
-            "[warn] callback '{callback}' exceeded {}s and was stopped",
-            timeout.as_secs()
+        let mut sink = log.try_clone()?;
+        api::append_log(
+            &mut sink,
+            "warn",
+            &format!(
+                "callback '{callback}' exceeded {}s and was stopped",
+                timeout.as_secs()
+            ),
         );
         return Ok(1);
     };
@@ -137,11 +169,15 @@ pub fn supervise(
         return Ok(libc::WEXITSTATUS(status));
     }
     if libc::WIFSIGNALED(status) {
-        let mut sink = log;
-        let _ = writeln!(
-            sink,
-            "[warn] callback '{callback}' was killed by signal {}",
-            libc::WTERMSIG(status)
+        unsafe { libc::kill(-pid, libc::SIGKILL) };
+        let mut sink = log.try_clone()?;
+        api::append_log(
+            &mut sink,
+            "warn",
+            &format!(
+                "callback '{callback}' was killed by signal {}",
+                libc::WTERMSIG(status)
+            ),
         );
     }
     Ok(1)
