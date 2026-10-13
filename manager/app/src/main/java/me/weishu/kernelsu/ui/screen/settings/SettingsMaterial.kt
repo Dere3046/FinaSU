@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Collections
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
@@ -108,6 +109,18 @@ fun SettingPagerMaterial(
             SegmentedColumn(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 13.dp),
                 content = listOf(
+                    {
+                        SegmentedListItem(
+                            onClick = actions.onOpenGallery,
+                            headlineContent = { Text(stringResource(id = R.string.settings_wallpaper_gallery)) },
+                            leadingContent = {
+                                Icon(
+                                    Icons.Filled.Collections,
+                                    stringResource(id = R.string.settings_wallpaper_gallery)
+                                )
+                            },
+                        )
+                    },
                     {
                         SegmentedListItem(
                             onClick = { showBottomSheet = true },
