@@ -764,4 +764,19 @@ Przed kontynuowaniem upewnij się, że bootloader jest odblokowany!</string>
     <string name="plugin_store_no_matches">Brak pasujących wtyczek</string>
     <string name="plugin_store_error">Nie udało się połączyć ze sklepem z wtyczkami</string>
     <string name="plugin_store_download_failed">Pobieranie nie powiodło się</string>
+    <string name="settings_wallpaper_gallery">Galeria tapet</string>
+    <string name="wallpaper_gallery_device_phone">Telefon</string>
+    <string name="wallpaper_gallery_device_tablet">Tablet</string>
+    <string name="wallpaper_gallery_device_mixed">Mieszany</string>
+    <string name="wallpaper_gallery_layout_waterfall">Kaskada</string>
+    <string name="wallpaper_gallery_layout_stack">Stos</string>
+    <string name="wallpaper_gallery_display_options">Opcje wyświetlania</string>
+    <string name="wallpaper_gallery_display_layout">Układ</string>
+    <string name="wallpaper_gallery_loading">Wczytywanie tapet</string>
+    <string name="wallpaper_gallery_empty">Brak tapet</string>
+    <string name="wallpaper_gallery_retry">Ponów</string>
+    <string name="wallpaper_gallery_saved">Zapisano</string>
+    <string name="wallpaper_gallery_download_failed">Pobieranie nie powiodło się</string>
+    <string name="wallpaper_gallery_download">Pobierz</string>
+    <string name="wallpaper_gallery_cancel">Anuluj</string>
 </resources>

@@ -762,4 +762,19 @@
     <string name="plugin_store_no_matches">لا توجد ملحقات مطابقة</string>
     <string name="plugin_store_error">تعذّر الوصول إلى متجر الملحقات</string>
     <string name="plugin_store_download_failed">فشل التنزيل</string>
+    <string name="settings_wallpaper_gallery">معرض الخلفيات</string>
+    <string name="wallpaper_gallery_device_phone">هاتف</string>
+    <string name="wallpaper_gallery_device_tablet">جهاز لوحي</string>
+    <string name="wallpaper_gallery_device_mixed">مختلط</string>
+    <string name="wallpaper_gallery_layout_waterfall">شلال</string>
+    <string name="wallpaper_gallery_layout_stack">مكدّس</string>
+    <string name="wallpaper_gallery_display_options">خيارات العرض</string>
+    <string name="wallpaper_gallery_display_layout">التخطيط</string>
+    <string name="wallpaper_gallery_loading">جارٍ تحميل الخلفيات</string>
+    <string name="wallpaper_gallery_empty">لا توجد خلفيات</string>
+    <string name="wallpaper_gallery_retry">إعادة المحاولة</string>
+    <string name="wallpaper_gallery_saved">تم الحفظ</string>
+    <string name="wallpaper_gallery_download_failed">فشل التنزيل</string>
+    <string name="wallpaper_gallery_download">تنزيل</string>
+    <string name="wallpaper_gallery_cancel">إلغاء</string>
 </resources>

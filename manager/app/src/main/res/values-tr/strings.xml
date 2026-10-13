@@ -762,4 +762,19 @@
     <string name="plugin_store_no_matches">Eşleşen eklenti yok</string>
     <string name="plugin_store_error">Eklenti mağazasına ulaşılamadı</string>
     <string name="plugin_store_download_failed">İndirme başarısız</string>
+    <string name="settings_wallpaper_gallery">Duvar kağıdı galerisi</string>
+    <string name="wallpaper_gallery_device_phone">Telefon</string>
+    <string name="wallpaper_gallery_device_tablet">Tablet</string>
+    <string name="wallpaper_gallery_device_mixed">Karışık</string>
+    <string name="wallpaper_gallery_layout_waterfall">Şelale</string>
+    <string name="wallpaper_gallery_layout_stack">Yığın</string>
+    <string name="wallpaper_gallery_display_options">Görünüm seçenekleri</string>
+    <string name="wallpaper_gallery_display_layout">Düzen</string>
+    <string name="wallpaper_gallery_loading">Duvar kağıtları yükleniyor</string>
+    <string name="wallpaper_gallery_empty">Duvar kağıdı yok</string>
+    <string name="wallpaper_gallery_retry">Yeniden dene</string>
+    <string name="wallpaper_gallery_saved">Kaydedildi</string>
+    <string name="wallpaper_gallery_download_failed">İndirme başarısız</string>
+    <string name="wallpaper_gallery_download">İndir</string>
+    <string name="wallpaper_gallery_cancel">İptal</string>
 </resources>

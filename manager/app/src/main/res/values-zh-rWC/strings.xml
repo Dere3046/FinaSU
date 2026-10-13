@@ -760,4 +760,19 @@
     <string name="plugin_store_no_matches">无契合之法宝</string>
     <string name="plugin_store_error">法宝市集不可达</string>
     <string name="plugin_store_download_failed">取宝失败</string>
+    <string name="settings_wallpaper_gallery">天機圖鑑</string>
+    <string name="wallpaper_gallery_device_phone">法寶手機</string>
+    <string name="wallpaper_gallery_device_tablet">洞天平板</string>
+    <string name="wallpaper_gallery_device_mixed">陰陽交融</string>
+    <string name="wallpaper_gallery_layout_waterfall">飛瀑</string>
+    <string name="wallpaper_gallery_layout_stack">疊嶂</string>
+    <string name="wallpaper_gallery_display_options">陣法陳列</string>
+    <string name="wallpaper_gallery_display_layout">陣式</string>
+    <string name="wallpaper_gallery_loading">天機推演中</string>
+    <string name="wallpaper_gallery_empty">空空如也</string>
+    <string name="wallpaper_gallery_retry">再推演</string>
+    <string name="wallpaper_gallery_saved">已納乾坤袋</string>
+    <string name="wallpaper_gallery_download_failed">納取失敗</string>
+    <string name="wallpaper_gallery_download">納取下載</string>
+    <string name="wallpaper_gallery_cancel">作罷</string>
 </resources>

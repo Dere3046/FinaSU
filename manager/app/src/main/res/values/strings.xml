@@ -760,4 +760,19 @@
     <string name="plugin_store_no_matches">No matching plugins</string>
     <string name="plugin_store_error">Failed to reach the plugin store</string>
     <string name="plugin_store_download_failed">Download failed</string>
+    <string name="settings_wallpaper_gallery">Wallpaper Gallery</string>
+    <string name="wallpaper_gallery_device_phone">Phone</string>
+    <string name="wallpaper_gallery_device_tablet">Tablet</string>
+    <string name="wallpaper_gallery_device_mixed">Mixed</string>
+    <string name="wallpaper_gallery_layout_waterfall">Waterfall</string>
+    <string name="wallpaper_gallery_layout_stack">Stack</string>
+    <string name="wallpaper_gallery_display_options">Display options</string>
+    <string name="wallpaper_gallery_display_layout">Layout</string>
+    <string name="wallpaper_gallery_loading">Loading wallpapers</string>
+    <string name="wallpaper_gallery_empty">No wallpapers</string>
+    <string name="wallpaper_gallery_retry">Retry</string>
+    <string name="wallpaper_gallery_saved">Saved</string>
+    <string name="wallpaper_gallery_download_failed">Download failed</string>
+    <string name="wallpaper_gallery_download">Download</string>
+    <string name="wallpaper_gallery_cancel">Cancel</string>
 </resources>

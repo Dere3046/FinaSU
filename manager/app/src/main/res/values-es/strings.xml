@@ -760,4 +760,19 @@
     <string name="plugin_store_no_matches">No hay complementos coincidentes</string>
     <string name="plugin_store_error">No se pudo conectar a la tienda de complementos</string>
     <string name="plugin_store_download_failed">Error al descargar</string>
+    <string name="settings_wallpaper_gallery">Galería de fondos</string>
+    <string name="wallpaper_gallery_device_phone">Teléfono</string>
+    <string name="wallpaper_gallery_device_tablet">Tableta</string>
+    <string name="wallpaper_gallery_device_mixed">Mixto</string>
+    <string name="wallpaper_gallery_layout_waterfall">Cascada</string>
+    <string name="wallpaper_gallery_layout_stack">Apilado</string>
+    <string name="wallpaper_gallery_display_options">Opciones de visualización</string>
+    <string name="wallpaper_gallery_display_layout">Diseño</string>
+    <string name="wallpaper_gallery_loading">Cargando fondos</string>
+    <string name="wallpaper_gallery_empty">No hay fondos</string>
+    <string name="wallpaper_gallery_retry">Reintentar</string>
+    <string name="wallpaper_gallery_saved">Guardado</string>
+    <string name="wallpaper_gallery_download_failed">Error al descargar</string>
+    <string name="wallpaper_gallery_download">Descargar</string>
+    <string name="wallpaper_gallery_cancel">Cancelar</string>
 </resources>

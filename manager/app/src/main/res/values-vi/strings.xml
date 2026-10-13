@@ -760,4 +760,19 @@
     <string name="plugin_store_no_matches">Không có plugin phù hợp</string>
     <string name="plugin_store_error">Không kết nối được cửa hàng plugin</string>
     <string name="plugin_store_download_failed">Tải xuống thất bại</string>
+    <string name="settings_wallpaper_gallery">Thư viện hình nền</string>
+    <string name="wallpaper_gallery_device_phone">Điện thoại</string>
+    <string name="wallpaper_gallery_device_tablet">Máy tính bảng</string>
+    <string name="wallpaper_gallery_device_mixed">Hỗn hợp</string>
+    <string name="wallpaper_gallery_layout_waterfall">Thác nước</string>
+    <string name="wallpaper_gallery_layout_stack">Xếp chồng</string>
+    <string name="wallpaper_gallery_display_options">Tùy chọn hiển thị</string>
+    <string name="wallpaper_gallery_display_layout">Bố cục</string>
+    <string name="wallpaper_gallery_loading">Đang tải hình nền</string>
+    <string name="wallpaper_gallery_empty">Không có hình nền</string>
+    <string name="wallpaper_gallery_retry">Thử lại</string>
+    <string name="wallpaper_gallery_saved">Đã lưu</string>
+    <string name="wallpaper_gallery_download_failed">Tải xuống thất bại</string>
+    <string name="wallpaper_gallery_download">Tải xuống</string>
+    <string name="wallpaper_gallery_cancel">Hủy</string>
 </resources>

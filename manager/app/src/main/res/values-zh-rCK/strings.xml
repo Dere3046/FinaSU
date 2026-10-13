@@ -760,4 +760,19 @@
     <string name="plugin_store_no_matches">没有对上的配菜</string>
     <string name="plugin_store_error">市集连不上</string>
     <string name="plugin_store_download_failed">进货失败</string>
+    <string name="settings_wallpaper_gallery">壁紙菜譜</string>
+    <string name="wallpaper_gallery_device_phone">手機</string>
+    <string name="wallpaper_gallery_device_tablet">大盤平板</string>
+    <string name="wallpaper_gallery_device_mixed">拼盤</string>
+    <string name="wallpaper_gallery_layout_waterfall">瀑布流</string>
+    <string name="wallpaper_gallery_layout_stack">千層堆疊</string>
+    <string name="wallpaper_gallery_display_options">擺盤方案</string>
+    <string name="wallpaper_gallery_display_layout">擺盤</string>
+    <string name="wallpaper_gallery_loading">備料中</string>
+    <string name="wallpaper_gallery_empty">空盤</string>
+    <string name="wallpaper_gallery_retry">回鍋</string>
+    <string name="wallpaper_gallery_saved">上菜</string>
+    <string name="wallpaper_gallery_download_failed">烹調失敗</string>
+    <string name="wallpaper_gallery_download">出鍋下載</string>
+    <string name="wallpaper_gallery_cancel">取消</string>
 </resources>

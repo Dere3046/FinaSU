@@ -760,4 +760,19 @@
     <string name="plugin_store_no_matches">翻遍了也没找到这个插件喵</string>
     <string name="plugin_store_error">连不上插件商店喵</string>
     <string name="plugin_store_download_failed">下载失败了喵</string>
+    <string name="settings_wallpaper_gallery">喵圖鑑</string>
+    <string name="wallpaper_gallery_device_phone">喵手機</string>
+    <string name="wallpaper_gallery_device_tablet">喵平板</string>
+    <string name="wallpaper_gallery_device_mixed">喵混搭</string>
+    <string name="wallpaper_gallery_layout_waterfall">喵瀑布</string>
+    <string name="wallpaper_gallery_layout_stack">喵堆疊</string>
+    <string name="wallpaper_gallery_display_options">喵展示</string>
+    <string name="wallpaper_gallery_display_layout">喵排版</string>
+    <string name="wallpaper_gallery_loading">喵正在載圖</string>
+    <string name="wallpaper_gallery_empty">喵沒有圖</string>
+    <string name="wallpaper_gallery_retry">喵再試</string>
+    <string name="wallpaper_gallery_saved">喵存好了</string>
+    <string name="wallpaper_gallery_download_failed">喵下載失敗</string>
+    <string name="wallpaper_gallery_download">喵下載</string>
+    <string name="wallpaper_gallery_cancel">喵取消</string>
 </resources>

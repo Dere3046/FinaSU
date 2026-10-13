@@ -760,4 +760,19 @@
     <string name="plugin_store_no_matches">Tidak ada plugin yang cocok</string>
     <string name="plugin_store_error">Gagal terhubung ke toko plugin</string>
     <string name="plugin_store_download_failed">Unduhan gagal</string>
+    <string name="settings_wallpaper_gallery">Galeri Wallpaper</string>
+    <string name="wallpaper_gallery_device_phone">Ponsel</string>
+    <string name="wallpaper_gallery_device_tablet">Tablet</string>
+    <string name="wallpaper_gallery_device_mixed">Campuran</string>
+    <string name="wallpaper_gallery_layout_waterfall">Air Terjun</string>
+    <string name="wallpaper_gallery_layout_stack">Bertumpuk</string>
+    <string name="wallpaper_gallery_display_options">Opsi tampilan</string>
+    <string name="wallpaper_gallery_display_layout">Tata letak</string>
+    <string name="wallpaper_gallery_loading">Memuat wallpaper</string>
+    <string name="wallpaper_gallery_empty">Tidak ada wallpaper</string>
+    <string name="wallpaper_gallery_retry">Coba lagi</string>
+    <string name="wallpaper_gallery_saved">Tersimpan</string>
+    <string name="wallpaper_gallery_download_failed">Unduhan gagal</string>
+    <string name="wallpaper_gallery_download">Unduh</string>
+    <string name="wallpaper_gallery_cancel">Batal</string>
 </resources>

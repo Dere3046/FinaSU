@@ -760,4 +760,19 @@
     <string name="plugin_store_no_matches">沒有符合的外掛</string>
     <string name="plugin_store_error">無法連線外掛商店</string>
     <string name="plugin_store_download_failed">下載失敗</string>
+    <string name="settings_wallpaper_gallery">桌布圖鑑</string>
+    <string name="wallpaper_gallery_device_phone">手機</string>
+    <string name="wallpaper_gallery_device_tablet">平板</string>
+    <string name="wallpaper_gallery_device_mixed">混合</string>
+    <string name="wallpaper_gallery_layout_waterfall">瀑布流</string>
+    <string name="wallpaper_gallery_layout_stack">堆疊</string>
+    <string name="wallpaper_gallery_display_options">顯示選項</string>
+    <string name="wallpaper_gallery_display_layout">版面</string>
+    <string name="wallpaper_gallery_loading">正在載入桌布</string>
+    <string name="wallpaper_gallery_empty">沒有桌布</string>
+    <string name="wallpaper_gallery_retry">重試</string>
+    <string name="wallpaper_gallery_saved">已儲存</string>
+    <string name="wallpaper_gallery_download_failed">下載失敗</string>
+    <string name="wallpaper_gallery_download">下載</string>
+    <string name="wallpaper_gallery_cancel">取消</string>
 </resources>

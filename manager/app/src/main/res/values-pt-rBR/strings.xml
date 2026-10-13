@@ -762,4 +762,19 @@
     <string name="plugin_store_no_matches">Nenhum plugin correspondente</string>
     <string name="plugin_store_error">Falha ao acessar a loja de plugins</string>
     <string name="plugin_store_download_failed">Falha no download</string>
+    <string name="settings_wallpaper_gallery">Galeria de papéis de parede</string>
+    <string name="wallpaper_gallery_device_phone">Celular</string>
+    <string name="wallpaper_gallery_device_tablet">Tablet</string>
+    <string name="wallpaper_gallery_device_mixed">Misto</string>
+    <string name="wallpaper_gallery_layout_waterfall">Cascata</string>
+    <string name="wallpaper_gallery_layout_stack">Empilhado</string>
+    <string name="wallpaper_gallery_display_options">Opções de exibição</string>
+    <string name="wallpaper_gallery_display_layout">Layout</string>
+    <string name="wallpaper_gallery_loading">Carregando papéis de parede</string>
+    <string name="wallpaper_gallery_empty">Nenhum papel de parede</string>
+    <string name="wallpaper_gallery_retry">Tentar novamente</string>
+    <string name="wallpaper_gallery_saved">Salvo</string>
+    <string name="wallpaper_gallery_download_failed">Falha no download</string>
+    <string name="wallpaper_gallery_download">Baixar</string>
+    <string name="wallpaper_gallery_cancel">Cancelar</string>
 </resources>

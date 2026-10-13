@@ -762,4 +762,19 @@
     <string name="plugin_store_no_matches">Нет подходящих плагинов</string>
     <string name="plugin_store_error">Не удалось подключиться к магазину плагинов</string>
     <string name="plugin_store_download_failed">Не удалось скачать</string>
+    <string name="settings_wallpaper_gallery">Галерея обоев</string>
+    <string name="wallpaper_gallery_device_phone">Телефон</string>
+    <string name="wallpaper_gallery_device_tablet">Планшет</string>
+    <string name="wallpaper_gallery_device_mixed">Смешанный</string>
+    <string name="wallpaper_gallery_layout_waterfall">Водопад</string>
+    <string name="wallpaper_gallery_layout_stack">Стопка</string>
+    <string name="wallpaper_gallery_display_options">Параметры отображения</string>
+    <string name="wallpaper_gallery_display_layout">Макет</string>
+    <string name="wallpaper_gallery_loading">Загрузка обоев</string>
+    <string name="wallpaper_gallery_empty">Нет обоев</string>
+    <string name="wallpaper_gallery_retry">Повторить</string>
+    <string name="wallpaper_gallery_saved">Сохранено</string>
+    <string name="wallpaper_gallery_download_failed">Ошибка загрузки</string>
+    <string name="wallpaper_gallery_download">Скачать</string>
+    <string name="wallpaper_gallery_cancel">Отмена</string>
 </resources>

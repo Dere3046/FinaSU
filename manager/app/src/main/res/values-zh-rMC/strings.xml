@@ -760,4 +760,19 @@
     <string name="plugin_store_no_matches">没有匹配的插件</string>
     <string name="plugin_store_error">无法连接插件商店</string>
     <string name="plugin_store_download_failed">下载失败</string>
+    <string name="settings_wallpaper_gallery">冒險圖鑑</string>
+    <string name="wallpaper_gallery_device_phone">旅者手機</string>
+    <string name="wallpaper_gallery_device_tablet">冒險平板</string>
+    <string name="wallpaper_gallery_device_mixed">混編</string>
+    <string name="wallpaper_gallery_layout_waterfall">瀑布流</string>
+    <string name="wallpaper_gallery_layout_stack">疊放</string>
+    <string name="wallpaper_gallery_display_options">陳列選項</string>
+    <string name="wallpaper_gallery_display_layout">排版</string>
+    <string name="wallpaper_gallery_loading">探索中</string>
+    <string name="wallpaper_gallery_empty">空無一物</string>
+    <string name="wallpaper_gallery_retry">再探</string>
+    <string name="wallpaper_gallery_saved">已收入行囊</string>
+    <string name="wallpaper_gallery_download_failed">拾取失敗</string>
+    <string name="wallpaper_gallery_download">拾取下載</string>
+    <string name="wallpaper_gallery_cancel">放棄</string>
 </resources>

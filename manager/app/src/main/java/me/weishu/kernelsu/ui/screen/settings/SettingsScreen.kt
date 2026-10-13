@@ -63,6 +63,7 @@ fun rememberSettingsActions(
         onOpenTheme = { navigator.push(Route.ColorPalette) },
         onOpenLanguage = { navigator.push(Route.Language) },
         onOpenWallpaper = { navigator.push(Route.Wallpaper) },
+        onOpenGallery = { navigator.push(Route.WallpaperGallery) },
         onOpenFont = { navigator.push(Route.Font) },
         onOpenThemeStore = { navigator.push(Route.ThemeStore) },
         onOpenProfileTemplate = { navigator.push(Route.AppProfileTemplate) },

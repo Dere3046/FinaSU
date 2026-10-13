@@ -760,4 +760,19 @@
     <string name="plugin_store_no_matches">일치하는 플러그인이 없습니다</string>
     <string name="plugin_store_error">플러그인 스토어에 연결하지 못했습니다</string>
     <string name="plugin_store_download_failed">다운로드 실패</string>
+    <string name="settings_wallpaper_gallery">배경화면 갤러리</string>
+    <string name="wallpaper_gallery_device_phone">휴대폰</string>
+    <string name="wallpaper_gallery_device_tablet">태블릿</string>
+    <string name="wallpaper_gallery_device_mixed">혼합</string>
+    <string name="wallpaper_gallery_layout_waterfall">폭포수</string>
+    <string name="wallpaper_gallery_layout_stack">스택</string>
+    <string name="wallpaper_gallery_display_options">표시 옵션</string>
+    <string name="wallpaper_gallery_display_layout">레이아웃</string>
+    <string name="wallpaper_gallery_loading">배경화면 불러오는 중</string>
+    <string name="wallpaper_gallery_empty">배경화면 없음</string>
+    <string name="wallpaper_gallery_retry">다시 시도</string>
+    <string name="wallpaper_gallery_saved">저장됨</string>
+    <string name="wallpaper_gallery_download_failed">다운로드 실패</string>
+    <string name="wallpaper_gallery_download">다운로드</string>
+    <string name="wallpaper_gallery_cancel">취소</string>
 </resources>

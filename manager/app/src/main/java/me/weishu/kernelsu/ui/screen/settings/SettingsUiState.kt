@@ -88,6 +88,7 @@ data class SettingsScreenActions(
     val onOpenTheme: () -> Unit,
     val onOpenLanguage: () -> Unit,
     val onOpenWallpaper: () -> Unit,
+    val onOpenGallery: () -> Unit,
     val onOpenFont: () -> Unit,
     val onOpenThemeStore: () -> Unit,
     val onOpenProfileTemplate: () -> Unit,

@@ -121,6 +121,7 @@ import me.weishu.kernelsu.ui.screen.templateeditor.TemplateEditorScreen
 import me.weishu.kernelsu.ui.screen.font.FontScreen
 import me.weishu.kernelsu.ui.screen.themestore.MyThemesScreen
 import me.weishu.kernelsu.ui.screen.themestore.ThemeStoreScreen
+import me.weishu.kernelsu.ui.screen.wallpaper.WallpaperGalleryScreen
 import me.weishu.kernelsu.ui.screen.wallpaper.WallpaperScreen
 import me.weishu.kernelsu.ui.theme.KernelSUTheme
 import me.weishu.kernelsu.ui.theme.LocalColorMode
@@ -318,6 +319,7 @@ open class MainActivity : FragmentActivity() {
                                 entry<Route.Language> { LanguagePickerScreen() }
                                 entry<Route.ThemeStore> { ThemeStoreScreen() }
                                 entry<Route.MyThemes> { MyThemesScreen() }
+                                entry<Route.WallpaperGallery> { WallpaperGalleryScreen() }
                                 entry<Route.ApiMarketplace> {
                                     me.weishu.kernelsu.ui.screen.bannerapi.ApiMarketplaceScreen()
                                 }
