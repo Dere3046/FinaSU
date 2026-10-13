@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -78,10 +79,14 @@ import androidx.compose.ui.unit.dp
 import me.weishu.kernelsu.R
 import me.weishu.kernelsu.data.model.Plugin
 import me.weishu.kernelsu.data.model.PluginConfigField
+import me.weishu.kernelsu.modulebanner.ModuleCardConfig
+import me.weishu.kernelsu.modulebanner.PluginBannerSlot
 import me.weishu.kernelsu.ui.component.ScrollToTopOnChange
 import me.weishu.kernelsu.ui.component.bottombar.LocalFloatingBarReservedHeight
 import me.weishu.kernelsu.ui.component.bottombar.LocalFloatingBarVisible
 import me.weishu.kernelsu.ui.component.bottombar.LocalIsFloatingNavMode
+import me.weishu.kernelsu.ui.component.card.CardBannerDialog
+import me.weishu.kernelsu.ui.component.card.CardSubject
 import me.weishu.kernelsu.ui.component.material.ExpressiveDialog
 import me.weishu.kernelsu.ui.component.material.ExpressiveScaffold
 import me.weishu.kernelsu.ui.component.material.ExpressiveSwitch
@@ -96,7 +101,11 @@ import me.weishu.kernelsu.ui.component.material.SegmentedListItem
 import me.weishu.kernelsu.ui.component.material.SegmentedSwitchItem
 import me.weishu.kernelsu.ui.component.material.SnackBarHost
 import me.weishu.kernelsu.ui.component.material.TonalCard
+import me.weishu.kernelsu.ui.component.module.TwoColumnGrid
+import me.weishu.kernelsu.ui.component.module.splicedLazyColumnGroup
 import me.weishu.kernelsu.ui.screen.module.ExpandableDescriptionText
+import me.weishu.kernelsu.ui.screen.module.ModuleButtonStyle
+import me.weishu.kernelsu.ui.screen.module.rememberModuleCardVisual
 import me.weishu.kernelsu.ui.theme.LocalModuleDescriptionMaxLines
 
 @Composable
@@ -288,227 +297,84 @@ private fun PluginList(
     actions: PluginActions,
     closeSearch: () -> Unit = {},
 ) {
-    LazyColumn(
-        state = listState,
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(13.dp),
-        contentPadding = PaddingValues(
-            start = 16.dp,
-            end = 16.dp,
-            bottom = 16.dp + bottomInnerPadding + 56.dp + 16.dp,
-        ),
-    ) {
-        items(displayPlugins, key = { it.id }, contentType = { "plugin" }) { plugin ->
-            PluginItem(
-                plugin = plugin,
-                pending = plugin.id in pending,
-                actions = actions,
-                closeSearch = closeSearch,
-            )
-        }
-    }
-}
+    val spliced = ModuleCardConfig.splicedCardGroup
+    var expandedPluginId by rememberSaveable { mutableStateOf<String?>(null) }
+    var bannerDialogPlugin by remember { mutableStateOf<Plugin?>(null) }
 
-@Composable
-private fun PluginItem(
-    plugin: Plugin,
-    pending: Boolean,
-    actions: PluginActions,
-    closeSearch: () -> Unit,
-) {
-    val haptic = LocalHapticFeedback.current
-    val hasDescription = plugin.description.isNotBlank()
-    val maxLinesLimit = LocalModuleDescriptionMaxLines.current
-    var expanded by rememberSaveable(plugin.id) { mutableStateOf(false) }
-    val actionable = plugin.error == null && !pending
-
-    TonalCard(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = if (hasDescription) {
-            { expanded = !expanded }
-        } else {
-            null
-        },
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp, 14.dp, 16.dp, 10.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                val versionLabel = stringResource(id = R.string.module_version)
-                val authorLabel = stringResource(id = R.string.module_author)
-
-                Column(
-                    modifier = Modifier.fillMaxWidth(0.8f)
-                ) {
-                    Text(
-                        text = plugin.name.ifBlank { plugin.id },
-                        fontWeight = FontWeight.SemiBold,
-                        style = MaterialTheme.typography.titleMedium,
-                        lineHeight = MaterialTheme.typography.bodySmall.lineHeight,
-                    )
-
-                    Text(
-                        text = "$versionLabel: ${plugin.version}",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-
-                    Text(
-                        text = "$authorLabel: ${plugin.author}",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    ExpressiveSwitch(
-                        enabled = actionable,
-                        checked = plugin.enabled,
-                        onCheckedChange = {
-                            haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
-                            actions.onToggleEnabled(plugin, it)
-                        },
-                    )
-                }
-            }
-
-            if (hasDescription) {
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ExpandableDescriptionText(
-                    text = plugin.description,
-                    expanded = expanded,
-                    maxLinesLimit = maxLinesLimit,
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-
-            val dependencies = plugin.depends.joinToString(", ")
-            if (dependencies.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = "${stringResource(R.string.plugin_dependencies)}: $dependencies",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
-
-            plugin.error?.let { message ->
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = message,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
-
-            HorizontalDivider(
-                modifier = Modifier.padding(top = 10.dp),
-                thickness = Dp.Hairline,
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            val quickAction = plugin.quickAction
-            val quickLabel = quickAction?.label?.takeIf { it.isNotBlank() }
-            val showRun = actionable && (quickAction != null || plugin.callbacks.contains("action"))
-            val showConfig = actionable && plugin.config.isNotEmpty()
-            val crowded = showRun || showConfig
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (showConfig) {
-                        PluginActionButton(
-                            icon = Icons.Outlined.Tune,
-                            label = stringResource(R.string.plugin_config),
-                            onClick = {
-                                actions.onOpenConfig(plugin)
-                                closeSearch()
-                            },
-                        )
-                    }
-                    if (showRun) {
-                        PluginActionButton(
-                            icon = Icons.Outlined.PlayArrow,
-                            label = quickLabel ?: stringResource(R.string.plugin_run),
-                            onClick = {
-                                actions.onRun(plugin)
-                                closeSearch()
-                            },
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    PluginActionButton(
-                        icon = Icons.Outlined.Description,
-                        label = if (crowded) null else stringResource(R.string.plugin_log),
-                        onClick = {
-                            actions.onOpenLog(plugin)
-                            closeSearch()
-                        },
-                    )
-                    PluginActionButton(
-                        icon = Icons.Outlined.Delete,
-                        label = if (crowded) null else stringResource(R.string.uninstall),
-                        enabled = actionable,
-                        onClick = {
-                            actions.onRequestUninstall(plugin)
-                            closeSearch()
-                        },
-                    )
-                }
-            }
-        }
-    }
-}
-
-/**
- * One action of a plugin card. The label is dropped when the card already shows
- * several actions, leaving the icon and its content description.
- */
-@Composable
-private fun PluginActionButton(
-    icon: ImageVector,
-    label: String?,
-    enabled: Boolean = true,
-    onClick: () -> Unit,
-) {
-    FolkFilledTonalButton(
-        modifier = Modifier.defaultMinSize(52.dp, 32.dp),
-        enabled = enabled,
-        onClick = onClick,
-        contentPadding = ButtonDefaults.TextButtonContentPadding,
-    ) {
-        Icon(
-            modifier = Modifier.size(20.dp),
-            imageVector = icon,
-            contentDescription = label,
+    val itemCard: @Composable (Plugin) -> Unit = { plugin ->
+        PluginItemCard(
+            plugin = plugin,
+            visual = rememberModuleCardVisual(plugin.id, PluginBannerSlot),
+            pending = plugin.id in pending,
+            expanded = expandedPluginId == plugin.id,
+            onExpandToggle = {
+                expandedPluginId = if (expandedPluginId == plugin.id) null else plugin.id
+            },
+            actions = actions,
+            onLongPress = { bannerDialogPlugin = plugin },
+            closeSearch = closeSearch,
         )
-        if (label != null) {
-            Text(
-                modifier = Modifier.padding(start = 7.dp),
-                fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
-                fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                text = label,
-            )
+    }
+
+    val isWideScreen = LocalConfiguration.current.screenWidthDp >= 600
+    if (isWideScreen) {
+        // Wide screens get two independent columns; cards keep their order and folding one does
+        // not shift the other.
+        TwoColumnGrid(
+            items = displayPlugins,
+            key = { plugin -> plugin.id },
+            modifier = modifier,
+            verticalSpacing = 16.dp,
+            horizontalSpacing = 16.dp,
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                top = 16.dp,
+                end = 16.dp,
+                bottom = 16.dp + bottomInnerPadding + 56.dp + 16.dp,
+            ),
+        ) { plugin -> itemCard(plugin) }
+    } else {
+        LazyColumn(
+            state = listState,
+            modifier = modifier,
+            contentPadding = PaddingValues(
+                bottom = 16.dp + bottomInnerPadding + 56.dp + 16.dp,
+            ),
+        ) {
+            item { Spacer(Modifier.height(8.dp)) }
+            if (spliced) {
+                splicedLazyColumnGroup(
+                    items = displayPlugins,
+                    key = { _, plugin -> plugin.id },
+                    contentType = { _, _ -> "plugin" },
+                ) { _, plugin -> itemCard(plugin) }
+            } else {
+                itemsIndexed(
+                    items = displayPlugins,
+                    key = { _, plugin -> plugin.id },
+                    contentType = { _, _ -> "plugin" },
+                ) { _, plugin ->
+                    Box(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                        itemCard(plugin)
+                    }
+                }
+            }
+            item { Spacer(Modifier.height(8.dp)) }
         }
+    }
+
+    bannerDialogPlugin?.let { plugin ->
+        CardBannerDialog(
+            subject = CardSubject(
+                id = plugin.id,
+                name = plugin.name,
+                version = plugin.version,
+                author = plugin.author,
+                description = plugin.description,
+            ),
+            slot = PluginBannerSlot,
+            onDismiss = { bannerDialogPlugin = null },
+        )
     }
 }
 
