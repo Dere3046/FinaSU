@@ -218,7 +218,7 @@ fun PluginPagerMaterial(
             val isLandscape =
                 LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
             val fabDrop by animateDpAsState(
-                targetValue = if (floatingNavMode && !floatingBarVisible && !isLandscape) {
+                targetValue = if (floatingNavMode && (isLandscape || !floatingBarVisible)) {
                     floatingBarReserved
                 } else {
                     0.dp
