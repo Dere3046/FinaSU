@@ -137,6 +137,7 @@ import me.weishu.kernelsu.ui.util.useFullFeaturedLayout
 import me.weishu.kernelsu.ui.viewmodel.MainActivityViewModel
 import me.weishu.kernelsu.ui.viewmodel.MainPagerConfig
 import me.weishu.kernelsu.ui.viewmodel.ModuleViewModel
+import me.weishu.kernelsu.ui.viewmodel.PluginViewModel
 import me.weishu.kernelsu.ui.viewmodel.SuperUserViewModel
 import me.weishu.kernelsu.wallpaper.LocalFolkWallpaperTokens
 import me.weishu.kernelsu.wallpaper.LocalWallpaperPage
@@ -385,6 +386,11 @@ fun MainScreen(
     val badgeEnabled = enableNavigationBadge && isFullFeatured
     val moduleViewModel = viewModel<ModuleViewModel>()
     val moduleUiState by moduleViewModel.uiState.collectAsStateWithLifecycle()
+    val pluginViewModel = viewModel<PluginViewModel>()
+
+    LaunchedEffect(isFullFeatured) {
+        if (isFullFeatured) pluginViewModel.ensureLoaded()
+    }
 
     val superUserViewModel = viewModel<SuperUserViewModel>()
     val grantedUidCount by remember(superUserViewModel) {

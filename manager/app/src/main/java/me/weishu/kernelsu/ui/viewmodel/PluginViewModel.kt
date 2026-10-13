@@ -29,14 +29,30 @@ class PluginViewModel(
     val uiState: StateFlow<PluginUiState> = _uiState.asStateFlow()
 
     private var loadJob: Job? = null
+    private var needsRefresh = false
+    private var refreshRevision = 0L
 
-    fun refresh() {
+    /** Reuses the last list when switching tabs, including a successfully loaded empty list. */
+    fun ensureLoaded() {
+        if (!_uiState.value.hasLoaded || needsRefresh) refresh(showIndicator = false)
+    }
+
+    fun markNeedRefresh() {
+        needsRefresh = true
+        refreshRevision++
+    }
+
+    fun refresh(showIndicator: Boolean = true) {
         if (loadJob?.isActive == true) return
+        _uiState.update { it.copy(isRefreshing = showIndicator) }
+        val revision = refreshRevision
         loadJob = viewModelScope.launch {
-            _uiState.update { it.copy(isRefreshing = true) }
             repo.getPlugins()
-                .onSuccess { plugins -> applyList(plugins) }
+                .onSuccess { plugins -> applyList(plugins, revision) }
                 .onFailure { error -> fail(error) }
+            if (needsRefresh && revision != refreshRevision) {
+                readPlugins()
+            }
         }
     }
 
@@ -227,12 +243,18 @@ class PluginViewModel(
 
     private suspend fun reload() {
         loadJob?.join()
+        readPlugins()
+    }
+
+    private suspend fun readPlugins() {
+        val revision = refreshRevision
         repo.getPlugins()
-            .onSuccess { plugins -> applyList(plugins) }
+            .onSuccess { plugins -> applyList(plugins, revision) }
             .onFailure { error -> fail(error) }
     }
 
-    private fun applyList(plugins: List<Plugin>) {
+    private fun applyList(plugins: List<Plugin>, revision: Long) {
+        if (revision == refreshRevision) needsRefresh = false
         _uiState.update {
             it.copy(isRefreshing = false, hasLoaded = true, plugins = plugins)
         }

@@ -3,9 +3,13 @@ package me.weishu.kernelsu.ui.screen.plugin
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,13 +29,23 @@ fun PluginPager(
     val scope = rememberCoroutineScope()
     val viewModel = viewModel<PluginViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val latestIsCurrentPage by rememberUpdatedState(isCurrentPage)
+    val initialResumeHandled = rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(isCurrentPage) {
-        if (isCurrentPage) viewModel.refresh()
+        if (isCurrentPage) viewModel.ensureLoaded()
+    }
+
+    LifecycleResumeEffect(Unit) {
+        if (initialResumeHandled.value && latestIsCurrentPage) {
+            viewModel.refresh(showIndicator = false)
+        }
+        initialResumeHandled.value = true
+        onPauseOrDispose { viewModel.markNeedRefresh() }
     }
 
     val actions = PluginActions(
-        onRefresh = viewModel::refresh,
+        onRefresh = { viewModel.refresh() },
         onToggleEnabled = viewModel::setEnabled,
         onOpenLog = viewModel::loadLog,
         onDismissLog = viewModel::dismissLog,
@@ -45,7 +59,10 @@ fun PluginPager(
                 }
             }
         },
-        onOpenStore = { navigator.push(Route.PluginStore) },
+        onOpenStore = {
+            viewModel.markNeedRefresh()
+            navigator.push(Route.PluginStore)
+        },
         onRequestUninstall = viewModel::requestUninstall,
         onConfirmUninstall = viewModel::confirmUninstall,
         onDismissUninstall = viewModel::dismissUninstall,

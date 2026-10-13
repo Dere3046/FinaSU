@@ -295,25 +295,9 @@ private fun PluginList(
         contentPadding = PaddingValues(
             start = 16.dp,
             end = 16.dp,
-            top = 8.dp,
             bottom = 16.dp + bottomInnerPadding + 56.dp + 16.dp,
         ),
     ) {
-        if (displayPlugins.isEmpty()) {
-            item(key = "empty", contentType = "empty") {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 48.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = stringResource(R.string.plugin_empty),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-        }
         items(displayPlugins, key = { it.id }, contentType = { "plugin" }) { plugin ->
             PluginItem(
                 plugin = plugin,
