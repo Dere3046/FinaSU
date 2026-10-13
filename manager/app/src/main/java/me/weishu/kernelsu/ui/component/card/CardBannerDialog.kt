@@ -1,4 +1,4 @@
-package me.weishu.kernelsu.ui.screen.module
+package me.weishu.kernelsu.ui.component.card
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +28,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.weishu.kernelsu.R
-import me.weishu.kernelsu.data.model.Module
 import me.weishu.kernelsu.modulebanner.ApmBannerSlot
 import me.weishu.kernelsu.modulebanner.CustomModuleInfo
 import me.weishu.kernelsu.modulebanner.ModuleBannerConfig
@@ -40,9 +40,25 @@ import me.weishu.kernelsu.ui.component.material.SegmentedColumn
 import me.weishu.kernelsu.ui.component.material.SegmentedListItem
 import me.weishu.kernelsu.ui.component.material.SegmentedTextField
 
+/**
+ * The text a card shows, independent of the family it comes from.
+ *
+ * The banner dialog edits these fields, so a module and a plugin only differ in how they build the
+ * subject and which [ModuleBannerSlot] they store it under.
+ */
+@Immutable
+data class CardSubject(
+    val id: String,
+    val name: String,
+    val version: String,
+    val author: String,
+    val description: String,
+)
+
+/** Picks a banner image and edits the visible text of one card. */
 @Composable
-fun ModuleBannerDialog(
-    module: Module,
+fun CardBannerDialog(
+    subject: CardSubject,
     slot: ModuleBannerSlot = ApmBannerSlot,
     onDismiss: () -> Unit,
 ) {
@@ -50,27 +66,29 @@ fun ModuleBannerDialog(
     val scope = rememberCoroutineScope()
     val bannerStorage = remember(slot, context) { ModuleBannerStorage(slot, context) }
     val customStorage = remember(slot, context) { ModuleCustomInfoStorage(slot, context) }
-    val savedInfo = remember(module.id) { customStorage.read(module.id) }
+    val savedInfo = remember(subject.id) { customStorage.read(subject.id) }
     val hasSavedInfo = savedInfo?.hasAnyInfo() == true
-    val initialName = remember(module.id) { savedInfo?.name?.takeIf { it.isNotBlank() } ?: module.name }
-    val initialVersion = remember(module.id) { savedInfo?.version?.takeIf { it.isNotBlank() } ?: module.version }
-    val initialAuthor = remember(module.id) { savedInfo?.author?.takeIf { it.isNotBlank() } ?: module.author }
-    val initialDescription = remember(module.id) { savedInfo?.description?.takeIf { it.isNotBlank() } ?: module.description }
+    val initialName = remember(subject.id) { savedInfo?.name?.takeIf { it.isNotBlank() } ?: subject.name }
+    val initialVersion = remember(subject.id) { savedInfo?.version?.takeIf { it.isNotBlank() } ?: subject.version }
+    val initialAuthor = remember(subject.id) { savedInfo?.author?.takeIf { it.isNotBlank() } ?: subject.author }
+    val initialDescription =
+        remember(subject.id) { savedInfo?.description?.takeIf { it.isNotBlank() } ?: subject.description }
 
-    var name by remember(module.id) { mutableStateOf(initialName) }
-    var version by remember(module.id) { mutableStateOf(initialVersion) }
-    var author by remember(module.id) { mutableStateOf(initialAuthor) }
-    var description by remember(module.id) { mutableStateOf(initialDescription) }
-    var hasBanner by remember(module.id) { mutableStateOf(bannerStorage.exists(module.id)) }
+    var name by remember(subject.id) { mutableStateOf(initialName) }
+    var version by remember(subject.id) { mutableStateOf(initialVersion) }
+    var author by remember(subject.id) { mutableStateOf(initialAuthor) }
+    var description by remember(subject.id) { mutableStateOf(initialDescription) }
+    var hasBanner by remember(subject.id) { mutableStateOf(bannerStorage.exists(subject.id)) }
     val showBannerSection = ModuleBannerConfig.enabled && ModuleBannerConfig.folkEnabled
 
-    val hasChanges = name != initialName || version != initialVersion || author != initialAuthor || description != initialDescription
+    val hasChanges = name != initialName || version != initialVersion ||
+        author != initialAuthor || description != initialDescription
     val hasNonBlank = name.isNotBlank() || version.isNotBlank() || author.isNotBlank() || description.isNotBlank()
 
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
             scope.launch {
-                val bytes = withContext(Dispatchers.IO) { bannerStorage.write(module.id, uri) }
+                val bytes = withContext(Dispatchers.IO) { bannerStorage.write(subject.id, uri) }
                 if (bytes != null) {
                     hasBanner = true
                     ModuleBannerConfig.requestReload()
@@ -96,7 +114,7 @@ fun ModuleBannerDialog(
                         SegmentedListItem(
                             onClick = {
                                 scope.launch {
-                                    withContext(Dispatchers.IO) { bannerStorage.clear(module.id) }
+                                    withContext(Dispatchers.IO) { bannerStorage.clear(subject.id) }
                                     hasBanner = false
                                     ModuleBannerConfig.requestReload()
                                 }
@@ -160,7 +178,7 @@ fun ModuleBannerDialog(
                 FolkTextButton(
                     onClick = {
                         scope.launch {
-                            withContext(Dispatchers.IO) { customStorage.clear(module.id) }
+                            withContext(Dispatchers.IO) { customStorage.clear(subject.id) }
                             ModuleBannerConfig.requestReload()
                             onDismiss()
                         }
@@ -174,7 +192,7 @@ fun ModuleBannerDialog(
                         scope.launch {
                             withContext(Dispatchers.IO) {
                                 customStorage.write(
-                                    module.id,
+                                    subject.id,
                                     CustomModuleInfo(
                                         name = name.takeIf { it.isNotBlank() }.orEmpty(),
                                         version = version.takeIf { it.isNotBlank() }.orEmpty(),

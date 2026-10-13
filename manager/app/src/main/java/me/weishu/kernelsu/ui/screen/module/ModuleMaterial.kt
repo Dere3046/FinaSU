@@ -120,6 +120,8 @@ import me.weishu.kernelsu.modulebanner.ModuleBannerConfig
 import me.weishu.kernelsu.modulebanner.ModuleCardConfig
 import me.weishu.kernelsu.ui.component.ObserveAsEvents
 import me.weishu.kernelsu.ui.component.ScrollToTopOnChange
+import me.weishu.kernelsu.ui.component.card.CardBannerDialog
+import me.weishu.kernelsu.ui.component.card.CardSubject
 import me.weishu.kernelsu.ui.component.dialog.rememberConfirmDialog
 import me.weishu.kernelsu.ui.component.dialog.rememberLoadingDialog
 import me.weishu.kernelsu.ui.component.material.ExpressiveScaffold
@@ -475,8 +477,14 @@ fun ModulePagerMaterial(
     )
 
     bannerDialogModule?.let { module ->
-        ModuleBannerDialog(
-            module = module,
+        CardBannerDialog(
+            subject = CardSubject(
+                id = module.id,
+                name = module.name,
+                version = module.version,
+                author = module.author,
+                description = module.description,
+            ),
             onDismiss = { bannerDialogModule = null },
         )
     }
