@@ -131,6 +131,7 @@ import me.weishu.kernelsu.ui.component.material.FolkTextButton
 import me.weishu.kernelsu.ui.component.material.SearchAppBar
 import me.weishu.kernelsu.ui.component.material.SnackBarHost
 import me.weishu.kernelsu.ui.component.module.splicedLazyColumnGroup
+import me.weishu.kernelsu.ui.component.module.TwoColumnGrid
 import me.weishu.kernelsu.ui.util.reboot
 
 @SuppressLint("StringFormatInvalid")
@@ -539,6 +540,27 @@ private fun ModuleList(
             onLongPress = { onModuleLongPress(module) },
             closeSearch = { closeSearch() }
         )
+    }
+
+    val isWideScreen = LocalConfiguration.current.screenWidthDp >= 600
+
+    if (isWideScreen) {
+        // Wide screens get two independent columns; cards keep their order and folding one does
+        // not shift the other.
+        TwoColumnGrid(
+            items = displayModules,
+            key = { module -> module.id },
+            modifier = modifier,
+            verticalSpacing = 16.dp,
+            horizontalSpacing = 16.dp,
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                top = 16.dp,
+                end = 16.dp,
+                bottom = 16.dp + bottomInnerPadding + 56.dp + 16.dp,
+            ),
+        ) { module -> itemCard(module) }
+        return
     }
 
     LazyColumn(
