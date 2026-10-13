@@ -398,6 +398,13 @@
     <string name="profile_edit_title">プロファイルを編集</string>
     <string name="profile_avatar_default">デフォルト</string>
     <string name="profile_avatar_custom">カスタム</string>
+    <string name="profile_avatar_source_title">アバターの取得元を選択</string>
+    <string name="profile_avatar_source_local">端末から選択</string>
+    <string name="profile_avatar_source_qq">QQ アバター</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">QQ 番号</string>
+    <string name="profile_avatar_gravatar_hint">メールアドレス</string>
+    <string name="profile_avatar_fetch_failed">アバターを取得できませんでした</string>
     <string name="profile_avatar_opacity">アバターの不透明度</string>
     <string name="profile_nickname">ニックネーム</string>
     <string name="profile_signature">署名</string>

@@ -398,6 +398,13 @@
     <string name="profile_edit_title">Editar perfil</string>
     <string name="profile_avatar_default">Predeterminado</string>
     <string name="profile_avatar_custom">Personalizado</string>
+    <string name="profile_avatar_source_title">Elegir origen del avatar</string>
+    <string name="profile_avatar_source_local">Elegir del dispositivo</string>
+    <string name="profile_avatar_source_qq">Avatar de QQ</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">Número de QQ</string>
+    <string name="profile_avatar_gravatar_hint">Correo electrónico</string>
+    <string name="profile_avatar_fetch_failed">No se pudo obtener el avatar</string>
     <string name="profile_avatar_opacity">Opacidad del avatar</string>
     <string name="profile_nickname">Apodo</string>
     <string name="profile_signature">Firma</string>

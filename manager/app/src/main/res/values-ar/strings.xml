@@ -400,6 +400,13 @@
     <string name="profile_edit_title">تحرير الملف الشخصي</string>
     <string name="profile_avatar_default">افتراضي</string>
     <string name="profile_avatar_custom">مخصص</string>
+    <string name="profile_avatar_source_title">اختر مصدر الصورة الرمزية</string>
+    <string name="profile_avatar_source_local">اختيار من الجهاز</string>
+    <string name="profile_avatar_source_qq">صورة QQ الرمزية</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">رقم QQ</string>
+    <string name="profile_avatar_gravatar_hint">البريد الإلكتروني</string>
+    <string name="profile_avatar_fetch_failed">تعذّر جلب الصورة الرمزية</string>
     <string name="profile_avatar_opacity">شفافية الصورة الرمزية</string>
     <string name="profile_nickname">الكنية</string>
     <string name="profile_signature">التوقيع</string>

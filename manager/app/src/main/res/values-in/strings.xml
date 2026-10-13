@@ -398,6 +398,13 @@
     <string name="profile_edit_title">Ubah profil</string>
     <string name="profile_avatar_default">Bawaan</string>
     <string name="profile_avatar_custom">Kustom</string>
+    <string name="profile_avatar_source_title">Pilih sumber avatar</string>
+    <string name="profile_avatar_source_local">Pilih dari perangkat</string>
+    <string name="profile_avatar_source_qq">Avatar QQ</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">Nomor QQ</string>
+    <string name="profile_avatar_gravatar_hint">Email</string>
+    <string name="profile_avatar_fetch_failed">Gagal mengambil avatar</string>
     <string name="profile_avatar_opacity">Opasitas avatar</string>
     <string name="profile_nickname">Nama panggilan</string>
     <string name="profile_signature">Tanda tangan</string>

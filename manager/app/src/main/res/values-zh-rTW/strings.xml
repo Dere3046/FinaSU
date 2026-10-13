@@ -398,6 +398,13 @@
     <string name="profile_edit_title">編輯個人資料</string>
     <string name="profile_avatar_default">預設</string>
     <string name="profile_avatar_custom">自訂</string>
+    <string name="profile_avatar_source_title">選擇頭像來源</string>
+    <string name="profile_avatar_source_local">從裝置選擇</string>
+    <string name="profile_avatar_source_qq">QQ 頭像</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">QQ 號</string>
+    <string name="profile_avatar_gravatar_hint">電子郵件</string>
+    <string name="profile_avatar_fetch_failed">無法取得頭像</string>
     <string name="profile_avatar_opacity">頭像不透明度</string>
     <string name="profile_nickname">暱稱</string>
     <string name="profile_signature">簽名</string>

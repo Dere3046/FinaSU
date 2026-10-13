@@ -348,6 +348,13 @@
     <string name="profile_edit_title">编辑资料</string>
     <string name="profile_avatar_default">默认</string>
     <string name="profile_avatar_custom">自定义</string>
+    <string name="profile_avatar_source_title">选择头像来源</string>
+    <string name="profile_avatar_source_local">从设备选择</string>
+    <string name="profile_avatar_source_qq">QQ 头像</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">QQ 号</string>
+    <string name="profile_avatar_gravatar_hint">邮箱</string>
+    <string name="profile_avatar_fetch_failed">无法获取头像</string>
     <string name="profile_avatar_opacity">头像不透明度</string>
     <string name="profile_nickname">昵称</string>
     <string name="profile_signature">签名</string>

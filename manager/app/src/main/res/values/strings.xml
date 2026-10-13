@@ -398,6 +398,13 @@
     <string name="profile_edit_title">Edit profile</string>
     <string name="profile_avatar_default">Default</string>
     <string name="profile_avatar_custom">Custom</string>
+    <string name="profile_avatar_source_title">Choose avatar source</string>
+    <string name="profile_avatar_source_local">Choose from device</string>
+    <string name="profile_avatar_source_qq">QQ avatar</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">QQ number</string>
+    <string name="profile_avatar_gravatar_hint">Email</string>
+    <string name="profile_avatar_fetch_failed">Couldn\'t fetch the avatar</string>
     <string name="profile_avatar_opacity">Avatar opacity</string>
     <string name="profile_nickname">Nickname</string>
     <string name="profile_signature">Signature</string>

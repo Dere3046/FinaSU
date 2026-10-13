@@ -400,6 +400,13 @@
     <string name="profile_edit_title">Изменить профиль</string>
     <string name="profile_avatar_default">По умолчанию</string>
     <string name="profile_avatar_custom">Пользовательский</string>
+    <string name="profile_avatar_source_title">Выбрать источник аватара</string>
+    <string name="profile_avatar_source_local">Выбрать из устройства</string>
+    <string name="profile_avatar_source_qq">Аватар QQ</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">Номер QQ</string>
+    <string name="profile_avatar_gravatar_hint">Эл. почта</string>
+    <string name="profile_avatar_fetch_failed">Не удалось загрузить аватар</string>
     <string name="profile_avatar_opacity">Непрозрачность аватара</string>
     <string name="profile_nickname">Никнейм</string>
     <string name="profile_signature">Подпись</string>

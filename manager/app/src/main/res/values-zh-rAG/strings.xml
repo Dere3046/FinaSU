@@ -398,6 +398,13 @@
     <string name="profile_edit_title">编辑资料喵</string>
     <string name="profile_avatar_default">默认喵</string>
     <string name="profile_avatar_custom">自定义喵</string>
+    <string name="profile_avatar_source_title">选头像来路喵</string>
+    <string name="profile_avatar_source_local">从设备里挑喵</string>
+    <string name="profile_avatar_source_qq">QQ 头像喵</string>
+    <string name="profile_avatar_source_gravatar">Gravatar 喵</string>
+    <string name="profile_avatar_qq_hint">QQ 号喵</string>
+    <string name="profile_avatar_gravatar_hint">邮箱喵</string>
+    <string name="profile_avatar_fetch_failed">头像没抓到喵</string>
     <string name="profile_avatar_opacity">头像不透明度喵</string>
     <string name="profile_nickname">昵称喵</string>
     <string name="profile_signature">签名喵</string>

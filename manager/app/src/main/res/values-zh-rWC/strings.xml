@@ -398,6 +398,13 @@
     <string name="profile_edit_title">仙籍资料</string>
     <string name="profile_avatar_default">默认仙容</string>
     <string name="profile_avatar_custom">自定仙容</string>
+    <string name="profile_avatar_source_title">择仙容之源</string>
+    <string name="profile_avatar_source_local">自法器择取</string>
+    <string name="profile_avatar_source_qq">QQ 仙容</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">QQ 号</string>
+    <string name="profile_avatar_gravatar_hint">邮箱</string>
+    <string name="profile_avatar_fetch_failed">仙容未可召取</string>
     <string name="profile_avatar_opacity">仙容明晦</string>
     <string name="profile_nickname">道号</string>
     <string name="profile_signature">道心寄语</string>

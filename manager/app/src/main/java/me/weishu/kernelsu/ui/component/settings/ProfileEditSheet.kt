@@ -1,6 +1,7 @@
 package me.weishu.kernelsu.ui.component.settings
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -38,11 +39,13 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +55,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -61,12 +65,17 @@ import me.weishu.kernelsu.ui.component.SurfaceCropDialog
 import me.weishu.kernelsu.ui.component.material.folkPressScale
 import me.weishu.kernelsu.ui.theme.FolkShape
 import me.weishu.kernelsu.ui.theme.FolkType
+import java.io.File
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 /**
  * Bottom sheet for editing the identity header, laid out like FolkPatch's editor: two avatar
  * choices side by side, an opacity slider, then the two text fields. Edits are kept in local
  * draft state and only committed to [ProfileConfig] on save, so cancel leaves the header untouched.
+ *
+ * "Custom" opens a source chooser: the device gallery, a QQ number, or a Gravatar email. Remote
+ * images download into the cache as the draft, so a cancel discards them instead of persisting.
  *
  * "Restore defaults" resets the text only - the avatar has its own control, so the two concerns
  * stay independent.
@@ -76,16 +85,30 @@ import kotlin.math.roundToInt
 fun ProfileEditSheet(
     onDismiss: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
     var draftNickname by remember { mutableStateOf(ProfileConfig.nickname) }
     var draftSignature by remember { mutableStateOf(ProfileConfig.signature) }
     var draftAvatar by remember { mutableStateOf(ProfileConfig.avatarUri) }
     var draftOpacity by remember { mutableFloatStateOf(ProfileConfig.avatarOpacity) }
+
+    // Tapping "Custom" first asks where the image comes from; only the device option opens the
+    // picker, while QQ/Gravatar collect an id and download in the background.
+    var showSourceDialog by remember { mutableStateOf(false) }
+    var avatarSourceInput by remember { mutableStateOf<AvatarSource?>(null) }
 
     // The system cropper (com.android.camera.action.CROP) cannot write back to our output URI on
     // some OEM galleries (e.g. OnePlus), so the avatar crops in-app like the card surfaces do.
     var pendingCrop by remember { mutableStateOf<Uri?>(null) }
     val pickLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { pendingCrop = it }
+    }
+
+    // Remote avatars are staged in a cache directory while editing; once the sheet goes away the
+    // kept image (if any) already lives in app storage, so the staging copies can be dropped.
+    DisposableEffect(Unit) {
+        onDispose { File(context.cacheDir, "profile_avatar_download").deleteRecursively() }
     }
 
     fun commit() {
@@ -146,7 +169,7 @@ fun ProfileEditSheet(
                     selected = draftAvatar != null,
                     label = stringResource(id = R.string.profile_avatar_custom),
                     opacity = draftOpacity,
-                    onClick = { pickLauncher.launch("image/*") },
+                    onClick = { showSourceDialog = true },
                     modifier = Modifier.weight(1f)
                 ) {
                     val bitmap by produceState<android.graphics.Bitmap?>(initialValue = null, draftAvatar) {
@@ -256,6 +279,43 @@ fun ProfileEditSheet(
             onCropped = { cropped ->
                 draftAvatar = cropped.toString()
                 pendingCrop = null
+            },
+        )
+    }
+
+    if (showSourceDialog) {
+        AvatarSourceDialog(
+            onDismiss = { showSourceDialog = false },
+            onSelect = { source ->
+                showSourceDialog = false
+                when (source) {
+                    AvatarSource.Local -> pickLauncher.launch("image/*")
+                    AvatarSource.Qq, AvatarSource.Gravatar -> avatarSourceInput = source
+                }
+            },
+        )
+    }
+
+    val sourceInput = avatarSourceInput
+    if (sourceInput != null) {
+        val isQq = sourceInput == AvatarSource.Qq
+        AvatarIdDialog(
+            title = stringResource(if (isQq) R.string.profile_avatar_source_qq else R.string.profile_avatar_source_gravatar),
+            label = stringResource(if (isQq) R.string.profile_avatar_qq_hint else R.string.profile_avatar_gravatar_hint),
+            onDismiss = { avatarSourceInput = null },
+            onConfirm = { value ->
+                avatarSourceInput = null
+                val url = if (isQq) qqAvatarUrl(value) else gravatarUrl(value)
+                scope.launch {
+                    // A successful download lands in the cache and becomes the draft; saving the
+                    // sheet later copies it into app storage.
+                    val preview = downloadAvatarPreview(context, url)
+                    if (preview != null) {
+                        draftAvatar = preview
+                    } else {
+                        Toast.makeText(context, R.string.profile_avatar_fetch_failed, Toast.LENGTH_SHORT).show()
+                    }
+                }
             },
         )
     }

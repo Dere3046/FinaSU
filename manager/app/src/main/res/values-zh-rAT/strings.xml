@@ -398,6 +398,13 @@
     <string name="profile_edit_title">修缮圣契</string>
     <string name="profile_avatar_default">天意默认</string>
     <string name="profile_avatar_custom">自定义</string>
+    <string name="profile_avatar_source_title">择圣像之源</string>
+    <string name="profile_avatar_source_local">自圣器择取</string>
+    <string name="profile_avatar_source_qq">QQ 圣像</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">QQ 号</string>
+    <string name="profile_avatar_gravatar_hint">邮箱</string>
+    <string name="profile_avatar_fetch_failed">圣像未能召取</string>
     <string name="profile_avatar_opacity">圣像明晦</string>
     <string name="profile_nickname">圣名</string>
     <string name="profile_signature">圣言</string>

@@ -402,6 +402,13 @@ Przed kontynuowaniem upewnij się, że bootloader jest odblokowany!</string>
     <string name="profile_edit_title">Edytuj profil</string>
     <string name="profile_avatar_default">Domyślny</string>
     <string name="profile_avatar_custom">Własny</string>
+    <string name="profile_avatar_source_title">Wybierz źródło awatara</string>
+    <string name="profile_avatar_source_local">Wybierz z urządzenia</string>
+    <string name="profile_avatar_source_qq">Awatar QQ</string>
+    <string name="profile_avatar_source_gravatar">Gravatar</string>
+    <string name="profile_avatar_qq_hint">Numer QQ</string>
+    <string name="profile_avatar_gravatar_hint">E-mail</string>
+    <string name="profile_avatar_fetch_failed">Nie udało się pobrać awatara</string>
     <string name="profile_avatar_opacity">Krycie awatara</string>
     <string name="profile_nickname">Pseudonim</string>
     <string name="profile_signature">Podpis</string>
