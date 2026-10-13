@@ -194,7 +194,7 @@ fun PluginPagerMaterial(
             )
         },
         floatingActionButton = {
-            val installLabel = stringResource(id = R.string.plugin_install)
+            val installLabel = stringResource(id = R.string.install)
             val packagePicker = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.GetContent()
             ) { uri ->

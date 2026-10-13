@@ -26,8 +26,9 @@ internal class ThemeTransaction(private val context: Context, private val backup
         context.getSharedPreferences(it, Context.MODE_PRIVATE).all.toMap()
     }
     private val stems = SurfaceRegistry.themeSlots().mapNotNull { it.storageStem } + listOf(
-        "wallpaper", "background", "background_home", "background_superuser", "background_system_module",
-        "background_settings", "work_card_background", "custom_font", "video_background", "title_image", "nav_icon",
+        "wallpaper", "background", "background_home", "background_kernel", "background_superuser",
+        "background_system_module", "background_settings", "work_card_background", "custom_font",
+        "video_background", "title_image", "nav_icon",
     )
     private fun owned(file: File): Boolean = file.name in setOf("music", "sound_effects", "theme_passthrough") ||
         stems.any { file.name == it || file.name.startsWith("$it.") || file.name.startsWith("${it}_") }

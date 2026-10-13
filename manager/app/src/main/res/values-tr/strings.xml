@@ -538,6 +538,7 @@
     <string name="wallpaper_multi_background_mode">Çok sayfalı arka plan</string>
     <string name="wallpaper_multi_background_mode_summary">Her sayfa için farklı bir arka plan kullan</string>
     <string name="wallpaper_select_home_background">Ana sayfa arka planı</string>
+    <string name="wallpaper_select_plugin_background">Eklenti sayfası arka planı</string>
     <string name="wallpaper_select_superuser_background">Süper kullanıcı arka planı</string>
     <string name="wallpaper_select_module_background">Modül arka planı</string>
     <string name="wallpaper_select_settings_background">Ayarlar arka planı</string>
@@ -739,7 +740,6 @@
     <string name="plugin_empty">Yüklü eklenti yok</string>
     <string name="plugin_log">Çıktı günlüğü</string>
     <string name="plugin_dependencies">Gerektirir</string>
-    <string name="plugin_install">Eklenti kur</string>
     <string name="plugin_uninstall_confirm">%1$s kaldırılsın ve paketi silinsin mi?</string>
     <string name="plugin_log_empty">Henüz çıktı yok</string>
     <string name="plugin_config">Yapılandırma</string>

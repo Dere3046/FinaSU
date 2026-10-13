@@ -536,6 +536,7 @@
     <string name="wallpaper_multi_background_mode">多页面背景喵</string>
     <string name="wallpaper_multi_background_mode_summary">给不同页面配不同的背景图喵</string>
     <string name="wallpaper_select_home_background">主页背景喵</string>
+    <string name="wallpaper_select_plugin_background">插件页背景喵</string>
     <string name="wallpaper_select_superuser_background">超级用户背景喵</string>
     <string name="wallpaper_select_module_background">模块背景喵</string>
     <string name="wallpaper_select_settings_background">设置背景喵</string>
@@ -737,7 +738,6 @@
     <string name="plugin_empty">还没装插件喵</string>
     <string name="plugin_log">输出日志</string>
     <string name="plugin_dependencies">需要</string>
-    <string name="plugin_install">安装插件</string>
     <string name="plugin_uninstall_confirm">确定要卸载 %1$s 并删掉它的插件包吗喵？</string>
     <string name="plugin_log_empty">还没有输出喵</string>
     <string name="plugin_config">配置</string>

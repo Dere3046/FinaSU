@@ -197,6 +197,24 @@ internal object HomeBackgroundAsset : ThemedAsset {
     }
 }
 
+internal object PluginBackgroundAsset : ThemedAsset {
+    override val base = "background_kernel"
+
+    override fun currentFile(context: Context): File? =
+        currentPageFile(WallpaperConfig.pluginBackgroundUri)
+
+    override fun writeConfig(json: JSONObject) = Unit
+
+    override suspend fun apply(context: Context, json: JSONObject, file: File?) {
+        if (!json.optBoolean("isMultiBackgroundEnabled")) return
+        applyPageBackground(context, WallpaperConfig.PAGE_PLUGIN, file)
+    }
+
+    override suspend fun reset(context: Context) {
+        WallpaperManager.clearPageBackground(context, WallpaperConfig.PAGE_PLUGIN)
+    }
+}
+
 internal object SuperuserBackgroundAsset : ThemedAsset {
     override val base = "background_superuser"
 

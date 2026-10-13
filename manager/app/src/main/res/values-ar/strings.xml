@@ -538,6 +538,7 @@
     <string name="wallpaper_multi_background_mode">خلفية متعددة الصفحات</string>
     <string name="wallpaper_multi_background_mode_summary">استخدام خلفية مختلفة لكل صفحة</string>
     <string name="wallpaper_select_home_background">خلفية الصفحة الرئيسية</string>
+    <string name="wallpaper_select_plugin_background">خلفية صفحة الملحقات</string>
     <string name="wallpaper_select_superuser_background">خلفية المستخدم الخارق</string>
     <string name="wallpaper_select_module_background">خلفية الوحدات</string>
     <string name="wallpaper_select_settings_background">خلفية الإعدادات</string>
@@ -739,7 +740,6 @@
     <string name="plugin_empty">لا توجد ملحقات مثبتة</string>
     <string name="plugin_log">سجل المخرجات</string>
     <string name="plugin_dependencies">يتطلب</string>
-    <string name="plugin_install">تثبيت ملحق</string>
     <string name="plugin_uninstall_confirm">إلغاء تثبيت %1$s وحذف حزمته؟</string>
     <string name="plugin_log_empty">لا مخرجات بعد</string>
     <string name="plugin_config">الإعدادات</string>

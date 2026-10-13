@@ -17,6 +17,7 @@ object FolkThemeIO {
         add(MainWallpaperAsset)
         SurfaceRegistry.themeSlots().forEach { add(SurfaceBackgroundAsset(it)) }
         add(HomeBackgroundAsset)
+        add(PluginBackgroundAsset)
         add(SuperuserBackgroundAsset)
         add(ModuleBackgroundAsset)
         add(SettingsBackgroundAsset)

@@ -538,6 +538,7 @@
     <string name="wallpaper_multi_background_mode">Фон для нескольких страниц</string>
     <string name="wallpaper_multi_background_mode_summary">Использовать разный фон для каждой страницы</string>
     <string name="wallpaper_select_home_background">Фон главной страницы</string>
+    <string name="wallpaper_select_plugin_background">Фон страницы плагинов</string>
     <string name="wallpaper_select_superuser_background">Фон суперпользователей</string>
     <string name="wallpaper_select_module_background">Фон модулей</string>
     <string name="wallpaper_select_settings_background">Фон настроек</string>
@@ -739,7 +740,6 @@
     <string name="plugin_empty">Плагины не установлены</string>
     <string name="plugin_log">Журнал вывода</string>
     <string name="plugin_dependencies">Требуется</string>
-    <string name="plugin_install">Установить плагин</string>
     <string name="plugin_uninstall_confirm">Удалить %1$s и его пакет?</string>
     <string name="plugin_log_empty">Вывода пока нет</string>
     <string name="plugin_config">Настройки</string>

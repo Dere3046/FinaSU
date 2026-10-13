@@ -538,6 +538,7 @@
     <string name="wallpaper_multi_background_mode">Fundo de várias páginas</string>
     <string name="wallpaper_multi_background_mode_summary">Usar um fundo diferente para cada página</string>
     <string name="wallpaper_select_home_background">Fundo da tela inicial</string>
+    <string name="wallpaper_select_plugin_background">Fundo da tela de plugins</string>
     <string name="wallpaper_select_superuser_background">Fundo do SuperUsuário</string>
     <string name="wallpaper_select_module_background">Fundo dos módulos</string>
     <string name="wallpaper_select_settings_background">Fundo das configurações</string>
@@ -739,7 +740,6 @@
     <string name="plugin_empty">Nenhum plugin instalado</string>
     <string name="plugin_log">Registro de saída</string>
     <string name="plugin_dependencies">Requer</string>
-    <string name="plugin_install">Instalar plugin</string>
     <string name="plugin_uninstall_confirm">Desinstalar %1$s e excluir o pacote?</string>
     <string name="plugin_log_empty">Ainda sem saída</string>
     <string name="plugin_config">Configuração</string>

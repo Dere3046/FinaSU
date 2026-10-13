@@ -540,6 +540,7 @@ Przed kontynuowaniem upewnij się, że bootloader jest odblokowany!</string>
     <string name="wallpaper_multi_background_mode">Tło wielu stron</string>
     <string name="wallpaper_multi_background_mode_summary">Używaj innego tła dla każdej strony</string>
     <string name="wallpaper_select_home_background">Tło strony głównej</string>
+    <string name="wallpaper_select_plugin_background">Tło strony wtyczek</string>
     <string name="wallpaper_select_superuser_background">Tło superużytkownika</string>
     <string name="wallpaper_select_module_background">Tło modułów</string>
     <string name="wallpaper_select_settings_background">Tło ustawień</string>
@@ -741,7 +742,6 @@ Przed kontynuowaniem upewnij się, że bootloader jest odblokowany!</string>
     <string name="plugin_empty">Brak zainstalowanych wtyczek</string>
     <string name="plugin_log">Dziennik wyjściowy</string>
     <string name="plugin_dependencies">Wymaga</string>
-    <string name="plugin_install">Zainstaluj wtyczkę</string>
     <string name="plugin_uninstall_confirm">Odinstalować %1$s i usunąć jego pakiet?</string>
     <string name="plugin_log_empty">Brak danych wyjściowych</string>
     <string name="plugin_config">Konfiguracja</string>

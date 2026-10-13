@@ -22,7 +22,7 @@ class PreparedTheme internal constructor(
 ) : Closeable {
     val resourceCount: Int get() = files.size
     val previewFile: File? get() = files.entries.firstOrNull {
-        it.key.substringBefore('.') in setOf("background_home", "background", "title_image")
+        it.key.substringBefore('.') in setOf("background_home", "background_kernel", "background", "title_image")
     }?.value
     override fun close() { directory.deleteRecursively() }
 }
